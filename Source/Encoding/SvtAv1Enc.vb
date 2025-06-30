@@ -106,7 +106,7 @@ Public Class SvtAv1Enc
             Dim rpu = Params.SpecificDolbyVisionRpu.Value
 
             If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
-                Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
+                Dim offset = If(p.Script.IsFilterActive("Crop"), New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), Padding.Empty)
                 Dim mode = CType(Params.SpecificDolbyVisionRpuMode.Value, DoviMode)
 
                 p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)

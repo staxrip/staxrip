@@ -122,7 +122,7 @@ Public Class x265Enc
     Overrides Function BeforeEncoding() As Boolean
         Dim rpu = Params.DolbyVisionRpu.Value
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
-            Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
+            Dim offset = If(p.Script.IsFilterActive("Crop"), New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), Padding.Empty)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
             Dim profile = Params.DolbyVisionProfile.ValueText
             Dim mode = DoviMode.Mode0

@@ -551,7 +551,7 @@ Public Class QSVEnc
             .Switch = "--dhdr10-info",
             .Text = "HDR10 Info File",
             .BrowseFile = True,
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"}
 
         Property DolbyVisionProfileH265 As New OptionParam With {
             .Switch = "--dolby-vision-profile",
@@ -586,7 +586,7 @@ Public Class QSVEnc
                                           Case Else
                                       End Select
                                   End Sub,
-            .VisibleFunc = Function() Codec.ValueText = "h265"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc"}
 
         Property DolbyVisionProfileAV1 As New OptionParam With {
             .Switch = "--dolby-vision-profile",
@@ -627,7 +627,7 @@ Public Class QSVEnc
             .Switch = "--dolby-vision-rpu",
             .Text = "Dolby Vision RPU",
             .BrowseFile = True,
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"}
 
         Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}}
         Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}}
@@ -870,7 +870,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "Main", "Main 10"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileMPEG2", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "Simple", "Main", "High"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileAV1", .VisibleFunc = Function() Codec.Value = 4, .Options = {"Automatic", "Main", "High", "Pro"}},
-                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Name = "LevelMpeg2", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "mpeg2", .Options = {"Automatic", "low", "main", "high", "high1440"}},

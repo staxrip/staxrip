@@ -258,7 +258,7 @@ Public Class Folder
                 remux.SubtitleMode = SubtitleMode.Disabled
                 remux.VideoEncoder = New NullEncoder
                 For index = 0 To remux.AudioTracksAvailable - 1
-                    remux.AudioTracks.Add(New AudioTrack() With {
+                    remux.AudioTracks.Add(New AudioTrack(index) With {
                                                 .AudioProfile = New MuxAudioProfile(),
                                                 .EditLabel = New AudioEditButtonLabel(index),
                                                 .LanguageLabel = New AudioLanguageLabel(index),

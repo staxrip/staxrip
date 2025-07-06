@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text.RegularExpressions
 Imports System.Text
 
@@ -183,6 +183,7 @@ Public MustInherit Class AudioProfile
         Language = New Language()
         SourceSamplingRateValue = 0
         Stream = Nothing
+        StreamName = ""
     End Sub
 
     Overridable Sub Migrate()

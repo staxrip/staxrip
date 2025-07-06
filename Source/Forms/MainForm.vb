@@ -1861,7 +1861,7 @@ Public Class MainForm
                                           End Sub
                 Dim textEditMouseDown = Sub(sender As Object, e As MouseEventArgs)
                                             If e.Button = MouseButtons.Right Then
-                                                UpdateAudioFileMenu(audioTrack, Sub() textEditDoubleClick(Nothing, Nothing))
+                                                UpdateAudioFileMenu(audioTrack, index, Sub() textEditDoubleClick(Nothing, Nothing))
                                             End If
                                         End Sub
 
@@ -1870,10 +1870,10 @@ Public Class MainForm
                 AddHandler textEdit.MouseDown, textEditMouseDown
 
                 If proj.AudioTracks.ElementAtOrDefault(index) Is Nothing Then
-                    audioTrack = New AudioTrack() With {.AudioProfile = audioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
+                    audioTrack = New AudioTrack(index) With {.AudioProfile = audioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
                     proj.AudioTracks.Add(audioTrack)
                 Else
-                    audioTrack = New AudioTrack() With {.AudioProfile = proj.AudioTracks(index).AudioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
+                    audioTrack = New AudioTrack(index) With {.AudioProfile = proj.AudioTracks(index).AudioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
                     proj.AudioTracks(index) = audioTrack
                 End If
             Next
@@ -7726,7 +7726,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub UpdateAudioFileMenu(audioTrack As AudioTrack, a As Action)
+    Sub UpdateAudioFileMenu(audioTrack As AudioTrack, index As Integer, a As Action)
         Dim cms = DirectCast(audioTrack.TextEdit.TextBox.ContextMenuStrip, ContextMenuStripEx)
         Dim ap = audioTrack.AudioProfile
         Dim te = audioTrack.TextEdit

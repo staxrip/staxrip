@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Imaging
@@ -938,6 +938,8 @@ Public Class AudioTrack
     <NonSerialized>
     Private _editLabel As AudioEditButtonLabel
     <NonSerialized>
+    Private ReadOnly _index As Integer
+    <NonSerialized>
     Private _languageLabel As AudioLanguageLabel
     <NonSerialized>
     Private _nameLabel As AudioNameButtonLabel
@@ -962,6 +964,12 @@ Public Class AudioTrack
         Set
             _editLabel = Value
         End Set
+    End Property
+
+    Public ReadOnly Property Index As Integer
+        Get
+            Return _index
+        End Get
     End Property
 
     Public Property LanguageLabel As AudioLanguageLabel
@@ -997,11 +1005,23 @@ Public Class AudioTrack
         End Set
     End Property
 
-    Public Sub New()
+    Private Sub New()
+    End Sub
+
+    Public Sub New(index As Integer)
+        _index = index
     End Sub
 
     Public Sub Remove()
         _audioProfile.Reset()
+
+        If Index >= 0 Then
+            Dim ap = s.AudioProfiles.FirstOrDefault(Function(x) x.Name = _audioProfile.Name)
+
+            If ap IsNot Nothing Then
+                g.LoadAudioProfile(ap, Index)
+            End If
+        End If
 
         _textEdit.Text = ""
         _textEdit.Refresh()

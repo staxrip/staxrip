@@ -3554,8 +3554,14 @@ Public Class MainForm
             End If
 
             If p.Script.IsFilterActive("Resize") AndAlso widthZoom <> heightZoom AndAlso p.VideoEncoder?.IsResizingAllowed AndAlso Not p.VideoEncoder?.IsUnequalResizingAllowed Then
-                If ProcessTip("Resizing of that kind will interfere with the Dolby Vision metadata. Keep the original aspect ratio, disable the 'Resize' filter or remove the Dolby Vision RPU file.") Then
-                    Return Block("Wrong resizing", tbTargetWidth, tbTargetHeight, lSAR, lDAR, lZoom, lAspectRatioError)
+                Dim arw = p.TargetWidth / cropw
+                Dim h = croph * arw
+                Dim res = CInt(If(CInt(Fix(h)) Mod 2 = 0, Math.Floor(h), Math.Floor(h + 1)))
+
+                If p.TargetHeight <> res Then
+                    If ProcessTip("Resizing of that kind will interfere with the Dolby Vision metadata. Keep the original aspect ratio, disable the 'Resize' filter or remove the Dolby Vision RPU file.") Then
+                        Return Block("Wrong resizing", tbTargetWidth, tbTargetHeight, lSAR, lDAR, lZoom, lAspectRatioError)
+                    End If
                 End If
             End If
 

@@ -8000,8 +8000,10 @@ Public Class MainForm
         Get
             If g.IsAppStart Then
                 g.IsAppStart = False
-                If s.StartWithoutFocus Then Return True
-                If ParseCommandLine(Environment.CommandLine)?.Contains("-" & NameOf(GlobalCommands.NoFocus), StringComparer.OrdinalIgnoreCase) Then Return True
+                If s.StartWithoutFocus OrElse ParseCommandLine(Environment.CommandLine)?.Contains("-" & NameOf(GlobalCommands.NoFocus), StringComparer.OrdinalIgnoreCase) Then
+                    ProcController.SetLastActivation(-s.PreventFocusStealAfter * 2)
+                    Return True
+                End If
             End If
 
             If ProcController.BlockActivation Then

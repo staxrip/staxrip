@@ -139,8 +139,8 @@ Public Class ProcController
         Next
     End Sub
 
-    Public Shared Sub SetLastActivation()
-        _lastActivation = Date.UtcNow
+    Public Shared Sub SetLastActivation(Optional offsetSeconds As Integer = 0)
+        _lastActivation = Date.UtcNow.AddSeconds(offsetSeconds)
     End Sub
 
     Sub DataReceived(value As String)

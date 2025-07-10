@@ -81,9 +81,10 @@ Public Class MacrosForm
             Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
         Me.lValue.Location = New System.Drawing.Point(4, 218)
-        Me.lValue.Margin = New Padding(4, 0, 4, 0)
+        Me.lValue.Margin = New Padding(4, 0, 4, 10)
         Me.lValue.Name = "lValue"
-        Me.lValue.Size = New System.Drawing.Size(364, 100)
+        Me.lValue.Size = New System.Drawing.Size(364, 150)
+        Me.lValue.AutoSize = True
         Me.lValue.TabIndex = 6
         Me.lValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -128,7 +129,7 @@ Public Class MacrosForm
         'bnCopy
         '
         Me.bnCopy.Location = New System.Drawing.Point(4, 103)
-        Me.bnCopy.Margin = New Padding(4, 3, 4, 3)
+        Me.bnCopy.Margin = New Padding(4, 10, 4, 10)
         Me.bnCopy.Name = "bnCopy"
         Me.bnCopy.Size = New System.Drawing.Size(273, 62)
         Me.bnCopy.TabIndex = 11
@@ -142,12 +143,12 @@ Public Class MacrosForm
         Me.tlpRight.ColumnCount = 1
         Me.tlpRight.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0!))
         Me.tlpRight.Controls.Add(Me.lNameTitle, 0, 0)
-        Me.tlpRight.Controls.Add(Me.lValue, 0, 4)
-        Me.tlpRight.Controls.Add(Me.lDescription, 0, 6)
-        Me.tlpRight.Controls.Add(Me.lDescriptionTitle, 0, 5)
-        Me.tlpRight.Controls.Add(Me.bnCopy, 0, 2)
         Me.tlpRight.Controls.Add(Me.lName, 0, 1)
+        Me.tlpRight.Controls.Add(Me.bnCopy, 0, 2)
         Me.tlpRight.Controls.Add(Me.lValueTitle, 0, 3)
+        Me.tlpRight.Controls.Add(Me.lValue, 0, 4)
+        Me.tlpRight.Controls.Add(Me.lDescriptionTitle, 0, 5)
+        Me.tlpRight.Controls.Add(Me.lDescription, 0, 6)
         Me.tlpRight.Location = New System.Drawing.Point(314, 3)
         Me.tlpRight.Margin = New Padding(4, 3, 4, 3)
         Me.tlpRight.Name = "tlpRight"
@@ -158,7 +159,7 @@ Public Class MacrosForm
         Me.tlpRight.RowStyles.Add(New RowStyle())
         Me.tlpRight.RowStyles.Add(New RowStyle())
         Me.tlpRight.RowStyles.Add(New RowStyle())
-        Me.tlpRight.RowStyles.Add(New RowStyle(SizeType.Absolute, 45.0!))
+        Me.tlpRight.RowStyles.Add(New RowStyle())
         Me.tlpRight.Size = New System.Drawing.Size(372, 553)
         Me.tlpRight.TabIndex = 12
         '
@@ -167,11 +168,12 @@ Public Class MacrosForm
         Me.lDescription.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
             Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
-        Me.lDescription.Location = New System.Drawing.Point(4, 371)
-        Me.lDescription.Margin = New Padding(4, 0, 4, 0)
+        Me.lDescription.Location = New Point(4, 285)
+        Me.lDescription.Margin = New Padding(4, 0, 4, 10)
         Me.lDescription.Name = "lDescription"
-        Me.lDescription.Size = New System.Drawing.Size(364, 182)
+        Me.lDescription.Size = New Size(364, 182)
         Me.lDescription.TabIndex = 12
+        Me.lDescription.TextAlign = ContentAlignment.TopLeft
         '
         'tlpLeft
         '
@@ -193,8 +195,8 @@ Public Class MacrosForm
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 2
-        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 45.0!))
-        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 55.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 35.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 65.0!))
         Me.tlpMain.Controls.Add(Me.tlpLeft, 0, 0)
         Me.tlpMain.Controls.Add(Me.tlpRight, 1, 0)
         Me.tlpMain.Dock = DockStyle.Fill
@@ -226,7 +228,7 @@ Public Class MacrosForm
 
     Sub New()
         InitializeComponent()
-        ScaleClientSize(30, 25)
+        ScaleClientSize(46, 25)
         lv.View = View.Tile
         lv.FullRowSelect = True
         lv.MultiSelect = False

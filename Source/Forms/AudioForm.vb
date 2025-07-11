@@ -1,4 +1,4 @@
-
+﻿
 Imports StaxRip.VideoEncoderCommandLine
 Imports StaxRip.UI
 Imports DirectN
@@ -702,14 +702,6 @@ Public Class AudioForm
 
         rtbCommandLine.ReadOnly = True
 
-        mbSamplingRate.Add("Original", 0)
-        mbSamplingRate.Add("11025 Hz", 11025)
-        mbSamplingRate.Add("22050 Hz", 22050)
-        mbSamplingRate.Add("44100 Hz", 44100)
-        mbSamplingRate.Add("48000 Hz", 48000)
-        mbSamplingRate.Add("88200 Hz", 88200)
-        mbSamplingRate.Add("96000 Hz", 96000)
-
         numBitrate.Minimum = 1
         numBitrate.Maximum = 16000
         numGain.DecimalPlaces = 1
@@ -910,6 +902,35 @@ Public Class AudioForm
         End If
 
         UpdateEncoderMenu()
+
+        If TempProfile.AudioCodec = AudioCodec.Opus Then
+            mbSamplingRate.Clear()
+            mbSamplingRate.Add("Original", 0)
+            mbSamplingRate.Add("8000 Hz", 8000)
+            mbSamplingRate.Add("12000 Hz", 12000)
+            mbSamplingRate.Add("16000 Hz", 16000)
+            mbSamplingRate.Add("24000 Hz", 24000)
+            mbSamplingRate.Add("48000 Hz", 48000)
+
+            If Not mbSamplingRate.Items.Cast(Of Integer).Contains(CInt(mbSamplingRate.Value)) Then
+                mbSamplingRate.Value = 0
+                TempProfile.Params.SamplingRate = 0
+            End If
+        Else
+            mbSamplingRate.Clear()
+            mbSamplingRate.Add("Original", 0)
+            mbSamplingRate.Add("11025 Hz", 11025)
+            mbSamplingRate.Add("22050 Hz", 22050)
+            mbSamplingRate.Add("44100 Hz", 44100)
+            mbSamplingRate.Add("48000 Hz", 48000)
+            mbSamplingRate.Add("88200 Hz", 88200)
+            mbSamplingRate.Add("96000 Hz", 96000)
+
+            If Not mbSamplingRate.Items.Cast(Of Integer).Contains(CInt(mbSamplingRate.Value)) Then
+                mbSamplingRate.Value = 0
+                TempProfile.Params.SamplingRate = 0
+            End If
+        End If
 
         Dim enc = TempProfile.GetEncoder()
 

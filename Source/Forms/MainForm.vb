@@ -6917,7 +6917,6 @@ Public Class MainForm
                 Else
                     Dim str = sb.ToString()
                     If Not String.IsNullOrWhiteSpace(str) Then
-                        If str.First() = """"c AndAlso str.Last() = """"c Then str = str.Trim(""""c)
                         args.Add(str)
                     End If
                     sb = New StringBuilder()
@@ -6944,7 +6943,7 @@ Public Class MainForm
 
         Dim files As New List(Of String)
         Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.CommandLine)) <> 0
-        Dim forcedTemplateLoading = args.Where(Function(s) s.ToLowerInvariant().Unescape().StartsWith("-" & NameOf(LoadTemplate).ToLowerInvariant())).Any()
+        Dim forcedTemplateLoading = args.Where(Function(s) s.ToLowerInvariant().TrimQuotes().StartsWith("-" & NameOf(LoadTemplate).ToLowerInvariant())).Any()
 
         For Each arg In args.Skip(1)
             Try

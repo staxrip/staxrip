@@ -714,11 +714,11 @@ Public Class NVEnc
 
 
         Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
-        Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.1, 1}}
-        Property TweakGamma As New NumParam With {.Text = "      Gamma", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.1, 10.0, 0.1, 1}}
-        Property TweakSaturation As New NumParam With {.Text = "      Saturation", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.0, 3.0, 0.1, 1}}
-        Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 1}}
-        Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.1, 1}}
+        Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.01, 2}}
+        Property TweakGamma As New NumParam With {.Text = "      Gamma", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.1, 10.0, 0.1, 2}}
+        Property TweakSaturation As New NumParam With {.Text = "      Saturation", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.0, 3.0, 0.01, 2}}
+        Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 2}}
+        Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.01, 2}}
 
         Property Nlmeans As New BoolParam With {.Text = "Nlmeans", .Switch = "--vpp-nlmeans", .ArgsFunc = AddressOf GetNlmeansArgs}
         Property NlmeansSigma As New NumParam With {.Text = "     Sigma", .HelpSwitch = "--vpp-nlmeans", .Init = 0.005, .Config = {0, 10, 0.001, 3}}
@@ -1644,7 +1644,7 @@ Public Class NVEnc
                 If Not LibPlaceboTonemappingSrcMin.IsDefaultValue Then sb.Append($",src_min={LibPlaceboTonemappingSrcMin.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingDstMax.IsDefaultValue Then sb.Append($",dst_max={LibPlaceboTonemappingDstMax.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingDstMin.IsDefaultValue Then sb.Append($",dst_min={LibPlaceboTonemappingDstMin.Value.ToInvariantString()}")
-                If Not LibPlaceboTonemappingDynPeakDetect.IsDefaultValue Then sb.Append($",dynamic_peak_detection={LibPlaceboTonemappingDynPeakDetect.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingDynPeakDetect.IsDefaultValue Then sb.Append($",dynamic_peak_detection={LibPlaceboTonemappingDynPeakDetect.ValueText.ToInvariantString()}")
                 If Not LibPlaceboTonemappingSmoothPeriod.IsDefaultValue Then sb.Append($",smooth_period={LibPlaceboTonemappingSmoothPeriod.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingSceneThresholdLow.IsDefaultValue Then sb.Append($",scene_threshold_low={LibPlaceboTonemappingSceneThresholdLow.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingSceneThresholdHigh.IsDefaultValue Then sb.Append($",scene_threshold_high={LibPlaceboTonemappingSceneThresholdHigh.Value.ToInvariantString()}")

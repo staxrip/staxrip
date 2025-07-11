@@ -821,14 +821,6 @@ Public Class Package
         .WebURL = "https://github.com/Asd-g/DCTFilter",
         .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
 
-    Shared Property DCTFilterF As Package = Add(New PluginPackage With {
-        .Name = "DCTFilter-f",
-        .Filename = "DCTFilter.dll",
-        .Location = IO.Path.Combine("Plugins", "VS", "DCTFilter-f"),
-        .Description = "Renewed VapourSynth port of DCTFilter.",
-        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
-        .VsFilterNames = {"dctf.DCTFilter"}})
-
     Shared Property DCTFilterVS As Package = Add(New PluginPackage With {
         .Name = "DCTFilter",
         .Filename = "DCTFilter.dll",

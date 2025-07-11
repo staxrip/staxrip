@@ -1,4 +1,4 @@
-[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+﻿[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 [![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
 [![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 [![GitHub Repo stars](https://img.shields.io/github/stars/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=Stars&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip)
@@ -28,7 +28,7 @@ There are a lot of resources in StaxRip-related communities. Users are strongly 
 [![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 
 - You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki).
-- For the current changelog click here: [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) - it's worth taking a look at it.
+- For the current changelog click here: [Changelog](https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md) - it's worth taking a look at it.
 - To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump directly to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest). 
 
 # Contribution / Support
@@ -52,7 +52,7 @@ Any contribution is highly appreciated!
 
 ### **Bug Reports / Feature Requests**
 - Please try the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) first. Usually you will find that many outstanding bugs are already fixed in the latest release versions.
-- You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
+- You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
 - If the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
 
 ### Community

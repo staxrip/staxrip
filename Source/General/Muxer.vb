@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
@@ -711,6 +711,8 @@ Public Class MkvMuxer
         If dar.EqualsAny("auto", "0") Then
             dar = Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If
+
+        If String.IsNullOrWhiteSpace(dar) AndAlso p.VideoEncoder.Codec.ToLowerInvariant() = "av1" Then dar = MediaInfo.GetVideo(p.VideoEncoder.OutputPath, "DisplayAspectRatio/String")
 
         If dar <> "" Then
             args += " --aspect-ratio " & id & ":" + dar.TrimEx.Replace(",", ".").Replace(":", "/")

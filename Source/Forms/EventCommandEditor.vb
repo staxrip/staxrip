@@ -360,7 +360,7 @@ Public Class EventCommandEditor
         MyBase.New()
         InitializeComponent()
         IsComposited = False
-        ScaleClientSize(37, 30)
+        ScaleClientSize(50, 33)
         EventCommandValue = ev
         tbName.Text = EventCommandValue.Name
 
@@ -372,7 +372,7 @@ Public Class EventCommandEditor
 
         Dim allCriteria As New List(Of Criteria)
 
-        For Each m In Macro.GetMacros(True, False, False, True)
+        For Each m In Macro.GetMacros(True, False, True, True)
             Dim c = Criteria.Create(m.Type)
             c.Name = m.FriendlyName
             c.Description = m.Description

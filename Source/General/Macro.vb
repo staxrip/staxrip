@@ -126,11 +126,6 @@ Public Class Macro
 
         If includeGlobals Then
             ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
-            ret.Add(New Macro("audio_bitrateX", "Audio Bitrate X", GetType(Integer), "Audio bitrate of the X'th audio track."))
-            ret.Add(New Macro("audio_channelsX", "Audio Channels X", GetType(Integer), "Audio channels of the X'th audio track."))
-            ret.Add(New Macro("audio_codecX", "Audio Codec X", GetType(String), "Audio codec of the X'th audio track."))
-            ret.Add(New Macro("audio_delayX", "Audio Delay X", GetType(Integer), "Audio delay of the X'th audio track."))
-            ret.Add(New Macro("audio_fileX", "X'th Audio File", GetType(String), "File path of the X'th audio file."))
             ret.Add(New Macro("compressibility", "Compressibility", GetType(Integer), "Compressibility value."))
             ret.Add(New Macro("crop_bottom", "Crop Bottom", GetType(Integer), "Bottom crop value."))
             ret.Add(New Macro("crop_height", "Crop Height", GetType(Integer), "Crop height."))
@@ -219,17 +214,21 @@ Public Class Macro
         End If
 
         If includeParam Then
-            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"))
+            ret.Add(New Macro("audio_bitrate:X", "Audio Bitrate X", GetType(Integer), "Audio bitrate of the X'th audio track."))
+            ret.Add(New Macro("audio_channels:X", "Audio Channels X", GetType(Integer), "Audio channels of the X'th audio track."))
+            ret.Add(New Macro("audio_codec:X", "Audio Codec X", GetType(String), "Audio codec of the X'th audio track."))
+            ret.Add(New Macro("audio_delay:X", "Audio Delay X", GetType(Integer), "Audio delay of the X'th audio track."))
+            ret.Add(New Macro("audio_file:X", "X'th Audio File", GetType(String), "File path of the X'th audio file."))
             ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"))
-            ret.Add(New Macro("app_path:name", "Application File Path", GetType(String), "Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"))
-            ret.Add(New Macro("app_version:name", "Application Version", GetType(String), "Returns the version of a given tool, it can be any type of tool found in the Apps dialog. Example: %version:x265%"))
+            ret.Add(New Macro("app_path:name", "Application File Path", GetType(String), "Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_path:x265%"))
+            ret.Add(New Macro("app_version:name", "Application Version", GetType(String), "Returns the version of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_version:x265%"))
             ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a PowerShell expression which may contain macros."))
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
-            ret.Add(New Macro("random:digits", "Random Number", GetType(Integer), "Returns a 'digits' long random number, whereas 'digits' is clamped between 1 and 10."))
+            ret.Add(New Macro("random:digits", "Random Number", GetType(Integer), "Returns a 'digits' long random number, whereas 'digits' is clamped between `1` and `10`."))
             ret.Add(New Macro("source_mi_g:property", "MediaInfo General Property", GetType(String), "Returns the given MediaInfo property from the General section for the source file."))
-            ret.Add(New Macro("source_mi_v:property", "MediaInfo Video Property", GetType(String), "Returns the given MediaInfo property from the Video section for the source file. Before ':' you can add a zero-based index for the track number of that section."))
-            ret.Add(New Macro("source_mi_a:property", "MediaInfo Audio Property", GetType(String), "Returns the given MediaInfo property from the Audio section for the source file. Before ':' you can add a zero-based index for the track number of that section."))
-            ret.Add(New Macro("source_mi_t:property", "MediaInfo Text Property", GetType(String), "Returns the given MediaInfo property from the Text section for the source file. Before ':' you can add a zero-based index for the track number of that section."))
+            ret.Add(New Macro("source_mi_v:property", "MediaInfo Video Property", GetType(String), "Returns the given MediaInfo property from the Video section for the source file. Before `:` you can add a zero-based index for the track number of that section."))
+            ret.Add(New Macro("source_mi_a:property", "MediaInfo Audio Property", GetType(String), "Returns the given MediaInfo property from the Audio section for the source file. Before `:` you can add a zero-based index for the track number of that section."))
+            ret.Add(New Macro("source_mi_t:property", "MediaInfo Text Property", GetType(String), "Returns the given MediaInfo property from the Text section for the source file. Before `:` you can add a zero-based index for the track number of that section."))
         End If
 
         If includeWhileProcessing Then
@@ -405,7 +404,7 @@ Public Class Macro
         If value.Contains("%video_bitrate%") Then value = value.Replace("%video_bitrate%", proj.VideoBitrate.ToString)
         If value.Contains("%audio_bitrate%") Then value = value.Replace("%audio_bitrate%", proj.AudioTracks.Sum(Function(x) x.AudioProfile.Bitrate).ToString)
 
-        matches = Regex.Matches(value, "%audio_bitrate(\d+)?%")
+        matches = Regex.Matches(value, "%audio_bitrate:(\d+)?%")
         For Each match As Match In matches
             Select Case match.Groups.Count
                 Case 1
@@ -416,11 +415,11 @@ Public Class Macro
                         value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.Bitrate.ToString)
                     End If
                 Case Else
-                    Throw New NotImplementedException("Macro %audio_bitrate%")
+                    Throw New NotImplementedException("Macro %audio_bitrate:%")
             End Select
         Next
 
-        matches = Regex.Matches(value, "%audio_channels(\d+)%")
+        matches = Regex.Matches(value, "%audio_channels:(\d+)%")
         For Each match As Match In matches
             Dim track = match.Groups(1).Value.ToInt() - 1
             If track < proj.AudioTracks.Count Then
@@ -428,7 +427,7 @@ Public Class Macro
             End If
         Next
 
-        matches = Regex.Matches(value, "%audio_codec(\d+)%")
+        matches = Regex.Matches(value, "%audio_codec:(\d+)%")
         For Each match As Match In matches
             Dim track = match.Groups(1).Value.ToInt() - 1
             If track < proj.AudioTracks.Count Then
@@ -436,7 +435,7 @@ Public Class Macro
             End If
         Next
 
-        matches = Regex.Matches(value, "%audio_delay(\d+)%")
+        matches = Regex.Matches(value, "%audio_delay:(\d+)%")
         For Each match As Match In matches
             Dim track = match.Groups(1).Value.ToInt() - 1
             If track < proj.AudioTracks.Count Then
@@ -444,7 +443,7 @@ Public Class Macro
             End If
         Next
 
-        matches = Regex.Matches(value, "%audio_file(\d+)%")
+        matches = Regex.Matches(value, "%audio_file:(\d+)%")
         For Each match As Match In matches
             Dim track = match.Groups(1).Value.ToInt() - 1
             If track < proj.AudioTracks.Count Then

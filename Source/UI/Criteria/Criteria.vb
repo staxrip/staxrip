@@ -1,13 +1,31 @@
+﻿Imports System.Text.RegularExpressions
+
 Namespace UI
     <Serializable()>
     Public MustInherit Class Criteria
+        Private _macro As String = ""
+
         Property Name As String
         Property Description As String
         Property Macro As String
+            Get
+                Return If(PropertyIdentifierNeeded AndAlso Not String.IsNullOrWhiteSpace(PropertyIdentifier), Regex.Replace(_macro, ":([^%]+)%$", $":{PropertyIdentifier}%"), _macro)
+            End Get
+            Set(value As String)
+                _macro = value
+            End Set
+        End Property
 
         MustOverride Function Eval() As Boolean
         MustOverride Property ValueString() As String
         MustOverride Property PropertyString() As String
+        Property PropertyIdentifier() As String
+        ReadOnly Property PropertyIdentifierNeeded As Boolean
+            Get
+                Return _macro.Contains(":")
+            End Get
+        End Property
+
         MustOverride ReadOnly Property ConditionNames() As String()
         MustOverride Property ConditionName() As String
 

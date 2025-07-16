@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 
 Namespace UI
@@ -66,9 +66,10 @@ Namespace UI
 
         Protected Overrides Sub OnLayout(e As LayoutEventArgs)
             Height = bnRemove.Height + 6
-            te.Height = bnRemove.Height
-            mbCondition.Height = bnRemove.Height
             mbProperties.Height = bnRemove.Height
+            tePropertiesIdentifier.Height = bnRemove.Height
+            mbCondition.Height = bnRemove.Height
+            teValue.Height = bnRemove.Height
             MyBase.OnLayout(e)
         End Sub
 
@@ -89,13 +90,17 @@ Namespace UI
                         End If
                     Next
 
+                    tePropertiesIdentifier.Enabled = CriteriaValue.PropertyIdentifierNeeded
+                    tePropertiesIdentifier.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.PropertyIdentifier)
+                    tePropertiesIdentifier_TextChanged()
+
                     mbCondition.Enabled = True
                     mbCondition.Menu.Items.ClearAndDisplose
                     mbCondition.AddRange(CriteriaValue.ConditionNames)
                     mbCondition.Value = CriteriaValue.ConditionName
 
-                    te.Enabled = True
-                    te.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.ValueString)
+                    teValue.Enabled = True
+                    teValue.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.ValueString)
                 End If
             End Set
         End Property
@@ -104,8 +109,20 @@ Namespace UI
             Parent.Controls.Remove(Me)
         End Sub
 
-        Sub te_TextChanged() Handles te.TextChanged
-            Criteria.ValueString = te.Text
+        Sub teValue_TextChanged() Handles teValue.TextChanged
+            Criteria.ValueString = teValue.Text
+        End Sub
+
+        Sub tePropertiesIdentifier_TextChanged() Handles tePropertiesIdentifier.TextChanged
+            Criteria.PropertyIdentifier = tePropertiesIdentifier.Text
+
+            If String.IsNullOrWhiteSpace(Criteria.PropertyIdentifier) AndAlso Criteria.PropertyIdentifierNeeded Then
+                tePropertiesIdentifier.BackColor = ThemeManager.CurrentTheme.General.DangerForeColor
+                tePropertiesIdentifier.TextBox.BackColor = ThemeManager.CurrentTheme.General.DangerForeColor
+            Else
+                tePropertiesIdentifier.BackColor = teValue.BackColor
+                tePropertiesIdentifier.TextBox.BackColor = teValue.TextBox.BackColor
+            End If
         End Sub
 
         Sub mbCondition_ValueChangedUser(value As Object) Handles mbCondition.ValueChangedUser

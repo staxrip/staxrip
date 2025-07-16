@@ -1,4 +1,4 @@
-Namespace UI
+﻿Namespace UI
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
     Partial Class CriteriaItemControl
         Inherits UserControl
@@ -14,9 +14,10 @@ Namespace UI
             Me.components = New System.ComponentModel.Container()
             Me.LayoutPanel = New System.Windows.Forms.TableLayoutPanel()
             Me.mbProperties = New StaxRip.UI.MenuButton()
-            Me.bnRemove = New ButtonEx()
+            Me.tePropertiesIdentifier = New StaxRip.UI.TextEdit()
             Me.mbCondition = New StaxRip.UI.MenuButton()
-            Me.te = New StaxRip.UI.TextEdit()
+            Me.teValue = New StaxRip.UI.TextEdit()
+            Me.bnRemove = New ButtonEx()
             Me.LayoutPanel.SuspendLayout()
             Me.SuspendLayout()
             '
@@ -25,15 +26,17 @@ Namespace UI
             Me.LayoutPanel.AutoScroll = True
             Me.LayoutPanel.AutoSize = True
             Me.LayoutPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-            Me.LayoutPanel.ColumnCount = 4
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
+            Me.LayoutPanel.ColumnCount = 5
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
             Me.LayoutPanel.Controls.Add(Me.mbProperties, 0, 0)
-            Me.LayoutPanel.Controls.Add(Me.mbCondition, 1, 0)
-            Me.LayoutPanel.Controls.Add(Me.te, 2, 0)
-            Me.LayoutPanel.Controls.Add(Me.bnRemove, 3, 0)
+            Me.LayoutPanel.Controls.Add(Me.tePropertiesIdentifier, 1, 0)
+            Me.LayoutPanel.Controls.Add(Me.mbCondition, 2, 0)
+            Me.LayoutPanel.Controls.Add(Me.teValue, 3, 0)
+            Me.LayoutPanel.Controls.Add(Me.bnRemove, 4, 0)
             Me.LayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
             Me.LayoutPanel.Location = New System.Drawing.Point(0, 0)
             Me.LayoutPanel.Name = "LayoutPanel"
@@ -48,6 +51,34 @@ Namespace UI
             Me.mbProperties.Location = New System.Drawing.Point(3, 70)
             Me.mbProperties.ShowMenuSymbol = True
             Me.mbProperties.Size = New System.Drawing.Size(292, 35)
+            Me.mbProperties.TabIndex = 1
+            '
+            'tePropertiesValue
+            '
+            Me.tePropertiesIdentifier.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.tePropertiesIdentifier.Enabled = False
+            Me.tePropertiesIdentifier.Location = New System.Drawing.Point(525, 70)
+            Me.tePropertiesIdentifier.Name = "tePropertiesIdentifier"
+            Me.tePropertiesIdentifier.Size = New System.Drawing.Size(218, 35)
+            Me.tePropertiesIdentifier.TabIndex = 2
+            '
+            'mbCondition
+            '
+            Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.mbCondition.Enabled = False
+            Me.mbCondition.Location = New System.Drawing.Point(301, 70)
+            Me.mbCondition.ShowMenuSymbol = True
+            Me.mbCondition.Size = New System.Drawing.Size(218, 35)
+            Me.mbCondition.TabIndex = 3
+            '
+            'teValue
+            '
+            Me.teValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.teValue.Enabled = False
+            Me.teValue.Location = New System.Drawing.Point(525, 70)
+            Me.teValue.Name = "teValue"
+            Me.teValue.Size = New System.Drawing.Size(218, 35)
+            Me.teValue.TabIndex = 4
             '
             'bnRemove
             '
@@ -57,25 +88,8 @@ Namespace UI
             Me.bnRemove.Location = New System.Drawing.Point(749, 58)
             Me.bnRemove.Name = "bnRemove"
             Me.bnRemove.Size = New System.Drawing.Size(158, 58)
-            Me.bnRemove.TabIndex = 3
+            Me.bnRemove.TabIndex = 5
             Me.bnRemove.Text = "Remove"
-            '
-            'mbCondition
-            '
-            Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.mbCondition.Enabled = False
-            Me.mbCondition.Location = New System.Drawing.Point(301, 70)
-            Me.mbCondition.ShowMenuSymbol = True
-            Me.mbCondition.Size = New System.Drawing.Size(218, 35)
-            '
-            'te
-            '
-            Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.te.Enabled = False
-            Me.te.Location = New System.Drawing.Point(525, 70)
-            Me.te.Name = "te"
-            Me.te.Size = New System.Drawing.Size(218, 35)
-            Me.te.TabIndex = 4
             '
             'CriteriaItemControl
             '
@@ -93,11 +107,12 @@ Namespace UI
             Me.PerformLayout()
 
         End Sub
-        Friend WithEvents LayoutPanel As System.Windows.Forms.TableLayoutPanel
-        Public WithEvents bnRemove As ButtonEx
-        Friend WithEvents te As StaxRip.UI.TextEdit
-        Friend WithEvents mbCondition As MenuButton
+        Friend WithEvents LayoutPanel As TableLayoutPanel
         Friend WithEvents mbProperties As MenuButton
+        Friend WithEvents tePropertiesIdentifier As TextEdit
+        Friend WithEvents mbCondition As MenuButton
+        Friend WithEvents teValue As TextEdit
+        Public WithEvents bnRemove As ButtonEx
     End Class
 End Namespace
 

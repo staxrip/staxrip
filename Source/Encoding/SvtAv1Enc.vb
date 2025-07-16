@@ -924,6 +924,15 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 8}
 
+    Property SpecificKeyframeTemporalFilteringStrength As New OptionParam With {
+        .Switch = "--kf-tf-strength",
+        .Text = "Keyframe Temporal Filtering Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .Init = 1}
+
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
@@ -1567,7 +1576,7 @@ Public Class SvtAv1EncParams
                 If Not String.IsNullOrEmpty(prefix) Then
                     Add(prefix & " Specific 1",
                         SpecificHdr10PlusJson, SpecificDolbyVisionRpu, SpecificDolbyVisionRpuMode,
-                        SpecificQpScaleCompressStrength, SpecificMax32TxSize, SpecificNoiseNormStrength
+                        SpecificQpScaleCompressStrength, SpecificMax32TxSize, SpecificNoiseNormStrength, SpecificKeyframeTemporalFilteringStrength
                     )
                     Add(prefix & " Specific 2",
                         SpecificRestrictedMotionVector, SpecificMinChromaQmLevel, SpecificMaxChromaQmLevel, PsyPsyRd, HdrPsyRd, SpecificSpyRd, SpecificSharpTx, SpecificHbdMds, HdrComplexHvs

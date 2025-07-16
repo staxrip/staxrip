@@ -3898,55 +3898,61 @@ Public Class MainForm
         If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
         If Not File.Exists(proj.SourceFile) Then Return
 
-        Dim sourcePath = proj.SourceFile
+        Dim sourcePaths = {proj.SourceFile, proj.FirstOriginalSourceFile, proj.LastOriginalSourceFile}
 
-        Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
-        If fileHdrFormat?.ContainsAny("HDR10+") Then
-            Dim jsonPath = sourcePath.ChangeExt("json")
-            If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                jsonPath = If(sourcePath.Contains(proj.TempDir), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDR10PlusMetadata.json"})}", jsonPath))
+        For Each sourcePath As String In sourcePaths
+            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+
+            If fileHdrFormat?.ContainsAny("HDR10+") Then
+                Dim jsonPath = sourcePath.ChangeExt("json")
+                If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                    jsonPath = If(sourcePath.Contains(proj.TempDir) AndAlso Not proj.TempDir.EndsWithEx("_temp"), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDR10PlusMetadata.json"})}", jsonPath))
+                End If
+
+                If Not jsonPath.FileExists() Then
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
+
+                    Try
+                        Using proc As New Proc
+                            proc.Priority = ProcessPriorityClass.Normal
+                            proc.Package = Package.HDR10PlusTool
+                            proc.Project = If(proj, p)
+                            proc.Header = "Extract HDR10+ metadata"
+                            proc.Encoding = Encoding.UTF8
+                            proc.File = "cmd.exe"
+                            proc.Arguments = "/S /C """ + commandLine + """"
+                            proc.SkipStrings = Proc.GetSkipStrings(commandLine)
+                            proc.AllowedExitCodes = {0}
+                            proc.OutputFiles = {jsonPath}
+                            proc.Start()
+                        End Using
+
+                        If jsonPath?.FileExists() Then
+                            Try
+                                Dim fi = New FileInfo(jsonPath)
+                                If fi.Length < 100 Then
+                                    File.Delete(jsonPath)
+                                End If
+                            Catch ex As Exception
+                                jsonPath = ""
+                            End Try
+                        End If
+                    Catch ex As AbortException
+                        Throw ex
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                        Throw New AbortException
+                    Finally
+                        Log.Save()
+                    End Try
+                End If
+
+                If jsonPath.FileExists() Then
+                    proj.Hdr10PlusMetadataFile = jsonPath
+                    Exit For
+                End If
             End If
-
-            If Not jsonPath.FileExists() Then
-                Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
-
-                Try
-                    Using proc As New Proc
-                        proc.Priority = ProcessPriorityClass.Normal
-                        proc.Package = Package.HDR10PlusTool
-                        proc.Project = If(proj, p)
-                        proc.Header = "Extract HDR10+ metadata"
-                        proc.Encoding = Encoding.UTF8
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C """ + commandLine + """"
-                        proc.SkipStrings = Proc.GetSkipStrings(commandLine)
-                        proc.AllowedExitCodes = {0}
-                        proc.OutputFiles = {jsonPath}
-                        proc.Start()
-                    End Using
-
-                    If jsonPath?.FileExists() Then
-                        Try
-                            Dim fi = New FileInfo(jsonPath)
-                            If fi.Length < 100 Then
-                                File.Delete(jsonPath)
-                            End If
-                        Catch ex As Exception
-                            jsonPath = ""
-                        End Try
-                    End If
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    g.ShowException(ex)
-                    Throw New AbortException
-                Finally
-                    Log.Save()
-                End Try
-            End If
-
-            proj.Hdr10PlusMetadataFile = jsonPath
-        End If
+        Next
     End Sub
 
     Sub ExtractDolbyVisionMetadata(proj As Project)
@@ -3954,92 +3960,96 @@ Public Class MainForm
         If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
         If Not File.Exists(proj.SourceFile) Then Return
 
-        Dim sourcePath = proj.SourceFile
-        Dim isEL = False
+        Dim sourcePaths = {proj.SourceFile, proj.FirstOriginalSourceFile, proj.LastOriginalSourceFile}
 
-        Dim files = Directory.GetFiles(sourcePath.Dir, sourcePath.Base + "*_EL*.*", SearchOption.TopDirectoryOnly).AsEnumerable()
-        files = files?.Where(Function(x) {"h265", "hevc"}.Contains(x.Ext))
-        If files?.Any() Then
-            sourcePath = files.First()
-            isEL = True
-        End If
+        For Each sourcePath As String In sourcePaths
+            Dim isEL = False
+            Dim files = Directory.GetFiles(sourcePath.Dir, sourcePath.Base + "*_EL*.*", SearchOption.TopDirectoryOnly).AsEnumerable()
+            files = files?.Where(Function(x) {"h265", "hevc"}.Contains(x.Ext))
 
-        Dim format = MediaInfo.GetVideoFormat(sourcePath)
-        If format <> "HEVC" Then Return
-
-        Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
-        If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then
-            Dim rpuPath = sourcePath.ChangeExt("rpu")
-            Dim doviFile = proj.HdrDolbyVisionMetadataFile
-
-            If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRDVmetadata.rpu"})}", rpuPath))
+            If files?.Any() Then
+                sourcePath = files.First()
+                isEL = True
             End If
 
-            Try
-                If Not rpuPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape} extract-rpu - -o ""{rpuPath}"""
-                    Dim throwError As (Title As String, Content As String)
+            Dim format = MediaInfo.GetVideoFormat(sourcePath)
+            If format <> "HEVC" Then Return
 
-                    Using proc As New Proc
-                        Dim throwIf = Sub(value As String)
-                                          If value?.Contains("Unexpected RPU NALU") Then
-                                              throwError = ("Unexpected RPU NALU", "Unexpected RPU NALU found, extraction aborts...")
-                                              proc.Kill()
-                                          End If
-                                          If value?.Contains("Discarding") Then
-                                              throwError = ("Discarding", "Dovi_tool is discarding data, extraction aborts...")
-                                              proc.Kill()
-                                          End If
-                                      End Sub
-                        proc.Priority = ProcessPriorityClass.Normal
-                        proc.Package = Package.DoViTool
-                        proc.Project = If(proj, p)
-                        proc.Header = "Extract Dolby Vision metadata"
-                        proc.Encoding = Encoding.UTF8
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C """ + commandLine + """"
-                        proc.SkipStrings = Proc.GetSkipStrings(commandLine)
-                        proc.AllowedExitCodes = {0}
-                        proc.OutputFiles = {rpuPath}
-                        proc.ReadOutput = True
-                        AddHandler proc.OutputDataReceived, throwIf
-                        AddHandler proc.ErrorDataReceived, throwIf
-                        proc.Start()
-                    End Using
+            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
+            If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then
+                Dim rpuPath = sourcePath.ChangeExt("rpu")
+                Dim doviFile = proj.HdrDolbyVisionMetadataFile
 
-                    If throwError.Title IsNot Nothing AndAlso throwError.Content IsNot Nothing Then Throw New ErrorAbortException(throwError.Title, throwError.Content)
-
-                    If rpuPath?.FileExists() Then
-                        Try
-                            Dim fi = New FileInfo(rpuPath)
-                            If fi.Length > 100 Then
-                                doviFile = New DolbyVisionMetadataFile(rpuPath)
-                            Else
-                                File.Delete(rpuPath)
-                            End If
-                        Catch ex As Exception
-                            doviFile = New DolbyVisionMetadataFile(rpuPath)
-                        End Try
-                    End If
+                If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                    rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRDVmetadata.rpu"})}", rpuPath))
                 End If
-            Catch ex As ErrorAbortException
-                g.ShowException(ex, Nothing, Nothing, s.ErrorMessageTimeout)
-                doviFile = Nothing
-            Catch ex As AbortException
-                g.ShowException(ex)
-                doviFile = Nothing
-                Throw ex
-            Catch ex As Exception
-                g.ShowException(ex)
-                doviFile = Nothing
-                Throw New AbortException
-            Finally
-                Log.Save()
-            End Try
 
-            proj.HdrDolbyVisionMetadataFile = doviFile
-        End If
+                Try
+                    If Not rpuPath.FileExists() Then
+                        Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape} extract-rpu - -o ""{rpuPath}"""
+                        Dim throwError As (Title As String, Content As String)
+
+                        Using proc As New Proc
+                            Dim throwIf = Sub(value As String)
+                                              If value?.Contains("Unexpected RPU NALU") Then
+                                                  throwError = ("Unexpected RPU NALU", "Unexpected RPU NALU found, extraction aborts...")
+                                                  proc.Kill()
+                                              End If
+                                              If value?.Contains("Discarding") Then
+                                                  throwError = ("Discarding", "Dovi_tool is discarding data, extraction aborts...")
+                                                  proc.Kill()
+                                              End If
+                                          End Sub
+                            proc.Priority = ProcessPriorityClass.Normal
+                            proc.Package = Package.DoViTool
+                            proc.Project = If(proj, p)
+                            proc.Header = "Extract Dolby Vision metadata"
+                            proc.Encoding = Encoding.UTF8
+                            proc.File = "cmd.exe"
+                            proc.Arguments = "/S /C """ + commandLine + """"
+                            proc.SkipStrings = Proc.GetSkipStrings(commandLine)
+                            proc.AllowedExitCodes = {0}
+                            proc.OutputFiles = {rpuPath}
+                            proc.ReadOutput = True
+                            AddHandler proc.OutputDataReceived, throwIf
+                            AddHandler proc.ErrorDataReceived, throwIf
+                            proc.Start()
+                        End Using
+
+                        If throwError.Title IsNot Nothing AndAlso throwError.Content IsNot Nothing Then Throw New ErrorAbortException(throwError.Title, throwError.Content)
+
+                        If rpuPath?.FileExists() Then
+                            Try
+                                Dim fi = New FileInfo(rpuPath)
+                                If fi.Length > 100 Then
+                                    doviFile = New DolbyVisionMetadataFile(rpuPath)
+                                Else
+                                    File.Delete(rpuPath)
+                                End If
+                            Catch ex As Exception
+                                doviFile = New DolbyVisionMetadataFile(rpuPath)
+                            End Try
+                        End If
+                    End If
+                Catch ex As ErrorAbortException
+                    g.ShowException(ex, Nothing, Nothing, s.ErrorMessageTimeout)
+                    doviFile = Nothing
+                Catch ex As AbortException
+                    g.ShowException(ex)
+                    doviFile = Nothing
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    doviFile = Nothing
+                    Throw New AbortException
+                Finally
+                    Log.Save()
+                End Try
+
+                proj.HdrDolbyVisionMetadataFile = doviFile
+                Exit For
+            End If
+        Next
     End Sub
 
     Async Function FindHdrMetadataAsync(proj As Project) As Task(Of (jsonFile As String, rpuFile As String))

@@ -10,7 +10,6 @@ Public MustInherit Class AudioProfile
 
     Property Language As New Language
     Property Delay As Integer
-    Property Depth As Integer = 24
     Property StreamName As String = ""
     Property Gain As Single
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
@@ -141,6 +140,7 @@ Public MustInherit Class AudioProfile
         End Set
     End Property
 
+    <NonSerialized>
     Private SourceSamplingRateValue As Integer
 
     ReadOnly Property SourceSamplingRate As Integer
@@ -160,6 +160,25 @@ Public MustInherit Class AudioProfile
             End If
 
             Return SourceSamplingRateValue
+        End Get
+    End Property
+
+    <NonSerialized>
+    Private SourceBitDepthValue As Integer = 0
+
+    ReadOnly Property SourceBitDepth As Integer
+        Get
+            If SourceBitDepthValue = 0 Then
+                If Stream Is Nothing Then
+                    If File <> "" AndAlso IO.File.Exists(File) Then
+                        SourceBitDepthValue = MediaInfo.GetAudio(File, "BitDepth").ToInt
+                    End If
+                Else
+                    SourceBitDepthValue = Stream.BitDepth
+                End If
+            End If
+
+            Return SourceBitDepthValue
         End Get
     End Property
 
@@ -198,9 +217,6 @@ Public MustInherit Class AudioProfile
     End Sub
 
     Overridable Sub Migrate()
-        If Depth = 0 Then
-            Depth = 24
-        End If
     End Sub
 
     ReadOnly Property ConvertExt As String
@@ -840,9 +856,11 @@ Public Class GUIAudioProfile
 
         Select Case Params.Codec
             Case AudioCodec.FLAC
-                Return CInt(((TargetSamplingRate * Depth * Channels) / 1000) * 0.55)
+                Dim bd = If(Params.ffmpegFlacBitDepth > 0, Params.ffmpegFlacBitDepth, SourceBitDepth)
+                Return CInt(((TargetSamplingRate * bd * Channels) / 1000) * 0.55)
             Case AudioCodec.W64, AudioCodec.WAV
-                Return CInt((TargetSamplingRate * Depth * Channels) / 1000)
+                Dim bd = If(Params.ffmpegWaveBitDepth > 0, Params.ffmpegWaveBitDepth, SourceBitDepth)
+                Return CInt((TargetSamplingRate * bd * Channels) / 1000)
         End Select
 
         Return CInt(Bitrate)
@@ -1111,7 +1129,7 @@ Public Class GUIAudioProfile
                 sb.Append(" -normalize")
             End If
 
-            If Depth = 16 Then
+            If Params.eac3toDown16 Then
                 sb.Append(" -down16")
             End If
 
@@ -1527,11 +1545,32 @@ Public Class GUIAudioProfile
                         sb.Append(" -q:a " & CInt(Params.Quality))
                     End If
                 End If
+            Case AudioCodec.FLAC
+                Dim bd = If(Params.ffmpegFlacBitDepth > 0, Params.ffmpegFlacBitDepth, SourceBitDepth)
+
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    sb.Append(" -c:a flac")
+                End If
+
+                If bd = 16 Then
+                    sb.Append(" -sample_fmt s16")
+                ElseIf bd = 24 Then
+                    sb.Append(" -sample_fmt s32 -bits_per_raw_sample 24")
+                End If
             Case AudioCodec.W64, AudioCodec.WAV
-                If Depth >= 24 Then
-                    sb.Append(" -c:a pcm_s24le")
-                Else
-                    sb.Append(" -c:a pcm_s16le")
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    Select Case Params.ffmpegWaveBitDepth
+                        Case WaveBitDepth.s16
+                            sb.Append(" -c:a pcm_s16le")
+                        Case WaveBitDepth.s24
+                            sb.Append(" -c:a pcm_s24le")
+                        Case WaveBitDepth.s32
+                            sb.Append(" -c:a pcm_s32le")
+                        Case WaveBitDepth.f32
+                            sb.Append(" -c:a pcm_f32le")
+                        Case Else
+                            If SourceBitDepth > 0 Then sb.Append($" -c:a pcm_s{SourceBitDepth}le")
+                    End Select
                 End If
         End Select
 
@@ -1698,6 +1737,7 @@ Public Class GUIAudioProfile
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
         Property eac3toStereoDownmixMode As Integer
+        Property eac3toDown16 As Boolean = False
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
         Property Normalize As Boolean = True
@@ -1766,6 +1806,9 @@ Public Class GUIAudioProfile
         Property ffmpegDynaudnormC As Boolean
         Property ffmpegDynaudnormB As Boolean
         Property ffmpegDynaudnormS As Double
+
+        Property ffmpegFlacBitDepth As FlacBitDepth = FlacBitDepth.Original
+        Property ffmpegWaveBitDepth As WaveBitDepth = WaveBitDepth.Original
 
         Property ffmpegOpusApp As OpusApp = OpusApp.audio
         Property ffmpegOpusCompress As Integer = 10
@@ -1889,6 +1932,20 @@ Public Enum DeezyDynamicrangecompression
     <DispName("Music Standard")> Music_Standard
     <DispName("Music Light (default)")> Music_Light
     <DispName("Speech")> Speech
+End Enum
+
+Public Enum WaveBitDepth
+    <DispName("Original (default)")> Original = 0
+    <DispName("16-bit (single)")> s16 = 16
+    <DispName("24-bit (single)")> s24 = 24
+    <DispName("32-bit (single)")> s32 = 32
+    <DispName("32-bit (float)")> f32 = 33
+End Enum
+
+Public Enum FlacBitDepth
+    <DispName("Original (default)")> Original = 0
+    <DispName("16-bit")> _16 = 16
+    <DispName("24-bit")> _24 = 24
 End Enum
 
 Public Enum OpusDownmix

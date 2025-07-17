@@ -898,7 +898,7 @@ Public Class AudioForm
                     numQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
             End Select
 
-            numBitrate.Enabled = TempProfile.Params.Codec <> AudioCodec.FLAC AndAlso Not numQuality.Enabled
+            numBitrate.Enabled = Not {AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV}.ContainsEx(TempProfile.Params.Codec) AndAlso Not numQuality.Enabled
         End If
 
         UpdateEncoderMenu()
@@ -1119,19 +1119,6 @@ Public Class AudioForm
         Dim page = ui.CreateFlowPage()
         page.SuspendLayout()
 
-        If {AudioCodec.W64, AudioCodec.WAV}.Contains(TempProfile.Params.Codec) Then
-            Dim mDepth = ui.AddMenu(Of Integer)
-            mDepth.Text = "Depth:"
-            mDepth.Expanded = True
-            mDepth.Button.Value = TempProfile.Depth
-            mDepth.Button.SaveAction = Sub(val)
-                                           TempProfile.Depth = val
-                                           UpdateBitrate()
-                                           UpdateControls()
-                                       End Sub
-            mDepth.Add({16, 24})
-        End If
-
         Dim cb As SimpleUI.SimpleUICheckBox
 
         Select Case TempProfile.GetEncoder
@@ -1194,6 +1181,11 @@ Public Class AudioForm
                 mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
                 mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
+                cb = ui.AddBool(page)
+                cb.Text = "Convert to 16-bit"
+                cb.Checked = TempProfile.Params.eac3toDown16
+                cb.SaveAction = Sub(value) TempProfile.Params.eac3toDown16 = value
+
                 If (TempProfile.File = "" OrElse TempProfile.File.ToLowerInvariant.Contains("dts") OrElse
                     (TempProfile.Stream IsNot Nothing AndAlso TempProfile.Stream.Name.Contains("DTS"))) AndAlso
                     TempProfile.Params.Codec = AudioCodec.DTS Then
@@ -1219,6 +1211,16 @@ Public Class AudioForm
                         cb = ui.AddBool
                         cb.Text = "Use fdk-aac"
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
+                    Case AudioCodec.FLAC
+                        Dim mbBitDepth = ui.AddMenu(Of FlacBitDepth)
+                        mbBitDepth.Text = "Bit Depth"
+                        mbBitDepth.Expanded = True
+                        mbBitDepth.Button.Value = TempProfile.Params.ffmpegFlacBitDepth
+                        mbBitDepth.Button.SaveAction = Sub(value)
+                                                           TempProfile.Params.ffmpegFlacBitDepth = value
+                                                           UpdateBitrate()
+                                                           UpdateControls()
+                                                       End Sub
                     Case AudioCodec.Opus
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
                         mbRateMode.Text = "Rate Mode"
@@ -1266,6 +1268,16 @@ Public Class AudioForm
                         packet.Config = {0, 100, 1}
                         packet.NumEdit.Value = TempProfile.Params.ffmpegOpusPacket
                         packet.NumEdit.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusPacket = CInt(value)
+                    Case AudioCodec.W64, AudioCodec.WAV
+                        Dim mDepth = ui.AddMenu(Of WaveBitDepth)
+                        mDepth.Text = "Bit Depth:"
+                        mDepth.Expanded = True
+                        mDepth.Button.Value = TempProfile.Params.ffmpegWaveBitDepth
+                        mDepth.Button.SaveAction = Sub(val)
+                                                       TempProfile.Params.ffmpegWaveBitDepth = val
+                                                       UpdateBitrate()
+                                                       UpdateControls()
+                                                   End Sub
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)

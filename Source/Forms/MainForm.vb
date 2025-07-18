@@ -8229,88 +8229,102 @@ Public Class MainForm
         If Not force AndAlso s.ShowChangelog = appDetails Then Exit Sub
 
         Dim currentVersion = Assembly.GetExecutingAssembly.GetName.Version
-        Dim lastChangelogVersionMatch = Regex.Match(s.ShowChangelog, "\d+\.\d+(?:\.\d+)*")
-        Dim lastChangelogVersion = If(lastChangelogVersionMatch.Success, New Version(lastChangelogVersionMatch.Value), Nothing)
-        Dim readoutVersion As Version = Nothing
+        If Not force AndAlso currentVersion.Minor >= 99 Then Exit Sub
 
-        If Not force AndAlso (currentVersion.Minor Mod 2) = 1 Then Exit Sub
+        Dim filepath = If((currentVersion.Minor Mod 2) = 1, "StaxRip.CHANGELOG-SUPPORTER.md", "StaxRip.CHANGELOG.md")
 
-        Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
+        Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filepath)
             Using reader As New StreamReader(stream)
+                Dim lastChangelogVersionMatch = Regex.Match(s.ShowChangelog, "\d+\.\d+(?:\.\d+)*")
+                Dim lastChangelogVersion = If(lastChangelogVersionMatch.Success, New Version(lastChangelogVersionMatch.Value), Nothing)
+
+                Dim releases As New List(Of (Version As Version, VersionText As String, Changelog As String))
+                Dim readoutVersion As Version = Nothing
+                Dim lastReadoutVersion As Version
+                Dim lastReadoutVersionText As String
                 Dim sb As New StringBuilder()
-                Dim sbNotEmpty = False
-                Dim relevant = False
-                Dim abortAfter = False
-                Dim versions = 0
+
+                Dim isComment = False
 
                 Do While Not reader.EndOfStream
                     Dim line = reader.ReadLine()
+
+                    If line = "<!--" Then isComment = True
+                    If isComment Then
+                        If line = "-->" Then isComment = False
+                        Continue Do
+                    End If
+                    'If String.IsNullOrWhiteSpace(line) Then Continue Do
                     If line Like "========*" Then Continue Do
 
-                    Dim lines = Regex.Matches(sb.ToString(), Environment.NewLine).Count
-                    Dim readoutVersionMatch = Regex.Match(line, "^(v(\d+\.\d+(?:\.\d+)*(?:-(RC\d+))?))\W+\(.*\)")
-                    readoutVersion = If(readoutVersionMatch.Success, New Version(readoutVersionMatch.Groups(2).Value), readoutVersion)
+                    Dim readoutVersionMatch = Regex.Match(line, "^(v(?<version>\d+\.\d+(?:\.\d+)*(?:-(RC\d+))?))\W+\((?<text>.*)\)")
+                    readoutVersion = If(readoutVersionMatch.Success, New Version(readoutVersionMatch.Groups("version").Value), readoutVersion)
 
                     If readoutVersionMatch.Success Then
-                        If readoutVersion.Minor < currentVersion.Minor Then Exit Do
-                        If readoutVersion.Minor > currentVersion.Minor Then Continue Do
-                        If readoutVersion.Build > currentVersion.Build Then Continue Do
-
-                        If relevant Then
-                            If (lastChangelogVersionMatch.Success AndAlso readoutVersion.Build > Math.Max(lastChangelogVersion.Build, 0)) OrElse lines < 40 Then
-                                versions += 1
-
-                                sb.AppendLine()
-                                sb.AppendLine(line)
-                                sb.AppendLine("-------------------------")
-
-                                If currentVersion.Build > 0 AndAlso readoutVersion.Build = 0 AndAlso lines > 25 Then
-                                    sb.AppendLine("---- Hidden because of the length of this report ----")
-                                    relevant = False
-                                End If
-
-                                Continue Do
-                            Else
-                                Exit Do
-                            End If
+                        If readoutVersion.Minor > currentVersion.Minor Then
+                            sb.Clear()
+                            Continue Do
                         End If
 
-                        relevant = True
+                        releases.Add((lastReadoutVersion, lastReadoutVersionText, sb.ToString().Trim()))
+
+                        lastReadoutVersion = readoutVersion
+                        lastReadoutVersionText = readoutVersionMatch.Groups("text").Value
+
+                        sb.Clear()
                         Continue Do
                     End If
 
-                    If abortAfter AndAlso String.IsNullOrWhiteSpace(line) Then Exit Do
-                    If Not relevant Then Continue Do
-                    If String.IsNullOrWhiteSpace(line) Then
-                        If lines > 0 AndAlso readoutVersion.Build = currentVersion.Build AndAlso NOT sb.ToString().EndsWith(BR2) Then sb.AppendLine()
-                        Continue Do
-                    End If
-                    If versions > 1 AndAlso currentVersion.Build > 0 AndAlso line.StartsWithEx("- Update ") Then
-                        sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
-                        abortAfter = True
-                        relevant = False
-                    ElseIf lines > 35 AndAlso line.StartsWithEx("- Update ") Then
-                        sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
-                        abortAfter = True
-                        relevant = False
-                    End If
-                    If Not relevant Then Continue Do
-
-                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|\)|$))", "", RegexOptions.CultureInvariant)
+                    line = Regex.Replace(line, "(?<=\W\(?\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)|(?>,|\)|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
+
                     sb.AppendLine(line)
-                    sbNotEmpty = True
                 Loop
 
-                If sbNotEmpty Then
-                    sb.AppendLine(BR)
+                Dim leftover = sb.ToString()
+                If Not String.IsNullOrWhiteSpace(leftover) Then
+                    releases.Add((lastReadoutVersion, lastReadoutVersionText, leftover.Trim()))
+                End If
 
+                releases = releases.Where(Function(x) x.Version IsNot Nothing).ToList()
+
+                Dim selectedReleases = releases.SkipWhile(Function(x) Not x.VersionText.IsDate AndAlso x.Version.Minor > currentVersion.Minor)
+                selectedReleases = selectedReleases.Where(Function(x) x.Version.Minor = currentVersion.Minor AndAlso x.Version.Build <= Math.Max(currentVersion.Build, 0))
+                If lastChangelogVersion IsNot Nothing Then
+                    selectedReleases = selectedReleases.Where(Function(x) x.Version.Minor > lastChangelogVersion.Minor OrElse (x.Version.Minor = lastChangelogVersion.Minor AndAlso x.Version.Build > Math.Max(lastChangelogVersion.Build, 0)))
+                End If
+                selectedReleases = selectedReleases.ToList()
+
+                Dim result = ""
+                Dim versionLineBuilder = Function(version As Version, versionText As String) As String
+                                             Dim versionLiner = New String("."c, 50)
+                                             Return $"{versionLiner}  v{version}  [{versionText}]  {versionLiner}"
+                                         End Function
+
+                If selectedReleases.Count() = 1 Then
+                    result = selectedReleases.Select(Function(x) x.Changelog).First()
+                ElseIf selectedReleases.Count() > 1 Then
+                    result = selectedReleases.Select(Function(x) $"{versionLineBuilder(x.Version, x.VersionText)}{BR2}{x.Changelog}").Join(BR2)
+                ElseIf force Then
+                    Dim currentRelease = releases.Where(Function(x) x.Version.Minor = currentVersion.Minor AndAlso x.Version.Build = Math.Max(currentVersion.Build, 0)).ToList()
+
+                    If currentRelease.Any() Then
+                        Dim release = currentRelease.FirstOrDefault()
+                        result = release.Changelog
+                    End If
+                Else
+                    If force Then
+                        result = "Nothing to show..."
+                    End If
+                End If
+
+                If Not String.IsNullOrWhiteSpace(result) Then
                     Using td As New TaskDialog(Of String)()
                         td.Title = $"What's new in {appDetails}:"
                         td.Icon = TaskIcon.Shield
-                        td.Content = sb.ToString()
+                        td.Content = result
 
-                        td.AddCommand("OK")
+                        td.AddButton("OK")
 
                         Dim answer = td.Show
 

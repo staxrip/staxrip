@@ -500,6 +500,15 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function IsDate(value As String) As Boolean
+        If value <> "" Then
+            Dim ret As Date
+            Return Date.TryParse(value, ret)
+        End If
+        Return False
+    End Function
+
+    <Extension()>
     Function IsDouble(value As String) As Boolean
         If value <> "" Then
             If value.Contains(",") Then

@@ -91,7 +91,7 @@ Public Class TaskDialog(Of T)
             pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
         End If
 
-        TitleLabel.Font = FontManager.GetDefaultFont(11)
+        TitleLabel.Font = FontManager.GetDefaultFont(10, If(String.IsNullOrWhiteSpace(Content) AndAlso String.IsNullOrWhiteSpace(ExpandedContent), FontStyle.Regular, FontStyle.Bold))
         TitleLabel.Text = Title
 
         Dim firstCommandButton As CommandButton = Nothing
@@ -101,20 +101,26 @@ Public Class TaskDialog(Of T)
 
             If Content <> "" Then
                 ContentLabel = New LabelEx With {
-                    .Margin = New Padding(0),
+                    .AutoSize = False,
                     .BorderStyle = BorderStyle.None,
-                    .Text = Content,
-                    .Name = "Information"
+                    .Dock = DockStyle.Top,
+                    .Font = FontManager.GetDefaultFont(),
+                    .Margin = New Padding(0),
+                    .Name = "Information",
+                    .Text = Content
                 }
                 paMain.Controls.Add(ContentLabel)
             End If
 
             If ExpandedContent <> "" Then
                 ExpandedContentLabel = New LabelEx With {
-                    .Margin = New Padding(0),
+                    .AutoSize = False,
                     .BorderStyle = BorderStyle.None,
-                    .Text = ExpandedContent,
-                    .Name = "ExpandedInformation"
+                    .Dock = DockStyle.Top,
+                    .Font = FontManager.GetDefaultFont(),
+                    .Margin = New Padding(0),
+                    .Name = "ExpandedInformation",
+                    .Text = ExpandedContent
                 }
                 blDetails.Visible = True
                 paMain.Controls.Add(ExpandedContentLabel)
@@ -326,17 +332,24 @@ Public Class TaskDialog(Of T)
     End Sub
 
     Overrides Sub AdjustSize()
-        Dim h = tlpTop.Height + tlpTop.Margin.Vertical
+        Dim h = tlpTop.Top + tlpTop.Height + tlpTop.Margin.Vertical
+
+        If ContentLabel IsNot Nothing Then
+            Dim preferred = TextRenderer.MeasureText(ContentLabel.Text, ContentLabel.Font, New Size(ContentLabel.Width, Integer.MaxValue), TextFormatFlags.WordBreak)
+            ContentLabel.Size = New Size(preferred.Width, preferred.Height + 10)
+        End If
 
         If paMain.Controls.Count > 0 Then
             Dim last = paMain.Controls(paMain.Controls.Count - 1)
             h += last.Top + last.Height + last.Margin.Vertical
         End If
 
-        h += spBottom.Height
-
         If spBottom.Controls.OfType(Of Control).Where(Function(i) i.Visible).Count > 0 Then
+            spBottom.Visible = True
+            h += spBottom.Height
             h += spBottom.Margin.Vertical
+        Else
+            spBottom.Visible = False
         End If
 
         Dim fh = FontHeight
@@ -345,16 +358,22 @@ Public Class TaskDialog(Of T)
         Dim nonClientHeight = Height - ClientSize.Height
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim maxHeight = workingArea.Height
-        Dim w = ClientSize.Width
-        Dim secondLongestLine = GetSecondLongestLineLength()
-        Dim predictedWidth = CInt(secondLongestLine * fh * 0.45)
+        Dim predictedWidth = GetXthLongestLineWidth(1)
+
+        If GetType(T) Is GetType(FontFamily) Then
+            predictedWidth = CInt(predictedWidth * 1.5D)
+        End If
+
+        Dim w = CInt(predictedWidth + fh * 3)
 
         If predictedWidth > Width Then
             w = predictedWidth
         End If
 
-        If w > fh * 40 Then
-            w = fh * 40
+        If w < fh * 35 Then
+            w = fh * 35
+        ElseIf w > fh * 80 Then
+            w = fh * 80
         End If
 
         Dim ncx = Width - ClientSize.Width
@@ -367,46 +386,52 @@ Public Class TaskDialog(Of T)
             h = maxHeight
         End If
 
-        Dim l = (workingArea.Width - w) \ 2
-        Dim t = (workingArea.Height - h) \ 2
+        Dim x = (workingArea.Width - w) \ 2
+        Dim y = (workingArea.Height - h) \ 2
 
-        Native.SetWindowPos(Handle, IntPtr.Zero, l, t, w, h, 64)
+        Native.SetWindowPos(Handle, IntPtr.Zero, x, y, w, h, 64)
     End Sub
 
-    Function GetSecondLongestLineLength() As Integer
-        Dim list As New List(Of Integer)({51, 52})
+    Function GetXthLongestLineWidth(lineNumber As Integer) As Integer
+        Dim list As New List(Of String)()
 
-        If Content <> "" Then
+        If Title.Trim() <> "" Then
+            list.Add(Title)
+        End If
+
+        If Content?.Trim() <> "" Then
             For Each line In Content.Split(BR(1))
-                list.Add(line.Length)
+                list.Add(line)
             Next
         End If
 
-        If ExpandedContent <> "" AndAlso ExpandedContentLabel?.Height > 0 Then
+        If ExpandedContent?.Trim() <> "" AndAlso ExpandedContentLabel?.Height > 0 Then
             For Each line In ExpandedContent.Split(BR(1))
-                list.Add(line.Length)
+                list.Add(line)
             Next
         End If
 
         For Each def In CommandDefinitions
             If def.Description <> "" Then
                 For Each line In def.Description.Split(BR(1))
-                    list.Add(line.Length)
+                    list.Add(line)
                 Next
             End If
-        Next
 
-        For Each def In CommandDefinitions
             If def.Text <> "" Then
                 For Each line In def.Text.Split(BR(1))
-                    list.Add(CInt(line.Length / 11 * 9))
+                    list.Add(line)
                 Next
             End If
         Next
 
-        list.Sort()
-        list.Reverse()
-        Return list(1)
+        If list.Count = 0 Then Return TextRenderer.MeasureText(New String("x"c, 55), FontManager.GetDefaultFont()).Width
+        If lineNumber < 1 Then lineNumber = 1
+        If lineNumber > list.Count Then lineNumber = list.Count
+
+        list = list.OrderByDescending(Function(x) x.Length).ToList()
+
+        Return TextRenderer.MeasureText(list(lineNumber - 1), FontManager.GetDefaultFont()).Width
     End Function
 
     WriteOnly Property ShowCopyButton As Boolean
@@ -501,6 +526,10 @@ Public Class TaskDialog(Of T)
             Dim GWLP_HWNDPARENT = -8
             SetWindowLongPtr(Handle, GWLP_HWNDPARENT, Owner)
         End If
+    End Sub
+
+    Protected Overrides Sub OnResize(e As EventArgs)
+        MyBase.OnResize(e)
     End Sub
 
     Overloads Function Show() As T

@@ -33,6 +33,11 @@ Partial Class TaskDialogBaseForm
         '
         'tlpMain
         '
+        Me.tlpMain.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                                     Or System.Windows.Forms.AnchorStyles.Left) _
+                                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpMain.AutoSize = False
+        Me.tlpMain.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.tlpMain.ColumnCount = 1
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.tlpTop, 0, 0)
@@ -45,7 +50,6 @@ Partial Class TaskDialogBaseForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.tlpMain.Size = New System.Drawing.Size(705, 663)
         Me.tlpMain.TabIndex = 0
         '
@@ -61,6 +65,7 @@ Partial Class TaskDialogBaseForm
         Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpTop.Controls.Add(Me.TitleLabel, 1, 0)
         Me.tlpTop.Controls.Add(Me.pbIcon, 0, 0)
+        Me.tlpTop.Dock = DockStyle.Top
         Me.tlpTop.Location = New System.Drawing.Point(0, 0)
         Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 15, 0, 20)
         Me.tlpTop.Name = "tlpTop"
@@ -96,10 +101,11 @@ Partial Class TaskDialogBaseForm
         '
         'paMain
         '
-        Me.paMain.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.paMain.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.paMain.AutoScroll = True
+        Me.paMain.AutoSize = False
+        Me.paMain.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        Me.paMain.Dock = DockStyle.Fill
         Me.paMain.Form = Nothing
         Me.paMain.LineBreaks = 0
         Me.paMain.Location = New System.Drawing.Point(0, 150)
@@ -123,7 +129,7 @@ Partial Class TaskDialogBaseForm
         Me.spBottom.Controls.Add(Me.blCopyMessage)
         Me.spBottom.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.spBottom.Location = New System.Drawing.Point(0, 195)
-        Me.spBottom.Margin = New System.Windows.Forms.Padding(0, 0, 0, 30)
+        Me.spBottom.Margin = New System.Windows.Forms.Padding(0, 30, 0, 30)
         Me.spBottom.Name = "spBottom"
         Me.spBottom.Size = New System.Drawing.Size(705, 438)
         Me.spBottom.TabIndex = 3

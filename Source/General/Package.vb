@@ -770,6 +770,16 @@ Public Class Package
         .HelpURL = "https://github.com/vapoursynth/vs-avisource-obsolete/blob/master/docs/avisource.rst",
         .VsFilterNames = {"avisource.AVISource", "avisource.AVIFileSource", "avisource.OpenDMLSource"}})
 
+    Shared Property DeScratch As Package = Add(New PluginPackage With {
+        .Name = "DeScratch",
+        .Filename = "DeScratch.dll",
+        .Description = "This plugin removes vertical scratches from films. Also it can be used for removing horizontal noise lines such as drop-outs from analog VHS captures (after image rotation).",
+        .WebURL = "https://github.com/vapoursynth/descratch",
+        .DownloadURL = "https://github.com/vapoursynth/descratch/releases",
+        .HelpURL = "https://github.com/vapoursynth/descratch/blob/master/doc/descratch.html",
+        .AvsFilterNames = {"DeScratch"},
+        .VsFilterNames = {"descratch.DeScratch"}})
+
     Shared Property BestSource As Package = Add(New PluginPackage With {
         .Name = "BestSource",
         .Filename = "BestSource.dll",

@@ -306,7 +306,8 @@ DeFlicker | ReduceFlicker = ReduceFlicker(strength=$select:msg:Choose Strength;W
 DeHalo | DehaloAlpha = DeHalo_alpha_mt(rx=2.0, ry=2.0, darkstr=1.0, brightstr=1.0, lowsens=50, highsens=50, ss=1.5)
 DeHalo | FineDehalo = FineDehalo(rx=2.0, ry=2.0, thmi=80, thma=128, thlimi=50, thlima=100, darkstr=1.0, brightstr=1.0, showmask=0, contra=0.0, excl=true)
 DeHalo | HQDeringmod = HQDeringmod()
-DeJump = DeJump(jumpthresh=$enter_text:Enter the Threshold for detecting Jumps in decimal (<1, Default: 0.88)$, thresh=$enter_text:Enter the Luma Difference Threshold for FillDrops in decimal (Default: 0.4)$, dcycle=$enter_text:Enter the Decimation Cycle in integer (Default: 20)$)
+DeJump | DeJump = DeJump(jumpthresh=$enter_text:Enter the Threshold for detecting Jumps in decimal (<1, Default: 0.88)$, thresh=$enter_text:Enter the Luma Difference Threshold for FillDrops in decimal (Default: 0.4)$, dcycle=$enter_text:Enter the Decimation Cycle in integer (Default: 20)$)
+DeScratch | DeScratch = DeScratch(mindif=5, asym=10, maxgap=3, maxwidth=3, minlen=100, maxlen=2048, maxangle=5, blurlen=15, keep=100, border=2, modeY=1, modeU=0, modeV=0, mindifUV=0, mark=false, minwidth=1, left=0, right=%target_width%)
 
 [Flip]
 Flip | Horizontal = FlipHorizontal()

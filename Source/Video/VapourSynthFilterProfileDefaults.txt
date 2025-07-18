@@ -232,6 +232,7 @@ DeHalo | FineDehalo = clip = havsfunc.FineDehalo(clip)
 DeHalo | HQDering = clip = havsfunc.HQDeringmod(clip, nrmode=2, darkthr=3.0)
 DeHalo | MDeRing = clip = muvsfunc.mdering(clip)
 DeHalo | YAHR = $select:YAHR|clip = havsfunc.YAHR(clip);YAHRmod|clip = muvsfunc.YAHRmod(clip)$
+DeScratch | DeScratch = clip = core.descratch.DeScratch(clip, mindif=5, asym=10, maxgap=3, maxwidth=3, minlen=100, maxlen=2048, maxangle=5, blurlen=15, keep=100, border=2, modey=1, modeu=0, modev=0, mindifuv=0, mark=False, minwidth=1, left=0, right=%target_width%)
 
 Fix Telecined Fades =
     clip = core.fmtc.bitdepth (clip, bits=32)

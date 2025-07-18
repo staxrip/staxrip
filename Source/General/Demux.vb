@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Xml
@@ -216,7 +216,9 @@ Public Class eac3toDemuxer
                     End Try
 
                     If proj Is p Then
-                        p.PreferredAudio = form.Streams.Where(Function(i) i.IsSubtitle AndAlso i.Checked).Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
+                        Dim selectedLanguages = form.Streams.Where(Function(i) i.IsAudio AndAlso i.Checked).Select(Function(i) i.Language.ThreeLetterCode)
+                        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Union(selectedLanguages).Distinct()
+                        p.PreferredAudio = preferredAudios.Join(" ")
                     End If
 
                     If Not form.cbVideoOutput.Text = "Nothing" Then

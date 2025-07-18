@@ -14,6 +14,45 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.48.3 (2025-08-08)
+====================
+
+- General: Add support for cutting/trimming videos with Dolby Vision metadata
+- General: Add possibility to open and mount Blu-ray images ([#1549](/../../issues/1549))
+- General: Mux AV1 videos with Aspect Ratio ([#1528](/../../issues/1528), [#1604](/../../issues/1604), [#1713](/../../issues/1713))
+- General: Improve metadata extraction if video is demuxed ([#1696](/../../issues/1696))
+- General: Improve language extraction from file names
+- Audio: Fix Sampling Rate for ffmpeg/libopus ([#1677](/../../issues/1677))
+- CommandLine: Add "-AddAttachments" command line parameter
+- CommandLine: Add "-AddTagFile" command line parameter
+- UI: When needed/wanted start new instances without focus while processing
+- UI: Invert Up/Down-key-handling on Bitrate and FileSize controls on main window
+    - Up-Key will now increase the number instead of decreasing it
+    - Down-Key will now decrease the number instead of increasing it
+- UI: Add "Min Duration for BDMV playlists" to Project Options
+    - Makes it easier to prevent dozens of unnecessary playlists being shown individually
+    - Default: 300s
+- SvtAv1EncApp: Fix "--content-light" VUI metadata import ([#1726](/../../issues/1726))
+- SvtAv1EncApp: Fix "--variance-octile" default for the PSY fork ([#1739](/../../issues/1739))
+- Add Dual plugins
+    - DeScratch R3
+- Update Dual plugins
+    - BestSource R13
+- Add Tools
+    - DoViSplit v1.0
+- Update Tools
+    - DoVi_Tool v2.3.0
+    - HDR10Plus_Tool v1.7.1
+    - MediaInfo v25.07
+    - MKVToolNix v94.0
+    - NVEncC v8.10
+    - QSVEncC v7.93
+    - Subtitle Edit v4.0.13
+    - SvtAv1EncApp v3.1.0-196+30-878b2673-.Mod.by.Patman.-x64-clang20.1.8 [SVT-AV1-HDR]
+    - VCEEncC v8.38
+    - x265 v4.1+190+31-9e7f7ad13-.Mod-by-Patman.-x64-avx2-clang2018
+
+
 v2.48.2 (2025-07-20)
 ====================
 

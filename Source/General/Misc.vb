@@ -1013,10 +1013,16 @@ Public Class AudioTrack
     End Sub
 
     Public Sub Remove()
-        _audioProfile.Reset()
+        _audioProfile.Reset(Index)
 
         If Index >= 0 Then
-            Dim ap = s.AudioProfiles.FirstOrDefault(Function(x) x.Name = _audioProfile.Name)
+            Dim ap = s.AudioProfiles.FirstOrDefault(Function(x)
+                                                        Dim n1 = x.Name.Trim()
+                                                        Dim n2 = _audioProfile.Name.Trim()
+                                                        If n1.Contains("~") Then n1 = n1.Left("~").Trim()
+                                                        If n2.Contains("~") Then n2 = n2.Left("~").Trim()
+                                                        Return n1 = n2
+                                                    End Function)
 
             If ap IsNot Nothing Then
                 g.LoadAudioProfile(ap, Index)

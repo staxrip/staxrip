@@ -2011,7 +2011,7 @@ Public Class MainForm
                            If source.FilePath = "" Then Return
                            If dest Is Nothing Then Return
 
-                           dest.AudioProfile.Reset()
+                           dest.AudioProfile.Reset(dest.Index)
 
                            If source.Stream Is Nothing Then
                                dest.TextEdit.Text = source.FilePath
@@ -2066,7 +2066,7 @@ Public Class MainForm
 
         If te.Text.Contains(":\") OrElse te.Text.StartsWith("\\") Then
             If te.Text <> ap.File Then
-                ap.Reset()
+                ap.Reset(audioTrack.Index)
                 ap.File = te.Text
 
                 If FileTypes.Audio.Contains(ap.File.Ext) Then

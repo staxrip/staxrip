@@ -183,7 +183,12 @@ Public MustInherit Class AudioProfile
         Language = New Language()
         SourceSamplingRateValue = 0
         Stream = Nothing
-        StreamName = ""
+    End Sub
+
+    Overridable Sub Reset(trackIndex As Integer)
+        Reset()
+
+        StreamName = If(g.LastModifiedTemplate.AudioTracks.Count > trackIndex, g.LastModifiedTemplate.AudioTracks(trackIndex).AudioProfile.StreamName, "")
     End Sub
 
     Overridable Sub Migrate()
@@ -789,6 +794,11 @@ Public Class GUIAudioProfile
 
     Public Overrides Sub Reset()
         MyBase.Reset()
+        ChannelsValue = 0
+    End Sub
+
+    Public Overrides Sub Reset(trackIndex As Integer)
+        MyBase.Reset(trackIndex)
         ChannelsValue = 0
     End Sub
 

@@ -1934,6 +1934,12 @@ Public Enum DeezyDynamicrangecompression
     <DispName("Speech")> Speech
 End Enum
 
+Public Enum IntermediateWaveBitDepth
+    <DispName("24-bit (single)")> s24 = 24
+    <DispName("32-bit (single)")> s32 = 32
+    <DispName("32-bit (float)")> f32 = 33
+End Enum
+
 Public Enum WaveBitDepth
     <DispName("Original (default)")> Original = 0
     <DispName("16-bit (single)")> s16 = 16

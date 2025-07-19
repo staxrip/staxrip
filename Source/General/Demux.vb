@@ -348,7 +348,6 @@ Public Class ffmpegDemuxer
             Exit Sub
         End If
 
-        Dim streamIndex = stream.StreamOrder
         Dim args = "-y -hide_banner -probesize 20M -i " + sourcefile.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
@@ -357,14 +356,15 @@ Public Class ffmpegDemuxer
 
         args += " -vn -sn"
 
-        If outPath.Ext = "wav" Then
-            args += " -c:a pcm_s24le"
+        If stream.FormatString.ToLowerEx().StartsWith("dts") Then
+            args += " -f dts -c:a copy"
+        ElseIf stream.FormatString.ToLowerEx() = "pcm" Then
+            Dim bd = stream.BitDepth
+            If bd = 20 Then bd = 24
+
+            args += $" -f s{bd}le -c:a pcm_s{bd}le"
         Else
             args += " -c:a copy"
-
-            If stream.FormatString.ToLowerEx().StartsWith("dts") Then
-                args += " -f dts"
-            End If
         End If
 
         args += " " + outPath.Escape

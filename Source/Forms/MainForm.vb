@@ -5689,6 +5689,11 @@ Public Class MainForm
             audioExist.Help = "What to do in case an audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.Field = NameOf(p.FileExistAudio)
 
+            Dim audioIntermediateWavBitDepth = ui.AddMenu(Of IntermediateWaveBitDepth)
+            audioIntermediateWavBitDepth.Text = "Intermediate Wave Bit Depth"
+            audioIntermediateWavBitDepth.Help = "In case you choose WAV as intermediate format for audio encoding, you can choose the bit depth. The higher the better, but also needs more disk space and probably time."
+            audioIntermediateWavBitDepth.Field = NameOf(p.AudioIntermediateWaveBitDepth)
+
             n = ui.AddNum
             n.Text = "Audio Tracks"
             n.Config = {2, 20, 1}

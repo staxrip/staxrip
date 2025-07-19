@@ -394,7 +394,16 @@ Public Class Audio
         If force AndAlso cancel Then Exit Sub
 
         If ap.ConvertExt.EqualsAny("wav", "w64") Then
-            args += " -c:a pcm_s24le"
+            Select Case p.AudioIntermediateWaveBitDepth
+                Case IntermediateWaveBitDepth.s24
+                    args += " -c:a pcm_s24le"
+                Case IntermediateWaveBitDepth.s32
+                    args += " -c:a pcm_s32le"
+                Case IntermediateWaveBitDepth.f32
+                    args += " -c:a pcm_f32le"
+                Case Else
+                    args += " -c:a pcm_s32le"
+            End Select
         End If
 
         Dim matches = Regex.Matches(args, " -af ([^ ]+)")

@@ -34,6 +34,7 @@ Public Class Project
     Public AutoCropFrameIntervalFrameSelection As Integer = 400
     Public AutoCropTimeIntervalFrameSelection As Integer = 15
     Public AutoCropLuminanceThreshold As Single = 10.0
+    Public AudioIntermediateWaveBitDepth As IntermediateWaveBitDepth = IntermediateWaveBitDepth.f32
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True
     Public AutoSmartCrop As Boolean

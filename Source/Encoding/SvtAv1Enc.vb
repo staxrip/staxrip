@@ -239,7 +239,7 @@ Public Class SvtAv1Enc
         End If
 
         If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-            cl += " --output-depth 10"
+            'cl += " --output-depth 10"
             cl += $" {Params.SpecificDolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
         End If
 
@@ -247,7 +247,7 @@ Public Class SvtAv1Enc
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
         If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
-            cl += $" --content-light {MaxCLL},{MaxFALL}"
+            cl += $" --content-light ""{MaxCLL},{MaxFALL}"""
         End If
 
         ImportCommandLine(cl)

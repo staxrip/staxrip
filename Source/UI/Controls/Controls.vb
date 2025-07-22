@@ -1336,6 +1336,8 @@ Namespace UI
 
         Sub New()
             TextAlign = Drawing.ContentAlignment.MiddleLeft
+            UseCompatibleTextRendering = True
+
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -1385,6 +1387,11 @@ Namespace UI
                 MyBase.TabIndex = value
             End Set
         End Property
+
+
+        Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
+            Return MyBase.GetPreferredSize(proposedSize)
+        End Function
     End Class
 
     Public Class PropertyGridEx

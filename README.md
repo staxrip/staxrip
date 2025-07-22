@@ -29,6 +29,7 @@ There are a lot of resources in StaxRip-related communities. Users are strongly 
 
 - You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki).
 - For the current changelog click here: [Changelog](https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md) - it's worth taking a look at it.
+    - Supporters please use the [Changelog for Supporters](https://github.com/staxrip/staxrip/blob/master/CHANGELOG-SUPPORTER.md).
 - To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump directly to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest). 
 
 # Contribution / Support
@@ -53,6 +54,7 @@ Any contribution is highly appreciated!
 ### **Bug Reports / Feature Requests**
 - Please try the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) first. Usually you will find that many outstanding bugs are already fixed in the latest release versions.
 - You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
+    - Supporters please use the [Changelog for Supporters](https://github.com/staxrip/staxrip/blob/master/CHANGELOG-SUPPORTER.md) instead.
 - If the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
 
 ### Community

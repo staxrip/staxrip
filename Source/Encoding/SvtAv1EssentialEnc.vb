@@ -517,6 +517,14 @@ Public Class SvtAv1EssentialEncParams
         .DefaultValue = 2,
         .Value = 3}
 
+    Property Speed As New OptionParam With {
+        .Switch = "--speed",
+        .Text = "Speed",
+        .Expanded = True,
+        .Options = {"Preset (default)", "Slower", "Slow", "Medium", "Fast", "Faster"},
+        .Values = {"", "slower", "slow", "medium", "fast", "faster"},
+        .Init = 0}
+
     ReadOnly Property Preset As OptionParam
         Get
             If p.Script?.Info.Height > 1080 Then Return PresetM5
@@ -540,6 +548,7 @@ Public Class SvtAv1EssentialEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
+        .VisibleFunc = Function() Speed.Value = 0,
         .Init = 5}
 
     Property PresetM5 As New OptionParam With {
@@ -558,6 +567,7 @@ Public Class SvtAv1EssentialEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
+        .VisibleFunc = Function() Speed.Value = 0,
         .Init = 6}
 
     '   --------------------------------------------------------
@@ -720,7 +730,7 @@ Public Class SvtAv1EssentialEncParams
     Property ConstantRateFactorHigh As New NumParam With {
        .HelpSwitch = "--crf",
        .Text = "Constant Rate Factor",
-       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0,
        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
        .Config = {1, 63, 1.0, 0},
        .Init = 35}
@@ -728,10 +738,18 @@ Public Class SvtAv1EssentialEncParams
     Property ConstantRateFactorLow As New NumParam With {
        .HelpSwitch = "--crf",
        .Text = "Constant Rate Factor",
-       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
+       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0,
        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
        .Config = {1, 63, 1.0, 0},
        .Init = 30}
+
+    Property Quality As New OptionParam With {
+        .Switch = "--quality",
+        .Text = "Quality",
+        .Expanded = True,
+        .Options = {"CRF / QP (default)", "Higher", "High", "Medium", "Low", "Lower"},
+        .Values = {"", "higher", "high", "medium", "low", "lower"},
+        .Init = 0}
 
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--tbr",
@@ -1318,7 +1336,7 @@ Public Class SvtAv1EssentialEncParams
                     Speed, Preset, Profile, Level, Tune, LowMemory, FastDecode
                 )
                 Add("Rate Control",
-                    RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
+                    RateControlMode, Quality, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
                     AqMode, QpScaleCompressStrength, AutoTiling, RecodeLoop,

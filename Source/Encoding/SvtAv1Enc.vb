@@ -796,10 +796,19 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th (default)", "6: 6/8th", "7: 7/8th", "8: 8/8th"},
         .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
-        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .VisibleFunc = Function() {SvtAv1EncAppType.Hdr, SvtAv1EncAppType.Vanilla}.Contains(Package.SvtAv1EncAppType) AndAlso EnableVarianceBoostSpecific.Value = 1,
         .Init = 4}
 
-    Property VarianceBoostCurveSpecific As New OptionParam With {
+    Property VarianceOctilePsy As New OptionParam With {
+        .Switch = "--variance-octile",
+        .Text = "Variance Octile",
+        .Expanded = True,
+        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
+        .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Psy}.Contains(Package.SvtAv1EncAppType) AndAlso EnableVarianceBoost.Value = 1,
+        .Init = 5}
+
+    Property VarianceBoostCurve As New OptionParam With {
         .Switch = "--variance-boost-curve",
         .Text = "Variance Boost Curve",
         .Expanded = True,
@@ -1586,7 +1595,7 @@ Public Class SvtAv1EncParams
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL
                 )
                 Add("Variance Boost Options",
-                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile, VarianceBoostCurveSpecific, VarianceBoostCurveHdr
+                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile, VarianceOctilePsy, VarianceBoostCurve, VarianceBoostCurveHdr
                 )
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
 

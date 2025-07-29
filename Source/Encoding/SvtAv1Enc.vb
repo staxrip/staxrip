@@ -946,6 +946,15 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 1}
 
+    Property HdrAltLambdaFactors As New OptionParam With {
+        .Switch = "--alt-lambda-factors",
+        .Text = "Alternative RDO Lambda Factors",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .Init = 1}
+
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
@@ -1274,14 +1283,12 @@ Public Class SvtAv1EncParams
     Property Lossless As New BoolParam With {
         .Switch = "--lossless",
         .Text = "Lossless",
-        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .IntegerValue = True,
         .Init = False}
 
     Property Avif As New BoolParam With {
         .Switch = "--avif",
         .Text = "Avif (Still-Picture Coding)",
-        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .IntegerValue = True,
         .Init = False}
 
@@ -1444,14 +1451,21 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Init = False}
 
-    Property SpecificQpScaleCompressStrength As New OptionParam With {
+    Property SpecificQpScaleCompressStrength As New NumParam With {
         .Switch = "--qp-scale-compress-strength",
         .Text = "QP Scale Compress Strength",
+        .Config = {0, 8, 0.01, 2},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Hdr, SvtAv1EncAppType.Psy}.Contains(Package.SvtAv1EncAppType),
+        .Init = 1}
+
+    Property FilteringNoiseDetection As New OptionParam With {
+        .Switch = "--filtering-noise-detection",
+        .Text = "Filtering Noise Detection",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0", "1 (default)", "2", "3"},
-        .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
-        .Init = 1}
+        .Options = {"0: Default Tune Behavior (default)", "1: On", "2: Off", "3: On (CDEF Only)", "4: On (Restoration Only)"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Psy}.Contains(Package.SvtAv1EncAppType),
+        .Init = 0}
 
     Property SpecificMax32TxSize As New OptionParam With {
         .Switch = "--max-32-tx-size",
@@ -1479,14 +1493,14 @@ Public Class SvtAv1EncParams
     Property PsyPsyRd As New NumParam With {
         .Switch = "--psy-rd",
         .Text = "Psychovisual Rate Distortion Optimization",
-        .Config = {0, 6, 0.05, 2},
+        .Config = {0, 6, 0.01, 2},
         .VisibleFunc = Function() {SvtAv1EncAppType.Psy}.Contains(Package.SvtAv1EncAppType),
         .Init = 0.5}
 
-    Property HdrPsyRd As New NumParam With {
-        .Switch = "--psy-rd",
-        .Text = "Psychovisual Rate Distortion Optimization",
-        .Config = {0, 8, 0.05, 2},
+    Property HdrAcBias As New NumParam With {
+        .Switch = "--ac-bias",
+        .Text = "AC Bias in Rate Distortion",
+        .Config = {0, 8, 0.01, 2},
         .VisibleFunc = Function() {SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 1.0}
 
@@ -1508,13 +1522,22 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 1}
 
-    Property SpecificHbdMds As New OptionParam With {
+    Property HdrHbdMds As New OptionParam With {
+        .Switch = "--hbd-mds",
+        .Text = "High Bit Depth Mode Decisions",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: Forces 10-bit+ (HBD)", "2: 8/10-bit Hybrid"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .Init = 0}
+
+    Property PsyHbdMds As New OptionParam With {
         .Switch = "--hbd-mds",
         .Text = "High Bit Depth Mode Decisions",
         .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: Off (default)", "1: Forces 10-bit+ (HBD)", "2: 8/10-bit Hybrid", "3: Full 8-bit"},
-        .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .VisibleFunc = Function() {SvtAv1EncAppType.Psy}.Contains(Package.SvtAv1EncAppType),
         .Init = 0}
 
     Property HdrComplexHvs As New OptionParam With {
@@ -1526,12 +1549,30 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() {SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 0}
 
+    Property HdrAltSsimTuning As New OptionParam With {
+        .Switch = "--alt-ssim-tuning ",
+        .Text = "Alternative SSIM Calculation Pathway",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0 (default)", "1"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .Init = 0}
+
     Property SpecificNoiseNormStrength As New OptionParam With {
         .Switch = "--noise-norm-strength",
         .Text = "Noise Norm Strength",
         .Expanded = True,
         .IntegerValue = True,
         .Options = {"0", "1 (default)", "2", "3", "4"},
+        .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
+        .Init = 1}
+
+    Property SpecificAdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
         .VisibleFunc = Function() {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType),
         .Init = 1}
 
@@ -1589,10 +1630,11 @@ Public Class SvtAv1EncParams
                 If Not String.IsNullOrEmpty(prefix) Then
                     Add(prefix & " Specific 1",
                         SpecificHdr10PlusJson, SpecificDolbyVisionRpu, SpecificDolbyVisionRpuMode,
-                        SpecificQpScaleCompressStrength, SpecificMax32TxSize, SpecificNoiseNormStrength, SpecificKeyframeTemporalFilteringStrength
+                        SpecificQpScaleCompressStrength, FilteringNoiseDetection, SpecificMax32TxSize,
+                        HdrAltSsimTuning, SpecificNoiseNormStrength, SpecificAdaptiveFilmGrain, SpecificKeyframeTemporalFilteringStrength, HdrAltLambdaFactors
                     )
                     Add(prefix & " Specific 2",
-                        SpecificRestrictedMotionVector, SpecificMinChromaQmLevel, SpecificMaxChromaQmLevel, PsyPsyRd, HdrPsyRd, SpecificSpyRd, SpecificSharpTx, SpecificHbdMds, HdrComplexHvs
+                        SpecificRestrictedMotionVector, SpecificMinChromaQmLevel, SpecificMaxChromaQmLevel, PsyPsyRd, HdrAcBias, SpecificSpyRd, SpecificSharpTx, HdrHbdMds, PsyHbdMds, HdrComplexHvs
                     )
                 End If
                 Add("Color Description",

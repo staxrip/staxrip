@@ -188,7 +188,13 @@ Public MustInherit Class AudioProfile
     Overridable Sub Reset(trackIndex As Integer)
         Reset()
 
-        StreamName = If(g.LastModifiedTemplate.AudioTracks.Count > trackIndex, g.LastModifiedTemplate.AudioTracks(trackIndex).AudioProfile.StreamName, "")
+        If trackIndex >= 0 AndAlso g.LastModifiedTemplate.AudioTracks.Count > trackIndex Then
+            Dim ap = g.LastModifiedTemplate.AudioTracks(trackIndex).AudioProfile
+            
+            StreamName = ap.StreamName
+        Else
+            StreamName = ""
+        End If
     End Sub
 
     Overridable Sub Migrate()

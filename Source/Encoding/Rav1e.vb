@@ -14,6 +14,12 @@ Public Class Rav1e
         Name = "Rav1e"
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.Rav1e
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As Rav1eParams
 
@@ -151,6 +157,13 @@ Public Class Rav1eParams
     Sub New()
         Title = "Rav1e Options"
     End Sub
+
+    Public Overrides ReadOnly Property Package As Package
+        Get
+            Return Rav1e.Package
+        End Get
+    End Property
+
 
     Property Tune As New OptionParam With {
         .Text = "Tune",
@@ -347,10 +360,6 @@ Public Class Rav1eParams
         sb.Append(" -y -o " + targetPath.Escape + " - ")
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
-    End Function
-
-    Public Overrides Function GetPackage() As Package
-        Return Package.Rav1e
     End Function
 End Class
 

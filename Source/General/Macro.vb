@@ -458,7 +458,7 @@ Public Class Macro
         If value.Contains("%source_files_comma%") Then value = value.Replace("%source_files_comma%", """" + String.Join(""",""", proj.SourceFiles.ToArray) + """")
         If value.Contains("%source_files%") Then value = value.Replace("%source_files%", """" + String.Join(""" """, proj.SourceFiles.ToArray) + """")
         If value.Contains("%compressibility%") Then value = value.Replace("%compressibility%", Math.Round(proj.Compressibility, 3).ToString.Replace(",", "."))
-        If value.Contains("%encoder%") Then value = value.Replace("%encoder%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
+        If value.Contains("%encoder%") Then value = value.Replace("%encoder%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.Package.Name)
         If value.Contains("%encoder_profile%") Then value = value.Replace("%encoder_profile%", proj.VideoEncoder.Name)
         If value.Contains("%encoder_settings%") Then value = value.Replace("%encoder_settings%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.GetCommandLine(False, True).Replace("--", ""))
         If value.Contains("%encoder_out_file%") Then value = value.Replace("%encoder_out_file%", proj.VideoEncoder.OutputPath)

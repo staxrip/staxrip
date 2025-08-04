@@ -18,6 +18,12 @@ Public Class VCEEnc
         End Get
     End Property
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.VCEEncC
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As EncoderParams
 
@@ -387,6 +393,13 @@ Public Class VCEEnc
         Sub New()
             Title = "VCEEncC Options"
         End Sub
+
+        Public Overrides ReadOnly Property Package As Package
+            Get
+                Return VCEEnc.Package
+            End Get
+        End Property
+
 
         Property OverrideTargetFileName As New BoolParam() With {
             .Text = "Override Target File Name",
@@ -1961,10 +1974,6 @@ Public Class VCEEnc
             End If
 
             Return ret.Trim
-        End Function
-
-        Public Overrides Function GetPackage() As Package
-            Return Package.VCEEncC
         End Function
     End Class
 End Class

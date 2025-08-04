@@ -27,6 +27,12 @@ Public MustInherit Class VideoEncoder
         CanEditValue = True
     End Sub
 
+    Public Overridable ReadOnly Property Package As Package
+        Get
+            Return Nothing
+        End Get
+    End Property
+
     Public Overridable ReadOnly Property OverridesTargetFileName As Boolean
         Get
             Return False
@@ -82,7 +88,7 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Overridable ReadOnly Property OutputPath() As String
+    Overridable ReadOnly Property OutputPath As String
         Get
             If TypeOf Muxer Is NullMuxer Then
                 Return p.TargetFile
@@ -317,7 +323,7 @@ Public MustInherit Class VideoEncoder
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Tag = p.VideoEncoder.Name
-        g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
+        g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name, 45).Shorten(40)
         g.MainForm.llMuxer.Tag = p.VideoEncoder.Muxer.Name
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpperInvariant
 
@@ -401,6 +407,9 @@ Public MustInherit Class VideoEncoder
             New x265Enc(),
             New x264Enc(),
             New SvtAv1Enc(),
+            New SvtAv1EssentialEnc(),
+            New SvtAv1HdrEnc(),
+            New SvtAv1PsyexEnc(),
             New AOMEnc(),
             New Rav1e()
         }

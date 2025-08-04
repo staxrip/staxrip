@@ -19,6 +19,12 @@ Public Class QSVEnc
         End Get
     End Property
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.QSVEncC
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As EncoderParams
 
@@ -410,6 +416,13 @@ Public Class QSVEnc
         Sub New()
             Title = "QSVEncC Options"
         End Sub
+
+        Public Overrides ReadOnly Property Package As Package
+            Get
+                Return QSVEnc.Package
+            End Get
+        End Property
+
 
         Property OverrideTargetFileName As New BoolParam() With {
             .Text = "Override Target File Name",
@@ -1870,11 +1883,6 @@ Public Class QSVEnc
             setOption(LibPlaceboTonemappingFunctionShowClipping, Regex.Match(arg, "(?:^|,)show_clipping=([^,]*)"))
             setOption(LibPlaceboTonemappingFunctionVisualizeLut, Regex.Match(arg, "(?:^|,)visualize_lut=([^,]*)"))
             setOption(LibPlaceboTonemappingFunctionLutType, Regex.Match(arg, "(?:^|,)lut_type=([^,]*)"))
-        End Function
-
-
-        Public Overrides Function GetPackage() As Package
-            Return Package.QSVEncC
         End Function
     End Class
 End Class

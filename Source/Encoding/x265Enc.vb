@@ -18,6 +18,12 @@ Public Class x265Enc
         Params.ApplyPresetValues()
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.x265
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As x265Params
 
@@ -44,7 +50,7 @@ Public Class x265Enc
     Public Overrides ReadOnly Property OverridingTargetFileName As String
         Get
             Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
-            value = value.Replace(Environment.NewLine,"")
+            value = value.Replace(Environment.NewLine, "")
             Return value
         End Get
     End Property
@@ -149,7 +155,7 @@ Public Class x265Enc
 
             If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
                 newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
-            End If            
+            End If
 
             If Not String.IsNullOrWhiteSpace(newPath) Then
                 Params.DolbyVisionRpu.Value = newPath
@@ -514,6 +520,13 @@ Public Class x265Params
     Sub New()
         Title = "x265 Options"
     End Sub
+
+    Public Overrides ReadOnly Property Package As Package
+        Get
+            Return x265Enc.Package
+        End Get
+    End Property
+
 
     Property OverrideTargetFileName As New BoolParam() With {
         .Text = "Override Target File Name",
@@ -2534,10 +2547,6 @@ Public Class x265Params
                 BFrames.DefaultValue += 2
         End Select
     End Sub
-
-    Public Overrides Function GetPackage() As Package
-        Return Package.x265
-    End Function
 End Class
 
 Public Enum x265RateMode

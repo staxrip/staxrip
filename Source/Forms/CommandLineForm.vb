@@ -82,7 +82,7 @@ Public Class CommandLineForm
         help.SetImage(Symbol.Help)
         help.ShortcutKeyDisplayString = "F1"
 
-        cms.Add("Help about " + params.GetPackage.Name, Sub() params.GetPackage.ShowHelp(), Keys.Control Or Keys.F1).SetImage(Symbol.Help)
+        cms.Add("Help about " + params.Package.Name, Sub() params.Package.ShowHelp(), Keys.Control Or Keys.F1).SetImage(Symbol.Help)
 
         cms.Add("-")
 

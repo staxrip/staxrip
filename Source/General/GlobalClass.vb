@@ -1789,12 +1789,12 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function ConvertPath(value As String) As String
+    Function ConvertPath(value As String, Optional maxLength As Integer = 30) As String
         If value = "" Then
             Return ""
         End If
 
-        If value.Length > 30 AndAlso value.Contains("|") Then
+        If value.Length > maxLength AndAlso value.Contains("|") Then
             value = value.RightLast("|")
         End If
 

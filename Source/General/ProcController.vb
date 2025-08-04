@@ -78,7 +78,7 @@ Public Class ProcController
         _triggerWhileProcessing = Not p.SkipVideoEncoding AndAlso
                                 TypeOf p.VideoEncoder IsNot NullEncoder AndAlso
                                 proc.Package IsNot Nothing AndAlso
-                                proc.Package Is TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage()
+                                proc.Package Is TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.Package
 
         Dim pad = g.ProcForm.FontHeight \ 6
         Button.Margin = New Padding(pad, pad, 0, pad)

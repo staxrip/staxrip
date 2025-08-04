@@ -177,6 +177,15 @@
     <Compile Include="Controls\SvtAv1EncAppControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\SvtAv1EncAppEssentialControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SvtAv1EncAppHdrControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SvtAv1EncAppPsyexControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\VvencffappControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -188,6 +197,9 @@
     </Compile>
     <Compile Include="Encoding\AOMEnc.vb" />
     <Compile Include="Encoding\Rav1e.vb" />
+    <Compile Include="Encoding\SvtAv1EssentialEnc.vb" />
+    <Compile Include="Encoding\SvtAv1HdrEnc.vb" />
+    <Compile Include="Encoding\SvtAv1PsyexEnc.vb" />
     <Compile Include="Encoding\VCEEnc.vb" />
     <Compile Include="Encoding\ffmpegEnc.vb" />
     <Compile Include="Encoding\QSVEnc.vb" />
@@ -448,6 +460,15 @@
     <Content Include="DirectN.png" />
     <EmbeddedResource Include="Controls\SvtAv1EncAppControl.resx">
       <DependentUpon>SvtAv1EncAppControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SvtAv1EncAppEssentialControl.resx">
+      <DependentUpon>SvtAv1EncAppEssentialControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SvtAv1EncAppHdrControl.resx">
+      <DependentUpon>SvtAv1EncAppHdrControl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SvtAv1EncAppPsyexControl.resx">
+      <DependentUpon>SvtAv1EncAppPsyexControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\VvencffappControl.resx">
       <DependentUpon>VvencffappControl.vb</DependentUpon>

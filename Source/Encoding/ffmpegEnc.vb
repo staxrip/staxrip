@@ -26,6 +26,12 @@ Public Class ffmpegEnc
         Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.ffmpeg
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As EncoderParams
 
@@ -196,6 +202,13 @@ Public Class ffmpegEnc
         Sub New()
             Title = "ffmpeg Options"
         End Sub
+
+        Public Overrides ReadOnly Property Package As Package
+            Get
+                Return ffmpegEnc.Package
+            End Get
+        End Property
+
 
         Property Codec As New OptionParam With {
             .Switch = "-c:v",
@@ -409,10 +422,6 @@ Public Class ffmpegEnc
                 Return True
             End If
             Return False
-        End Function
-
-        Public Overrides Function GetPackage() As Package
-            Return Package.ffmpeg
         End Function
 
         Function GetQualityArgs() As String

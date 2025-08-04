@@ -18,6 +18,12 @@ Public Class NVEnc
         End Get
     End Property
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.NVEncC
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As EncoderParams
 
@@ -44,7 +50,7 @@ Public Class NVEnc
     Public Overrides ReadOnly Property OverridingTargetFileName As String
         Get
             Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
-            value = value.Replace(Environment.NewLine,"")
+            value = value.Replace(Environment.NewLine, "")
             Return value
         End Get
     End Property
@@ -185,7 +191,7 @@ Public Class NVEnc
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
             Dim offset = If(p.Script.IsFilterActive("Crop"), New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), Padding.Empty)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
-            
+
             Dim profile = "#"
             If Params.DolbyVisionProfileH265.Visible Then profile = Params.DolbyVisionProfileH265.ValueText
             If Params.DolbyVisionProfileAV1.Visible Then profile = Params.DolbyVisionProfileAV1.ValueText
@@ -204,7 +210,7 @@ Public Class NVEnc
 
             If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
                 newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
-            End If            
+            End If
 
             If Not String.IsNullOrWhiteSpace(newPath) Then
                 Params.DolbyVisionRpu.Value = newPath
@@ -322,7 +328,7 @@ Public Class NVEnc
         End If
 
         If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-            Dim isAV1 = If( Params.DolbyVisionProfileAV1.Visible, True, False)
+            Dim isAV1 = If(Params.DolbyVisionProfileAV1.Visible, True, False)
             Dim profileParam = If(isAV1, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
             Dim profile = ""
@@ -403,31 +409,37 @@ Public Class NVEnc
             Title = "NVEncC Options"
         End Sub
 
-    Property OverrideTargetFileName As New BoolParam() With {
-        .Text = "Override Target File Name",
-        .Init = False}
+        Public Overrides ReadOnly Property Package As Package
+            Get
+                Return NVEnc.Package
+            End Get
+        End Property
 
-    Property TargetFileName As New StringParam With {
-        .Text = "Target File Name",
-        .Quotes = QuotesMode.Never,
-        .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
-        .Init = "%source_name%_new",
-        .InitAction = Sub(tb)
-                          tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
-                      End Sub}
+        Property OverrideTargetFileName As New BoolParam() With {
+            .Text = "Override Target File Name",
+            .Init = False}
 
-    Property TargetFileNamePreview As New StringParam With {
-        .Text = "Preview",
-        .Quotes = QuotesMode.Never,
-        .InitAction = Sub(tb)
-                          tb.Edit.MultilineHeightFactor = 3
-                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
-                          tb.Edit.TextBox.ReadOnly = True
-                          BlockValueChanged = True
-                          .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
-                          BlockValueChanged = False
-                      End Sub}
+        Property TargetFileName As New StringParam With {
+            .Text = "Target File Name",
+            .Quotes = QuotesMode.Never,
+            .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+            .Init = "%source_name%_new",
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 6
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          End Sub}
+
+        Property TargetFileNamePreview As New StringParam With {
+            .Text = "Preview",
+            .Quotes = QuotesMode.Never,
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 3
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                              tb.Edit.TextBox.ReadOnly = True
+                              BlockValueChanged = True
+                              .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                              BlockValueChanged = False
+                          End Sub}
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
@@ -1344,42 +1356,42 @@ Public Class NVEnc
                 LibPlaceboShaderAntiring.NumEdit.Enabled = LibPlaceboShader.Value
                 LibPlaceboShaderLinear.MenuButton.Enabled = LibPlaceboShader.Value
 
-            LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDstPlTransfer.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDstPlColorprim.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingSrcMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingSrcMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDstMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDstMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingDynPeakDetect.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingSmoothPeriod.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingSceneThresholdLow.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingSceneThresholdHigh.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingPercentile.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingBlackCutoff.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingGamutMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunction.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionKneeAdaption.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionKneeMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionKneeMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionKneeDefault.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionKneeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionSlopeTuning.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionSlopeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionSplineContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionReinhardContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionLinearKnee.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionExposure.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionMetadata.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionContrastRecovery.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionContrastSmoothness.NumEdit.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionUseDolbyVision.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionInverseToneMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionShowClipping.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionVisualizeLut.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingFunctionLutType.MenuButton.Enabled = LibPlaceboTonemapping.Value
-            LibPlaceboTonemappingLut.TextEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstPlTransfer.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstPlColorprim.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSrcMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSrcMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDynPeakDetect.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSmoothPeriod.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSceneThresholdLow.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSceneThresholdHigh.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingPercentile.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingBlackCutoff.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingGamutMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunction.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeAdaption.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeDefault.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSlopeTuning.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSlopeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSplineContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionReinhardContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionLinearKnee.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionExposure.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionMetadata.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionContrastRecovery.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionContrastSmoothness.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionUseDolbyVision.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionInverseToneMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionShowClipping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionVisualizeLut.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionLutType.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingLut.TextEdit.Enabled = LibPlaceboTonemapping.Value
 
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
@@ -2226,10 +2238,6 @@ Public Class NVEnc
                 Return True
             End If
             Return False
-        End Function
-
-        Public Overrides Function GetPackage() As Package
-            Return Package.NVEncC
         End Function
     End Class
 End Class

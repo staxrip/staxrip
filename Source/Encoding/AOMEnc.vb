@@ -14,6 +14,12 @@ Public Class AOMEnc
         Name = "AOMEnc"
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.AOMEnc
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As AV1Params
 
@@ -207,6 +213,12 @@ Public Class AV1Params
         Title = "AOMEnc Options"
         Separator = "="
     End Sub
+
+    Public Overrides ReadOnly Property Package As Package
+        Get
+            Return AOMEnc.Package
+        End Get
+    End Property
 
 
     Property OverrideTargetFileName As New BoolParam() With {
@@ -812,10 +824,5 @@ Public Class AV1Params
         End If
 
         Return False
-    End Function
-
-
-    Public Overrides Function GetPackage() As Package
-        Return Package.AOMEnc
     End Function
 End Class

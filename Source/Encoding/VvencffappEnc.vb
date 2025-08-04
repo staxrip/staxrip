@@ -14,6 +14,12 @@ Public Class VvencffappEnc
         Params.ApplyPresetValues()
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.VVenCFFapp
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As VvencffappParams
 
@@ -288,6 +294,13 @@ Public Class VvencffappParams
     Sub New()
         Title = "vvencFFapp Options"
     End Sub
+
+    Public Overrides ReadOnly Property Package As Package
+        Get
+            Return VvencffappEnc.Package
+        End Get
+    End Property
+
 
     Property OverrideTargetFileName As New BoolParam() With {
         .Text = "Override Target File Name",
@@ -683,10 +696,6 @@ Public Class VvencffappParams
 
     Sub ApplyPresetDefaultValues()
     End Sub
-
-    Public Overrides Function GetPackage() As Package
-        Return Package.VVenCFFapp
-    End Function
 End Class
 
 Public Enum VvencffappRateMode

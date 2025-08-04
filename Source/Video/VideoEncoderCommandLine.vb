@@ -17,7 +17,7 @@ Namespace VideoEncoderCommandLine
             includeExecutable As Boolean,
             Optional pass As Integer = 1) As String
 
-        MustOverride Function GetPackage() As Package
+        MustOverride ReadOnly Property Package As Package
 
         Overridable Function GetCommandLinePreview() As String
             Return GetCommandLine(True, True)

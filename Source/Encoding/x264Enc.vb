@@ -17,6 +17,12 @@ Public Class x264Enc
         Params.ApplyValues(False)
     End Sub
 
+    Overloads Shared ReadOnly Property Package As Package
+        Get
+            Return Package.x264
+        End Get
+    End Property
+
     <NonSerialized>
     Private ParamsValue As x264Params
 
@@ -405,6 +411,13 @@ Public Class x264Params
     Sub New()
         Title = "x264 Options"
     End Sub
+
+    Public Overrides ReadOnly Property Package As Package
+        Get
+            Return x264Enc.Package
+        End Get
+    End Property
+
 
     Property OverrideTargetFileName As New BoolParam() With {
         .Text = "Override Target File Name",
@@ -1456,10 +1469,6 @@ Public Class x264Params
         End If
 
         Return False
-    End Function
-
-    Public Overrides Function GetPackage() As Package
-        Return Package.x264
     End Function
 End Class
 

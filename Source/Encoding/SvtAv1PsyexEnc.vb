@@ -5,36 +5,36 @@ Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
-Public Class SvtAv1Enc
+Public Class SvtAv1PsyexEnc
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "SvtAv1EncApp | SVT-AV1"
+        Name = "SvtAv1EncApp | SVT-AV1-PSYEX"
         Params.ApplyPresetDefaultValues()
         Params.ApplyPresetValues()
     End Sub
 
     Overloads Shared ReadOnly Property Package As Package
         Get
-            Return Package.SvtAv1EncApp
+            Return Package.SvtAv1EncAppPsyex
         End Get
     End Property
 
     <NonSerialized>
-    Private ParamsValue As SvtAv1EncParams
+    Private ParamsValue As SvtAv1PsyexEncParams
 
-    Property Params As SvtAv1EncParams
+    Property Params As SvtAv1PsyexEncParams
         Get
             If ParamsValue Is Nothing Then
-                ParamsValue = New SvtAv1EncParams
+                ParamsValue = New SvtAv1PsyexEncParams
                 ParamsValue.Init(ParamsStore)
             End If
 
             Return ParamsValue
         End Get
-        Set(value As SvtAv1EncParams)
+        Set(value As SvtAv1PsyexEncParams)
             ParamsValue = value
         End Set
     End Property
@@ -55,31 +55,36 @@ Public Class SvtAv1Enc
 
     Overrides ReadOnly Property IsDolbyVisionSet As Boolean
         Get
-            Return False
+            If Not Params.DolbyVisionRpu.Visible Then Return False
+            Return Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
-            Return True
+            If Not Params.DolbyVisionRpu.Visible Then Return True
+            Return String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
-            Return True
+            If Not Params.DolbyVisionRpu.Visible Then Return True
+            Return String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property DolbyVisionMetadataPath As String
         Get
-            Return ""
+            If Not Params.DolbyVisionRpu.Visible Then Return Nothing
+            Return Params.DolbyVisionRpu.Value
         End Get
     End Property
 
     Overrides ReadOnly Property Hdr10PlusMetadataPath As String
         Get
-            Return ""
+            If Not Params.Hdr10PlusJson.Visible Then Return Nothing
+            Return Params.Hdr10PlusJson.Value
         End Get
     End Property
 
@@ -97,6 +102,26 @@ Public Class SvtAv1Enc
     End Property
 
     Overrides Function BeforeEncoding() As Boolean
+        Dim rpu = Params.DolbyVisionRpu.Value
+
+        If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
+            Dim offset = If(p.Script.IsFilterActive("Crop"), New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), Padding.Empty)
+            Dim mode = CType(Params.DolbyVisionRpuMode.Value, DoviMode)
+
+            p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
+            Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
+
+            If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
+                newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
+            End If            
+
+            If Not String.IsNullOrWhiteSpace(newPath) Then
+                Params.DolbyVisionRpu.Value = newPath
+            Else
+                Return False
+            End If
+        End If
+
         Return True
     End Function
 
@@ -122,7 +147,7 @@ Public Class SvtAv1Enc
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.FrameCount = p.Script.GetFrameCount
-            proc.IntegerFrameOutput = Params.Progress.Value < 1
+            proc.IntegerFrameOutput = Params.Progress.Value < 2
             proc.SkipStrings = {"Encoding:", "Encoding frame", " Frames @ "}
 
             If commandLine.Contains("|") Then
@@ -210,16 +235,16 @@ Public Class SvtAv1Enc
                     cl += " --color-range 0"
                 End If
 
-                'If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
-                '    cl += $" {Params.SpecificHdr10PlusJson.Switch} ""{p.Hdr10PlusMetadataFile}"""
-                'End If
+                If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
+                    cl += $" {Params.Hdr10PlusJson.Switch} ""{p.Hdr10PlusMetadataFile}"""
+                End If
             End If
         End If
 
-        'If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-        '    'cl += " --output-depth 10"
-        '    cl += $" {Params.SpecificDolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
-        'End If
+        If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            'cl += " --output-depth 10"
+            cl += $" {Params.DolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
+        End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
@@ -291,11 +316,11 @@ Public Class SvtAv1Enc
             Exit Sub
         End If
 
-        Dim newParams As New SvtAv1EncParams
+        Dim newParams As New SvtAv1PsyexEncParams
         Dim newStore = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(newStore)
 
-        Dim enc As New SvtAv1Enc
+        Dim enc As New SvtAv1PsyexEnc
         enc.Params = newParams
         enc.Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality
         enc.Params.ConstantRateFactor.Value = enc.Params.CompCheck.Value
@@ -359,11 +384,11 @@ Public Class SvtAv1Enc
     End Function
 
     Overrides Function CreateEditControl() As Control
-        Return New SvtAv1EncAppControl(Me) With {.Dock = DockStyle.Fill}
+        Return New SvtAv1EncAppPsyexControl(Me) With {.Dock = DockStyle.Fill}
     End Function
 
     Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
-        Dim newParams As New SvtAv1EncParams
+        Dim newParams As New SvtAv1PsyexEncParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
         newParams.ApplyPresetDefaultValues()
@@ -374,7 +399,7 @@ Public Class SvtAv1Enc
 
             Dim a = Sub()
                         Dim enc = ObjectHelp.GetCopy(Me)
-                        Dim params2 As New SvtAv1EncParams
+                        Dim params2 As New SvtAv1PsyexEncParams
                         Dim store2 = ObjectHelp.GetCopy(store)
                         params2.Init(store2)
                         enc.Params = params2
@@ -420,22 +445,22 @@ Public Class SvtAv1Enc
         tester.UndocumentedSwitches = ""
 
         tester.Package = Package
-        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "SvtAv1Enc.vb")
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "SvtAv1PsyexEnc.vb")
 
         Return tester.Test
     End Function
 End Class
 
-Public Class SvtAv1EncParams
+Public Class SvtAv1PsyexEncParams
     Inherits CommandLineParams
 
     Sub New()
-        Title = "SvtAv1EncApp (SVT-AV1) Options"
+        Title = "SvtAv1EncApp (SVT-AV1-PSYEX) Options"
     End Sub
 
     Public Overrides ReadOnly Property Package As Package
         Get
-            Return SvtAv1Enc.Package
+            Return SvtAv1PsyexEnc.Package
         End Get
     End Property
 
@@ -512,10 +537,10 @@ Public Class SvtAv1EncParams
         .Switch = "--progress",
         .Text = "Progress",
         .Expanded = True,
-        .Options = {"0: No Output", "1: Normal (default)", "2: Patman86/AOMEnc Style Output"},
-        .Values = {"0", "1", "2"},
+        .Options = {"0: No Output", "1: Normal (default)", "2: AOMEnc Style Output", "3: Patman86 Style Output"},
+        .Values = {"0", "1", "2", "3"},
         .DefaultValue = 1,
-        .Value = 2}
+        .Value = 3}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -639,8 +664,8 @@ Public Class SvtAv1EncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
-        .Init = 1}
+        .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM", "4: Still Picture"},
+        .Init = 2}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -658,17 +683,17 @@ Public Class SvtAv1EncParams
         .HelpSwitch = "--qp",
         .Text = "Quantization Parameter",
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
-        .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
-        .Config = {1, 63, 1.0, 0},
+        .ValueChangedAction = Sub(x) ConstantRateFactor.Value = x,
+        .Config = {1, 70, 0.25, 2},
         .Init = 35}
 
     Property ConstantRateFactor As New NumParam With {
-       .HelpSwitch = "--crf",
-       .Text = "Constant Rate Factor",
-       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
-       .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
-       .Config = {1, 63, 1, 0},
-       .Init = 35}
+        .HelpSwitch = "--crf",
+        .Text = "Constant Rate Factor",
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
+        .ValueChangedAction = Sub(x) QuantizationParameter.Value = x,
+        .Config = {1, 70, 0.25, 2},
+        .Init = 35}
 
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--tbr",
@@ -703,8 +728,8 @@ Public Class SvtAv1EncParams
         .Text = "Enable Variance Boost",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off (default)", "1: On"},
-        .Init = 0}
+        .Options = {"0: Off", "1: On (default)"},
+        .Init = 1}
 
     Property VarianceBoostStrength As New OptionParam With {
         .Switch = "--variance-boost-strength",
@@ -719,10 +744,19 @@ Public Class SvtAv1EncParams
         .Switch = "--variance-octile",
         .Text = "Variance Octile",
         .Expanded = True,
-        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th (default)", "6: 6/8th", "7: 7/8th", "8: 8/8th"},
+        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
         .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
         .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
-        .Init = 4}
+        .Init = 5}
+
+    Property VarianceBoostCurve As New OptionParam With {
+        .Switch = "--variance-boost-curve",
+        .Text = "Variance Boost Curve",
+        .Expanded = True,
+        .Options = {"0: Gentle (default)", "1: Low-Medium Contrast Boost Curve", "2: Still Picture Curve, tuned for SSIMULACRA2"},
+        .Values = {"0", "1", "2"},
+        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .Init = 0}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
@@ -731,12 +765,6 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency (default)"},
         .Init = 2}
-
-    Property QpScaleCompressStrength As New NumParam With {
-        .Switch = "--qp-scale-compress-strength",
-        .Text = "QP Scale Compress Strength",
-        .Config = {0, 3, 0.01, 2},
-        .Init = 0}
 
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
@@ -750,19 +778,19 @@ Public Class SvtAv1EncParams
         .Switch = "--enable-qm",
         .Text = "Enable quantisation matrices",
         .IntegerValue = True,
-        .Init = False}
+        .Init = True}
 
     Property QmMin As New NumParam With {
         .Switch = "--qm-min",
         .Text = "Min quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Value,
-        .Init = 8}
+        .Init = 2}
 
     Property QmMax As New NumParam With {
         .Switch = "--qm-max",
         .Text = "Max quant matrix flatness",
-        .VisibleFunc = Function() EnableQm.Visible,
+        .VisibleFunc = Function() EnableQm.Value,
         .Config = {0, 15, 1},
         .Init = 15}
 
@@ -770,9 +798,9 @@ Public Class SvtAv1EncParams
         .Switch = "--tf-strength",
         .Text = "Temporal Filtering Strength",
         .Expanded = True,
-        .Options = {"0", "1", "2", "3 (default)", "4"},
+        .Options = {"0", "1 (default)", "2", "3", "4"},
         .IntegerValue = True,
-        .Init = 3}
+        .Init = 1}
 
     Property LuminanceQpBias As New NumParam With {
         .Switch = "--luminance-qp-bias",
@@ -784,9 +812,17 @@ Public Class SvtAv1EncParams
         .Switch = "--sharpness",
         .Text = "Sharpness Bias",
         .Expanded = True,
-        .Options = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0 (default)", "1", "2", "3", "4", "5", "6", "7"},
+        .Options = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1 (default)", "2", "3", "4", "5", "6", "7"},
         .Values = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7"},
-        .Init = 7}
+        .Init = 8}
+
+    Property KeyframeTemporalFilteringStrength As New OptionParam With {
+        .Switch = "--kf-tf-strength",
+        .Text = "Keyframe Temporal Filtering Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
+        .Init = 1}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -823,7 +859,7 @@ Public Class SvtAv1EncParams
        .Switch = "--keyint",
        .Text = "Keyint / GOP Size",
        .Expanded = True,
-       .Options = {"-2: ~5 seconds (default)", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+       .Options = {"-2: ~10 seconds (default)", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
        .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
        .VisibleFunc = Function() Not ConstantRateFactor.Visible,
        .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
@@ -833,7 +869,7 @@ Public Class SvtAv1EncParams
        .Switch = "--keyint",
        .Text = "Keyint / GOP Size",
        .Expanded = True,
-       .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+       .Options = {"-2: ~10 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
        .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
        .VisibleFunc = Function() ConstantRateFactor.Visible,
        .ValueChangedAction = Sub(x) KeyInt.Value = x,
@@ -908,12 +944,10 @@ Public Class SvtAv1EncParams
         .Config = {0, 4, 1},
         .Init = 0}
 
-    Property LoopFilterEnable As New OptionParam With {
+    Property LoopFilterEnable As New NumParam With {
         .Switch = "--enable-dlf",
         .Text = "Deblocking Loop Filter",
-        .Expanded = True,
-        .Options = {"0: Off", "1: On (default)", "2: Slower, more accurate filtering"},
-        .Values = {"0", "1", "2"},
+        .Config = {0, 2, 1},
         .Init = 1}
 
     Property CDEFLevel As New BoolParam With {
@@ -1019,6 +1053,7 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() SuperresMode.Value = 3,
         .Init = 43}
 
+
     Property SframeInterval As New NumParam With {
         .Switch = "--sframe-dist",
         .Text = "S-Frame Interval",
@@ -1031,6 +1066,7 @@ Public Class SvtAv1EncParams
         .Options = {"1: Considered frame will be made into an S-Frame only if it is an altref frame", "2: Next altref frame will be made into an S-Frame (default)"},
         .Values = {"1", "2"},
         .Init = 1}
+
 
     Property ResizeMode As New OptionParam With {
         .Switch = "--resize-mode",
@@ -1212,6 +1248,123 @@ Public Class SvtAv1EncParams
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
+    Property DolbyVisionRpuMode As New OptionParam With {
+        .HelpSwitch = "",
+        .Text = "Dolby Vision RPU Mode",
+        .Expanded = True,
+        .Options = {DispNameAttribute.GetValueForEnum(DoviMode.Mode0) + " (default)",
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode1),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode2),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode3),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode4),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode5)},
+        .IntegerValue = True,
+        .Init = 0}
+
+
+    Property Hdr10PlusJson As New StringParam With {
+        .Switch = "--hdr10plus-json",
+        .Text = "HDR10+ JSON",
+        .BrowseFile = True}
+
+    Property DolbyVisionRpu As New StringParam With {
+        .Switch = "--dolby-vision-rpu",
+        .Text = "Dolby Vision RPU",
+        .BrowseFile = True}
+
+    Property RestrictedMotionVector As New BoolParam With {
+        .Switch = "--rmv",
+        .Text = "Restrict Motion Vectors",
+        .IntegerValue = True,
+        .Init = False}
+
+    Property QpScaleCompressStrength As New NumParam With {
+        .Switch = "--qp-scale-compress-strength",
+        .Text = "QP Scale Compress Strength",
+        .Config = {0, 8, 0.01, 2},
+        .Init = 1}
+
+    Property FilteringNoiseDetection As New OptionParam With {
+        .Switch = "--filtering-noise-detection",
+        .Text = "Filtering Noise Detection",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Tune Behavior (default)", "1: On", "2: Off", "3: On (CDEF Only)", "4: On (Restoration Only)"},
+        .Init = 0}
+
+    Property Max32TxSize As New OptionParam With {
+        .Switch = "--max-32-tx-size",
+        .Text = "Max 32x32px Tx Size",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .Init = 0}
+
+    Property MaxChromaQmLevel As New NumParam With {
+        .Switch = "--chroma-qm-max",
+        .Text = "Max chroma quant matrix flatness",
+        .VisibleFunc = Function() EnableQm.Visible AndAlso EnableQm.Value,
+        .Config = {0, 15, 1},
+        .Init = 15}
+
+    Property SpecificMinChromaQmLevel As New NumParam With {
+        .Switch = "--chroma-qm-min",
+        .Text = "Min chroma quant matrix flatness",
+        .Config = {0, 15, 1},
+        .VisibleFunc = Function() EnableQm.Visible AndAlso EnableQm.Value,
+        .Init = 8}
+
+    Property PsyRd As New NumParam With {
+        .Switch = "--psy-rd",
+        .Text = "Psychovisual Rate Distortion Optimization",
+        .Config = {0, 6, 0.01, 2},
+        .Init = 0.5}
+
+    Property SpyRd As New OptionParam With {
+        .Switch = "--spy-rd",
+        .Text = "Alternate Psychovisual Rate Distortion Pathways",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: Full (Intra + Interpolation Sharpness)", "2: Partial (Interpolation Only)"},
+        .Init = 0}
+
+    Property SharpTx As New OptionParam With {
+        .Switch = "--sharp-tx",
+        .Text = "Sharp Transform Optimizations",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: On (default)"},
+        .Init = 1}
+
+    Property HbdMds As New OptionParam With {
+        .Switch = "--hbd-mds",
+        .Text = "High Bit Depth Mode Decisions",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: Forces 10-bit+ (HBD)", "2: 8/10-bit Hybrid", "3: Full 8-bit"},
+        .Init = 0}
+
+    Property NoiseNormStrength As New OptionParam With {
+        .Switch = "--noise-norm-strength",
+        .Text = "Noise Norm Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
+        .Init = 1}
+
+    Property AdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
+        .Init = 1}
+
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+
 
 
 
@@ -1236,7 +1389,7 @@ Public Class SvtAv1EncParams
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
-                    AqMode, QpScaleCompressStrength, RecodeLoop,
+                    AqMode, RecodeLoop,
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",
@@ -1253,11 +1406,19 @@ Public Class SvtAv1EncParams
                     ResizeMode, ResizeDenom, ResizeKfDenom, ResizeFrameEvents, ResizeFrameDenoms, ResizeFrameKfDenoms,
                     Lossless, Avif
                 )
+                Add("PSYEX Specific 1",
+                    Hdr10PlusJson, DolbyVisionRpu, DolbyVisionRpuMode,
+                    QpScaleCompressStrength, FilteringNoiseDetection, Max32TxSize,
+                    NoiseNormStrength, AdaptiveFilmGrain, KeyframeTemporalFilteringStrength
+                )
+                Add("PSYEX Specific 2",
+                    RestrictedMotionVector, SpecificMinChromaQmLevel, MaxChromaQmLevel, PsyRd, SpyRd, SharpTx, HbdMds
+                )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL
                 )
                 Add("Variance Boost Options",
-                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile
+                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile, VarianceBoostCurve
                 )
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
                 Add("Other",
@@ -1486,9 +1647,3 @@ Public Class SvtAv1EncParams
     Sub ApplyPresetDefaultValues()
     End Sub
 End Class
-
-Public Enum SvtAv1EncAppRateMode
-    Quality
-    VBR
-    CBR
-End Enum

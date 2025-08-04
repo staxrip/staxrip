@@ -596,15 +596,48 @@ Public Class Package
         .DownloadURL = "https://github.com/f11894/VVenC_Build_Actions/releases"})
 
     Shared Property SvtAv1EncApp As Package = Add(New Package With {
-        .Name = "SvtAv1EncApp",
+        .Name = "SvtAv1EncApp (SVT-AV1)",
         .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp"),
+        .Filename = "SvtAv1EncApp.exe",
+        .WebURL = "https://gitlab.com/AOMediaCodec/SVT-AV1",
+        .HelpURL = "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md",
+        .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
+        .HelpSwitch = "--help",
+        .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
+
+    Shared Property SvtAv1EncAppEssential As Package = Add(New Package With {
+        .Name = "SvtAv1EncApp (SVT-AV1-Essential)",
+        .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp-Essential"),
+        .Filename = "SvtAv1EncApp.exe",
+        .WebURL = "https://github.com/nekotrix/SVT-AV1-Essential",
+        .HelpURL = "https://github.com/nekotrix/SVT-AV1-Essential/tree/Essential-v3.1.0/Docs/Parameters.md",
+        .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1EssentialEnc,
+        .HelpSwitch = "--help",
+        .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
+
+    Shared Property SvtAv1EncAppHdr As Package = Add(New Package With {
+        .Name = "SvtAv1EncApp (SVT-AV1-HDR)",
+        .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp-Hdr"),
         .Filename = "SvtAv1EncApp.exe",
         .WebURL = "https://github.com/juliobbv-p/svt-av1-hdr",
         .HelpURL = "https://github.com/juliobbv-p/svt-av1-hdr/blob/master/Docs/Parameters.md",
         .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
-        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1HdrEnc,
         .HelpSwitch = "--help",
-        .Description = "The Scalable Video Technology for AV1 (SVT-AV1 Encoder and Decoder) with perceptual enhancements for psychovisually optimal AV1 encoding."})
+        .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
+
+    Shared Property SvtAv1EncAppPsyex As Package = Add(New Package With {
+        .Name = "SvtAv1EncApp (SVT-AV1-PSYEX)",
+        .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp-Psyex"),
+        .Filename = "SvtAv1EncApp.exe",
+        .WebURL = "https://github.com/BlueSwordM/svt-av1-psyex",
+        .HelpURL = "https://github.com/BlueSwordM/svt-av1-psyex/blob/master/Docs/Parameters.md",
+        .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1PsyexEnc,
+        .HelpSwitch = "--help",
+        .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
 
     Shared Property Rav1e As Package = Add(New Package With {
         .Name = "rav1e",
@@ -2990,31 +3023,6 @@ Public Class Package
                     s.Storage?.SetInt("x265 type", type)
                 Else
                     type = CType(s.Storage.GetInt("x265 type", x265Type.Vanilla), x265Type)
-                End If
-
-                Return type
-            End If
-        End Get
-    End Property
-
-    Shared ReadOnly Property SvtAv1EncAppType As SvtAv1EncAppType
-        Get
-            Dim filePath = SvtAv1EncApp.Path
-
-            If filePath <> "" Then
-                Dim size = New FileInfo(filePath).Length
-                Dim type = SvtAv1EncAppType.Vanilla
-
-                If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("SvtAv1EncApp size") Then
-                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
-
-                    If output.Contains("SVT-AV1-PSY") Then type = SvtAv1EncAppType.Psy
-                    If output.Contains("SVT-AV1-HDR") Then type = SvtAv1EncAppType.Hdr
-
-                    s.Storage?.SetInt("SvtAv1EncApp size", CInt(size))
-                    s.Storage?.SetInt("SvtAv1EncApp type", type)
-                Else
-                    type = CType(s.Storage.GetInt("SvtAv1EncApp type", SvtAv1EncAppType.Vanilla), SvtAv1EncAppType)
                 End If
 
                 Return type

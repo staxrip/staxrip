@@ -3,7 +3,7 @@ Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
-Public Class SvtAv1EncAppControl
+Public Class SvtAv1EncAppEssentialControl
     Inherits UserControl
 
 #Region " Designer "
@@ -68,7 +68,7 @@ Public Class SvtAv1EncAppControl
         Me.lv.TabIndex = 0
         Me.lv.UseCompatibleStateImageBehavior = False
         '
-        'SvtAv1EncAppControl
+        'SvtAv1EncAppEssentialControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -76,7 +76,7 @@ Public Class SvtAv1EncAppControl
         Me.Controls.Add(Me.blConfigCodec)
         Me.Controls.Add(Me.blCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Name = "SvtAv1EncAppControl"
+        Me.Name = "SvtAv1EncAppEssentialControl"
         Me.Size = New System.Drawing.Size(625, 448)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -85,31 +85,31 @@ Public Class SvtAv1EncAppControl
 
 #End Region
 
-    Private ReadOnly Encoder As SvtAv1Enc
-    Private ReadOnly Params As SvtAv1EncParams
+    Private ReadOnly Encoder As SvtAv1EssentialEnc
+    Private ReadOnly Params As SvtAv1EssentialEncParams
     Private ReadOnly cms As ContextMenuStripEx
-    Private ReadOnly QualityDefinitions As List(Of QualityItem)
+    Private ReadOnly QualityDefinitions As List(Of SvtAv1EncAppControl.QualityItem)
 
-    Sub New(enc As SvtAv1Enc)
+    Sub New(enc As SvtAv1EssentialEnc)
         InitializeComponent()
         components = New ComponentModel.Container()
 
         QualityDefinitions = If(s.SvtAv1EncAppQualityDefinitions IsNot Nothing AndAlso s.SvtAv1EncAppQualityDefinitions.Any(),
             s.SvtAv1EncAppQualityDefinitions,
-            New List(Of QualityItem) From {
-                New QualityItem(20, "Ultra High", "Ultra high quality and file size"),
-                New QualityItem(25, "Extreme High", "Extreme high quality and file size"),
-                New QualityItem(30, "Super High", "Super high quality and file size"),
-                New QualityItem(33, "Very High", "Very high quality and file size"),
-                New QualityItem(35, "Higher (default)", "Higher quality and file size"),
-                New QualityItem(38, "High", "High quality and file size"),
-                New QualityItem(40, "Medium", "Medium quality and file size"),
-                New QualityItem(42, "Low", "Low quality and file size"),
-                New QualityItem(45, "Lower", "Lower quality and file size"),
-                New QualityItem(47, "Very Low", "Very low quality and file size"),
-                New QualityItem(50, "Super Low", "Super low quality and file size"),
-                New QualityItem(55, "Extreme Low", "Extreme low quality and file size"),
-                New QualityItem(60, "Ultra Low", "Ultra low quality and file size")})
+            New List(Of SvtAv1EncAppControl.QualityItem) From {
+                New SvtAv1EncAppControl.QualityItem(20, "Ultra High", "Ultra high quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(25, "Extreme High", "Extreme high quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(30, "Super High (default)", "Super high quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(33, "Very High", "Very high quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(35, "Higher", "Higher quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(38, "High", "High quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(40, "Medium", "Medium quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(42, "Low", "Low quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(45, "Lower", "Lower quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(47, "Very Low", "Very low quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(50, "Super Low", "Super low quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(55, "Extreme Low", "Extreme low quality and file size"),
+                New SvtAv1EncAppControl.QualityItem(60, "Ultra Low", "Ultra low quality and file size")})
 
         Encoder = enc
         Params = Encoder.Params
@@ -248,8 +248,8 @@ Public Class SvtAv1EncAppControl
     End Sub
 
     Sub SetQuality(index As Integer, v As Double)
-        Params.ConstantRateFactor.Value = CInt(v)
-        Params.QuantizationParameter.Value = CInt(v)
+        Params.ConstantRateFactor.Value = v
+        Params.QuantizationParameter.Value = v
         lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(index).Selected = False
         UpdateControls()
@@ -343,17 +343,4 @@ Public Class SvtAv1EncAppControl
     Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles blCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
-
-    <Serializable>
-    Public Class QualityItem
-        Property Value As Double
-        Property Text As String
-        Property Tooltip As String
-
-        Sub New(value As Double, text As String, tooltip As String)
-            Me.Value = value
-            Me.Text = text
-            Me.Tooltip = tooltip
-        End Sub
-    End Class
 End Class

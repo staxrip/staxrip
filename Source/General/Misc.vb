@@ -723,6 +723,18 @@ Public Class Language
         End Get
     End Property
 
+    Shared ReadOnly Property ConfusingTwoLetterISOLanguageNames As String()
+        Get
+            Return {"am", "an", "as", "be", "es", "et", "he", "hi", "in", "is", "it", "my", "no", "or", "so", "to", "yo"}
+        End Get
+    End Property
+
+    Shared ReadOnly Property ConfusingThreeLetterISOLanguageNames As String()
+        Get
+            Return {"ace", "bug", "cat", "fan", "gem", "hat", "lit", "mad", "nor", "pan", "per", "sin", "spa"}
+        End Get
+    End Property
+
     Private Shared LanguagesValue As List(Of Language)
 
     Shared ReadOnly Property Languages() As List(Of Language)

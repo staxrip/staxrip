@@ -778,13 +778,17 @@ Public Class GlobalClass
                         .Concat(filename.SplitNoEmpty(".")) _
                         .Concat(filename.SplitNoEmpty(",")) _
                         .Concat(filename.SplitNoEmpty("_")) _
+                        .Where(Function(x) Not String.IsNullOrWhiteSpace(x)) _
+                        .Except(Language.ConfusingThreeLetterISOLanguageNames) _
+                        .Except(Language.ConfusingTwoLetterISOLanguageNames) _
                         .Concat(Regex.Matches(filename, "(?<=\().+?(?=\))", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
                         .Concat(Regex.Matches(filename, "(?<=\[).+?(?=\])", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
                         .Concat(Regex.Matches(filename, "(?<=[,\._]\().+?(?=\))", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
                         .Concat(Regex.Matches(filename, "(?<=[,\._]\[).+?(?=\])", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
                         .Concat({
                             filename.RightLast("_")
-                        }).Reverse().Distinct().Reverse()
+                        }) _
+                        .Reverse().Distinct().Reverse()
 
         For Each extracted In segments
             If String.IsNullOrWhiteSpace(extracted) Then Continue For

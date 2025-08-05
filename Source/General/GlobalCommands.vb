@@ -918,6 +918,13 @@ Public Class GlobalCommands
         Next
     End Sub
 
+    <Command("Adds a tag file to the container (works only with mkvmerge).")>
+    Sub AddTagFile(<DispName("File Path")> filepath As String)
+        If filepath.FileExists() Then
+            p.VideoEncoder.Muxer.TagFile = filepath
+        End If
+    End Sub
+
     <Command("Adds tags to the container (works only with mkvmerge).")>
     Sub AddTags(
         <DispName("Tags"),

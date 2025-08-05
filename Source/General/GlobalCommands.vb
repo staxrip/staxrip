@@ -909,6 +909,15 @@ Public Class GlobalCommands
         MsgWarn("Functionality is no longer available.")
     End Sub
 
+    <Command("Adds attachments to the container (works only with mkvmerge).")>
+    Sub AddAttachments(<DispName("Attachments")> attachments As String())
+        For Each i In attachments
+            If i.FileExists() Then
+                p.VideoEncoder.Muxer.Attachments.Add(i)
+            End If
+        Next
+    End Sub
+
     <Command("Adds tags to the container (works only with mkvmerge).")>
     Sub AddTags(
         <DispName("Tags"),

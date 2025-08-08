@@ -8090,8 +8090,13 @@ Public Class MainForm
                 g.ProcForm.Close()
             End If
         End If
+
+        Try
+            g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
+        Catch ex As Exception
+        End Try
+
         g.SaveSettings()
-        g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub
 
     Protected Overrides Sub OnDeactivate(e As EventArgs)

@@ -491,6 +491,36 @@ Public Class GlobalCommands
         p.Script.SetFilter(category, name, script)
     End Sub
 
+    <Command("Disables filters by name.")>
+    Sub DisableFilterNames(<DispName("Filter Names")> filterNames As String())
+        If filterNames.Any() Then
+            For Each filter In p.Script.Filters
+                For Each name In filterNames
+                    If filter.Name = name.TrimQuotes() Then
+                        filter.Active = False
+                    End If
+                Next
+            Next
+
+            g.MainForm.FiltersListView.Load()
+        End If
+    End Sub
+
+    <Command("Enables filters by name.")>
+    Sub EnableFilterNames(<DispName("Filter Names")> filterNames As String())
+        If filterNames.Any() Then
+            For Each filter In p.Script.Filters
+                For Each name In filterNames
+                    If filter.Name = name.TrimQuotes() Then
+                        filter.Active = True
+                    End If
+                Next
+            Next
+
+            g.MainForm.FiltersListView.Load()
+        End If
+    End Sub
+
     <Command("Sets the file path of the target file.")>
     Sub SetTargetFile(<DispName("Target File Path")>
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
@@ -910,10 +940,55 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Adds attachments to the container (works only with mkvmerge).")>
-    Sub AddAttachments(<DispName("Attachments")> attachments As String())
+    Sub AddAttachments(<DispName("File Paths")> attachments As String())
         For Each i In attachments
             If i.FileExists() Then
-                p.VideoEncoder.Muxer.Attachments.Add(i)
+                p.VideoEncoder.Muxer.Attachments.Add(i.TrimQuotes())
+            End If
+        Next
+    End Sub
+
+    <Command("Adds a chapters file to the container.")>
+    Sub AddChaptersFile(<DispName("File Path")> filepath As String)
+        If filepath.FileExists() Then
+            p.VideoEncoder.Muxer.ChapterFile = filepath.TrimQuotes()
+        End If
+    End Sub
+
+    <Command("Add a subtitle file to the container.")>
+    Sub AddSubtitle(<DispName("Enabled"), Description("Enabled or not"), DefaultValue(True)> enabled As Boolean,
+                    <DispName("Language"), Description("Language code or name"), DefaultValue("")> lang As String,
+                    <DispName("Name"), Description("Name/Title of the subtitle"), DefaultValue("")> name As String,
+                    <DispName("Default"), Description("Default flag"), DefaultValue(False)> [default] As Boolean,
+                    <DispName("Forced"), Description("Forced flag"), DefaultValue(False)> forced As Boolean,
+                    <DispName("Commentary"), Description("Commentary flag"), DefaultValue(False)> commentary As Boolean,
+                    <DispName("Hearing-Impaired"), Description("Hearing-Impaired flag"), DefaultValue(False)> hearingimpaired As Boolean,
+                    <DispName("File Path"), Description("Full path of the subtitle file"), DefaultValue("")> filepath As String
+                   )
+        If Not filepath.FileExists() Then Return
+        
+        Dim subtitles = Subtitle.Create(filepath.TrimQuotes())
+
+        For Each subtitle In subtitles
+            subtitle.Enabled = enabled
+            subtitle.Language = g.ExtractLanguageFromPath(lang)
+            subtitle.Title = name
+            subtitle.Default = [default]
+            subtitle.Forced = forced
+            subtitle.Commentary = commentary
+            subtitle.Hearingimpaired = hearingimpaired
+        Next
+
+        If subtitles.Any() Then
+            p.VideoEncoder.Muxer.Subtitles.AddRange(subtitles)
+        End If
+    End Sub
+
+    <Command("Adds subtitles to the container.")>
+    Sub AddSubtitles(<DispName("File Paths")> subtitles As String())
+        For Each i In subtitles
+            If i.FileExists() Then
+                p.VideoEncoder.Muxer.Subtitles.AddRange(Subtitle.Create(i.TrimQuotes()))
             End If
         Next
     End Sub
@@ -921,22 +996,78 @@ Public Class GlobalCommands
     <Command("Adds a tag file to the container (works only with mkvmerge).")>
     Sub AddTagFile(<DispName("File Path")> filepath As String)
         If filepath.FileExists() Then
-            p.VideoEncoder.Muxer.TagFile = filepath
+            p.VideoEncoder.Muxer.TagFile = filepath.TrimQuotes()
         End If
     End Sub
 
     <Command("Adds tags to the container (works only with mkvmerge).")>
-    Sub AddTags(
-        <DispName("Tags"),
-        Description("name 1 = value 1; name 2 = value 2; etc.")>
-        tags As String)
-
+    Sub AddTags(<DispName("Tags"), Description("name 1 = value 1; name 2 = value 2; etc.")> tags As String)
         For Each i In tags.Split(";"c)
             If i.Contains("=") Then
-                Dim left = i.Left("=").Trim
-                Dim right = i.Right("=").Trim
+                Dim left = i.Left("=").Trim().TrimQuotes()
+                Dim right = i.Right("=").Trim().TrimQuotes()
                 p.VideoEncoder.Muxer.Tags.Add(New StringPair(left, right))
             End If
         Next
+    End Sub
+
+    <Command("Sets the container title (works only with mkvmerge).")>
+    Sub SetTitle(<DispName("Title")> title As String)
+        If Not String.IsNullOrWhiteSpace(title.TrimQuotes()) Then
+            Dim muxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
+
+            If muxer IsNot Nothing Then
+                muxer.Title = title.TrimQuotes()
+            End If
+        End If
+    End Sub
+
+    <Command("Sets the video track language (works only with mkvmerge).")>
+    Sub SetVideoTrackLanguage(<DispName("Language")> lang As String)
+        lang = lang.TrimQuotes()
+        lang = If(Language.ConfusingThreeLetterISOLanguageNames.Contains(lang), $"[{lang}]", lang)
+        lang = If(Language.ConfusingTwoLetterISOLanguageNames.Contains(lang), $"[{lang}]", lang)
+        Dim el = g.ExtractLanguageFromPath(lang)
+
+        If el IsNot Nothing Then
+            Dim muxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
+
+            If muxer IsNot Nothing Then
+                muxer.VideoTrackLanguage = el
+            End If
+        End If
+    End Sub
+
+    <Command("Sets the video track name.")>
+    Sub SetVideoTrackName(<DispName("Name")> trackName As String)
+        If Not String.IsNullOrWhiteSpace(trackName) Then
+            p.VideoEncoder.Muxer.VideoTrackName = trackName
+        End If
+    End Sub
+
+    <Command("Disables events by name.")>
+    Sub DisableEvents(<DispName("Event Names")> eventNames As String())
+        If eventNames.Any() AndAlso s.EventCommands.Any() Then
+            For Each ec As EventCommand In s.EventCommands
+                For Each en As String In eventNames
+                    If ec.Name = en.TrimQuotes() Then
+                        ec.Enabled = False
+                    End If
+                Next
+            Next
+        End If
+    End Sub
+
+    <Command("Enables events by name.")>
+    Sub EnableEvents(<DispName("Event Names")> eventNames As String())
+        If eventNames.Any() AndAlso s.EventCommands.Any() Then
+            For Each ec As EventCommand In s.EventCommands
+                For Each en As String In eventNames
+                    If ec.Name = en.TrimQuotes() Then
+                        ec.Enabled = True
+                    End If
+                Next
+            Next
+        End If
     End Sub
 End Class

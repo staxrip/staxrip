@@ -1517,11 +1517,10 @@ Public Class Subtitle
     End Property
 
     Shared Function Create(path As String) As List(Of Subtitle)
+        path = path.TrimQuotes()
         Dim ret As New List(Of Subtitle)
 
-        If New FileInfo(path).Length = 0 Then
-            Return ret
-        End If
+        If New FileInfo(path).Length = 0 Then Return ret
 
         If path.Ext = "idx" Then
             Dim indexData As Integer

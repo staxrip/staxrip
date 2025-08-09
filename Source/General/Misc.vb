@@ -756,11 +756,16 @@ Public Class Language
                     New Language("pa", True, True),
                     New Language("ms", True, True),
                     New Language("ko", True, True),
-                    New Language(CultureInfo.InvariantCulture, True, True),
-                    New Language(New CustomCultureInfo("zxx", "xx", "zxx", "No Linguistic Content"), False, True),
-                    New Language(New CustomCultureInfo("yue", "zh", "yue", "Chinese (Cantonese)"), False, True),
-                    New Language(New CustomCultureInfo("cmn", "zh", "cmn", "Chinese (Mandarin)"), False, True)
+                    New Language(CultureInfo.InvariantCulture, True, True)
                 }
+
+                If OSVersion.VersionInfo.dwMajorVersion > 7 Then
+                    l.AddRange({
+                                   New Language(New CustomCultureInfo("zxx", "xx", "zxx", "No Linguistic Content"), False, True),
+                                   New Language(New CustomCultureInfo("yue", "zh", "yue", "Chinese (Cantonese)"), False, True),
+                                   New Language(New CustomCultureInfo("cmn", "zh", "cmn", "Chinese (Mandarin)"), False, True)
+                               })
+                End If
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
 

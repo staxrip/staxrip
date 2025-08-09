@@ -479,7 +479,7 @@ Public Class GlobalCommands
                   <Editor(GetType(MacroStringTypeEditor),
                   GetType(UITypeEditor))> script As String)
 
-        p.Script.AddFilter(New VideoFilter(category, name, script, active))
+        p.Script.AddFilter(New VideoFilter(category, name, script.Replace("`""", """").Replace("`n", BR), active))
         g.MainForm.Assistant()
     End Sub
 
@@ -488,7 +488,7 @@ Public Class GlobalCommands
                   category As String,
                   <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> script As String)
 
-        p.Script.SetFilter(category, name, script)
+        p.Script.SetFilter(category, name, script.Replace("`""", """").Replace("`n", BR))
     End Sub
 
     <Command("Disables filters by name.")>

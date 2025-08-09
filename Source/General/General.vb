@@ -1164,21 +1164,22 @@ Public Class CommandManager
                             Dim stringArg = TryCast(args(x), String)
 
                             If pt.IsArray AndAlso stringArg IsNot Nothing Then
-                                'Dim splits = stringArg.Split(";"c)
-                                Dim splits = g.MainForm.ParseCommandLine(stringArg, ";"c)
+                                Dim splits = g.MainForm.ParseCommandLine(stringArg.TrimQuotes(), ";"c)
                                 Dim et = pt.GetElementType()
                                 Dim tc = TypeDescriptor.GetConverter(et)
 
                                 If tc IsNot Nothing AndAlso tc.CanConvertFrom(GetType(String)) Then
                                     Dim a = Array.CreateInstance(et, splits.Length)
                                     For y = 0 To splits.Length - 1
-                                        a.SetValue(tc.ConvertFromString(splits(y).Trim()), y)
+                                        a.SetValue(tc.ConvertFromString(splits(y).TrimQuotes().Trim()), y)
                                     Next
 
                                     args(x) = a
                                 Else
                                     Throw New InvalidOperationException($"Cannot convert from String to {et}.")
                                 End If
+                            ElseIf stringArg IsNot Nothing AndAlso pt Is GetType(String) Then
+                                args(x) = TypeDescriptor.GetConverter(GetType(String)).ConvertFromString(stringArg.TrimQuotes())
                             Else
                                 args(x) = TypeDescriptor.GetConverter(pt).ConvertFrom(args(x))
                             End If

@@ -29,9 +29,10 @@ Module StringExtensions
     <Extension>
     Function TrimQuotes(instance As String) As String
         If instance = "" Then Return ""
+        If instance.Length < 2 Then Return instance
         If Not instance.StartsWith("""") OrElse Not instance.EndsWith("""") Then Return instance
 
-        Return instance.Trim(""""c)
+        Return instance.Substring(1, instance.Length - 2)
     End Function
 
     <Extension()>

@@ -6990,14 +6990,47 @@ Public Class MainForm
         Dim args = New List(Of String)
         Dim sb = New StringBuilder()
         Dim insideQuote = False
+        Dim insideCurlyBracketsLevel = 0
+        Dim insideRoundBracketsLevel = 0
+        Dim insideSquareBracketsLevel = 0
 
         For i = 0 To commandLine.Length - 1
-            If commandLine.Chars(i) = """" Then
-                sb.Append(commandLine.Chars(i))
-                insideQuote = Not insideQuote
-            ElseIf commandLine.Chars(i) = delimiter Then
+            Dim c = commandLine.Chars(i)
+
+            If c = """" Then
+                sb.Append(c)
+
+                Dim lc = If(i > 0, commandLine.Chars(i-1), "_"c)
+                If lc <> "`" Then
+                    insideQuote = Not insideQuote
+                End If
+            ElseIf c = "{" Then
+                sb.Append(c)
+                insideCurlyBracketsLevel += 1
+            ElseIf c = "}" Then
+                sb.Append(c)
+                If insideCurlyBracketsLevel > 0 Then insideCurlyBracketsLevel -= 1
+            ElseIf c = "(" Then
+                sb.Append(c)
+                insideRoundBracketsLevel += 1
+            ElseIf c = ")" Then
+                sb.Append(c)
+                If insideRoundBracketsLevel > 0 Then insideRoundBracketsLevel -= 1
+            ElseIf c = "[" Then
+                sb.Append(c)
+                insideSquareBracketsLevel += 1
+            ElseIf c = "]" Then
+                sb.Append(c)
+                If insideSquareBracketsLevel > 0 Then insideSquareBracketsLevel -= 1
+            ElseIf c = delimiter Then
                 If insideQuote Then
-                    sb.Append(commandLine.Chars(i))
+                    sb.Append(c)
+                ElseIf insideCurlyBracketsLevel > 0 Then
+                    sb.Append(c)
+                ElseIf insideRoundBracketsLevel > 0 Then
+                    sb.Append(c)
+                ElseIf insideSquareBracketsLevel > 0 Then
+                    sb.Append(c)
                 Else
                     Dim str = sb.ToString()
                     If Not String.IsNullOrWhiteSpace(str) Then
@@ -7006,7 +7039,7 @@ Public Class MainForm
                     sb = New StringBuilder()
                 End If
             Else
-                sb.Append(commandLine.Chars(i))
+                sb.Append(c)
             End If
         Next
 

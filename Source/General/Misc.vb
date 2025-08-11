@@ -561,27 +561,27 @@ Public Class CustomCultureInfo
         MyBase.New(baseCultureName)
     End Sub
 
-    Public Sub New(baseCultureName As String, twoLetterCode As String, threeLetterCode As String, name As String)
+    Public Sub New(baseCultureName As String, name As String, displayName As String, twoLetterCode As String, threeLetterCode As String)
         MyBase.New(baseCultureName)
 
         Dim cultureField = GetType(CultureInfo).GetField("m_name", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
         If cultureField IsNot Nothing Then
-            cultureField.SetValue(Me, threeLetterCode)
+            cultureField.SetValue(Me, Name)
         End If
 
         Dim displayNameField = GetType(CultureInfo).GetField("m_cultureData", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
         If displayNameField IsNot Nothing Then
             Dim cultureData = displayNameField.GetValue(Me)
             Dim displayNameProp = cultureData.GetType().GetField("sLocalizedDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, name)
+            displayNameProp?.SetValue(cultureData, displayName)
             displayNameProp = cultureData.GetType().GetField("sEnglishDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, name)
+            displayNameProp?.SetValue(cultureData, displayName)
             displayNameProp = cultureData.GetType().GetField("sISO639Language", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
             displayNameProp?.SetValue(cultureData, twoLetterCode)
             displayNameProp = cultureData.GetType().GetField("sISO639Language2", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
             displayNameProp?.SetValue(cultureData, threeLetterCode)
             displayNameProp = cultureData.GetType().GetField("sName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, threeLetterCode)
+            displayNameProp?.SetValue(cultureData, name)
         End If
     End Sub
 End Class
@@ -761,9 +761,15 @@ Public Class Language
 
                 If OSVersion.VersionInfo.dwMajorVersion > 7 Then
                     l.AddRange({
-                                   New Language(New CustomCultureInfo("zxx", "xx", "zxx", "No Linguistic Content"), False, True),
-                                   New Language(New CustomCultureInfo("yue", "zh", "yue", "Chinese (Cantonese)"), False, True),
-                                   New Language(New CustomCultureInfo("cmn", "zh", "cmn", "Chinese (Mandarin)"), False, True)
+                                   New Language(New CustomCultureInfo("no-NO", "no-NO", "Norwegian", "no", "nor"), False, False),
+                                   New Language(New CustomCultureInfo("zh-Hans-SG", "zh-Hans-SG", "Chinese (Simplified, Singapore)", "zh", "chi"), False, False),
+                                   New Language(New CustomCultureInfo("zh-Hant-HK", "zh-Hant-HK", "Chinese (Traditional, Hong Kong SAR)", "zh", "chi"), False, False),
+                                   New Language(New CustomCultureInfo("zh-Hant-TW", "zh-Hant-TW", "Chinese (Traditional, Taiwan)", "zh", "chi"), False, False)
+                               })
+                    l.AddRange({
+                                   New Language(New CustomCultureInfo("zxx", "zxx", "No Linguistic Content", "xx", "zxx"), False, True),
+                                   New Language(New CustomCultureInfo("yue", "yue", "Chinese (Cantonese)", "zh", "yue"), False, True),
+                                   New Language(New CustomCultureInfo("cmn", "cmn", "Chinese (Mandarin)", "zh", "cmn"), False, True)
                                })
                 End If
 
@@ -784,6 +790,7 @@ Public Class Language
                 l2.Sort()
                 l.AddRange(l2)
                 LanguagesValue = l
+                Dim xxxx = 1
             End If
 
             Return LanguagesValue

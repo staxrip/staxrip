@@ -49,7 +49,8 @@ Public Class ApplicationSettings
     Public FirstRunOnVersion As KeyValuePair(Of String, DateTime) = New KeyValuePair(Of String, Date)(g.DefaultCommands.GetApplicationDetails(), DateTime.Now)
     Public Fonts As Dictionary(Of FontCategory, String) = New Dictionary(Of FontCategory, String) From {
                                                             {FontCategory.Code, "Roboto Mono"},
-                                                            {FontCategory.Default, "Anuphan"}}
+                                                            {FontCategory.Default, "Anuphan"},
+                                                            {FontCategory.Thumbnail, "Roboto Mono"}}
     Public HidePreviewButtons As Boolean
     Public IconFile As String
     Public InvertCtrlKeyOnNextButton As Boolean = False
@@ -231,12 +232,9 @@ Public Class ApplicationSettings
             ThemeManager.SetCurrentTheme()
         End If
 
-        If Check(Fonts, "Fonts", 1) Then
-            Fonts = New Dictionary(Of FontCategory, String) From {
-                {FontCategory.Code, "Roboto Mono"},
-                {FontCategory.Default, "Anuphan"}
-                }
-        End If
+        If Not Fonts.ContainsKey(FontCategory.Code) Then Fonts.Add(FontCategory.Code, "Roboto Mono")
+        If Not Fonts.ContainsKey(FontCategory.Default) Then Fonts.Add(FontCategory.Default, "Anuphan")
+        If Not Fonts.ContainsKey(FontCategory.Thumbnail) Then Fonts.Add(FontCategory.Thumbnail, "Roboto Mono")
 
         If PackagePaths Is Nothing Then
             PackagePaths = New Dictionary(Of String, String)

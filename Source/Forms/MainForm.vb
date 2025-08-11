@@ -5884,14 +5884,14 @@ Public Class MainForm
             Dim headerFont = ui.AddTextButton()
             headerFont.Text = "Font Name:"
             headerFont.Expanded = True
-            headerFont.Edit.Text = p.ThumbnailerSettings.GetString("HeaderFontName", "Consolas")
+            headerFont.Edit.Text = p.ThumbnailerSettings.GetString("HeaderFontName", FontManager.GetThumbnailFont().Name)
             headerFont.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("HeaderFontName", value)
             headerFont.ClickAction = Sub()
                                          Using td As New TaskDialog(Of FontFamily)
                                              td.Title = "Choose a font for the header"
                                              td.Symbol = Symbol.Font
 
-                                             For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                             For Each ff In FontManager.GetFontFamilies(FontCategory.Thumbnail, True)
                                                  td.AddCommand(ff.Name, ff)
                                              Next
 
@@ -5938,14 +5938,14 @@ Public Class MainForm
             Dim timestampFont = ui.AddTextButton()
             timestampFont.Text = "Timestamp Font Name:"
             timestampFont.Expanded = True
-            timestampFont.Edit.Text = p.ThumbnailerSettings.GetString("TimestampFontName", "Consolas")
+            timestampFont.Edit.Text = p.ThumbnailerSettings.GetString("TimestampFontName", FontManager.GetThumbnailFont().Name)
             timestampFont.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("TimestampFontName", value)
             timestampFont.ClickAction = Sub()
                                             Using td As New TaskDialog(Of FontFamily)
                                                 td.Title = "Choose a font for the timestamps"
                                                 td.Symbol = Symbol.Font
 
-                                                For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                                For Each ff In FontManager.GetFontFamilies(FontCategory.Thumbnail, True)
                                                     td.AddCommand(ff.Name, ff)
                                                 Next
 

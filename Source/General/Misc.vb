@@ -1846,6 +1846,10 @@ Public Class OSVersion
 
     Public Shared ReadOnly Property VersionInfo As OSVERSIONINFOEXW
         Get
+            If _osVersionInfo.dwMajorVersion = 0 Then
+                RtlGetVersion(_osVersionInfo)
+            End If
+
             Return _osVersionInfo
         End Get
     End Property

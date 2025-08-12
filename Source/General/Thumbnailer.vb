@@ -233,8 +233,8 @@ Public Class Thumbnailer
 
                             Using gp As New GraphicsPath()
                                 Dim timestampSize = TextRenderer.MeasureText(timestamp, timestampFont)
-                                Dim timestampPositionX = If(timestampAlignmentLeftFlags.Contains(timestampAlignment), timestampAlignmentMargin.Width, If(timestampAlignmentCenterFlags.Contains(timestampAlignment), (bitmap.Width - timestampSize.Width) \ 2, bitmap.Width - timestampAlignmentMargin.Width - timestampSize.Width))
-                                Dim timestampPositionY = If(timestampAlignmentTopFlags.Contains(timestampAlignment), timestampAlignmentMargin.Height, If(timestampAlignmentMiddleFlags.Contains(timestampAlignment), (bitmap.Height - timestampSize.Height) \ 2, bitmap.Height - timestampAlignmentMargin.Height - timestampSize.Height))
+                                Dim timestampPositionX = If(timestampAlignmentLeftFlags.Contains(timestampAlignment), timestampAlignmentMargin.Width, If(timestampAlignmentCenterFlags.Contains(timestampAlignment), (bitmap.Width - timestampSize.Width) \ 2, bitmap.Width - timestampAlignmentMargin.Width - timestampSize.Width \ 2))
+                                Dim timestampPositionY = If(timestampAlignmentTopFlags.Contains(timestampAlignment), timestampAlignmentMargin.Height, If(timestampAlignmentMiddleFlags.Contains(timestampAlignment), (bitmap.Height - timestampSize.Height) \ 2, bitmap.Height - timestampAlignmentMargin.Height - timestampSize.Height \ 2))
                                 Dim timestampPosition = New Point(timestampPositionX, timestampPositionY)
 
                                 Using Format = New StringFormat()

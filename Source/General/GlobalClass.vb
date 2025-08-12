@@ -1639,11 +1639,24 @@ Public Class GlobalClass
                        End Sub)
     End Sub
 
-    Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, direction As ForceOutputModDirection, Optional force As Boolean = False)
-        p.CropLeft = Math.Max(0, left)
-        p.CropTop = Math.Max(0, top)
-        p.CropRight = Math.Max(0, right)
-        p.CropBottom = Math.Max(0, bottom)
+    Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, sides As AutoCropSideMode, direction As ForceOutputModDirection, Optional force As Boolean = False)
+        Dim cl = Math.Max(0, left)
+        Dim ct = Math.Max(0, top)
+        Dim cr = Math.Max(0, right)
+        Dim cb = Math.Max(0, bottom)
+
+        If sides = AutoCropSideMode.Horizontal Then
+            ct = 0
+            cb = 0
+        ElseIf sides = AutoCropSideMode.Vertical Then
+            cl = 0
+            cr = 0
+        End If        
+
+        p.CropLeft = cl
+        p.CropTop = ct
+        p.CropRight = cr
+        p.CropBottom = cb
 
         CorrectCropMod(direction, force)
         MainForm.SetCropFilter()
@@ -1660,7 +1673,10 @@ Public Class GlobalClass
 
         If p.HdrDolbyVisionMetadataFile IsNot Nothing AndAlso p.VideoEncoder.IsDolbyVisionSet Then
             Dim c = p.HdrDolbyVisionMetadataFile.Crop
-            SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
+            Dim sm = If(p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.NoOverride, p.AutoCropSideMode, AutoCropSideMode.All)
+            If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Horizontal Then sm = AutoCropSideMode.Horizontal
+            If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Vertical Then sm = AutoCropSideMode.Vertical
+            SetCrop(c.Left, c.Top, c.Right, c.Bottom, sm, ForceOutputModDirection.Decrease, True)
         Else
             Using server = FrameServerFactory.Create(p.SourceScript.Path)
                 Dim info = server.Info
@@ -1722,7 +1738,7 @@ Public Class GlobalClass
                 Dim right = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Right).Min()
                 Dim bottom = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Bottom).Min()
 
-                SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
+                SetCrop(left, top, right, bottom, p.AutoCropSideMode, p.ForcedOutputModDirection, False)
             End Using
         End If
     End Sub

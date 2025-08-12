@@ -25,6 +25,7 @@ Public Class Project
     Public AutoCropDolbyVisionThresholdBegin As Integer = 0
     Public AutoCropDolbyVisionThresholdEnd As Integer = 0
     Public AutoCropDolbyVisionMode As AutoCropDolbyVisionMode = AutoCropDolbyVisionMode.Automatic
+    Public AutoCropDolbyVisionSideMode As AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.NoOverride
     Public AutoCropMode As AutoCropMode = AutoCropMode.Always
     Public AutoCropFrameRangeMode As AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic
     Public AutoCropFrameRangeThresholdBegin As Integer = 0
@@ -34,6 +35,7 @@ Public Class Project
     Public AutoCropFrameIntervalFrameSelection As Integer = 400
     Public AutoCropTimeIntervalFrameSelection As Integer = 15
     Public AutoCropLuminanceThreshold As Single = 10.0
+    Public AutoCropSideMode As AutoCropSideMode = AutoCropSideMode.All
     Public AudioIntermediateWaveBitDepth As IntermediateWaveBitDepth = IntermediateWaveBitDepth.f32
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True

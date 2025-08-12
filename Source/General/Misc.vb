@@ -2136,6 +2136,19 @@ Public Enum AutoCropDolbyVisionMode
     <DispName("Manual Threshold")> ManualThreshold = 1
 End Enum
 
+Public Enum AutoCropSideMode
+    <DispName("All Sides")> All = 1
+    <DispName("Horizontal Only")> Horizontal = 2
+    <DispName("Vertical Only")> Vertical = 4
+End Enum
+
+Public Enum AutoCropDolbyVisionSideMode
+    <DispName("Apply General Setting")> NoOverride = 0
+    <DispName("All Sides")> All = 1
+    <DispName("Horizontal Only")> Horizontal = 2
+    <DispName("Vertical Only")> Vertical = 4
+End Enum
+
 Public Enum ShowTemplateSelectionMode
     <DispName("Never")> Never = 0
     <DispName("Command Line only")> CommandLine = 1 << 0

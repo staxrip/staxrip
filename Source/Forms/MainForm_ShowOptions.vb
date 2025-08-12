@@ -158,6 +158,7 @@ Partial Public Class MainForm
             ui.AddLine(autoCropPage, "General")
             'dim l = ui.AddLabel("Regular AutoCrop settings:", 0, FontStyle.Bold)
             'l.Margin = New Padding(0, 10, 0, 0)
+            Dim autoCropSideMode = ui.AddMenu(Of AutoCropSideMode)
             Dim autoCropFrameRangeMode = ui.AddMenu(Of AutoCropFrameRangeMode)
 
             Dim thresholdEb = ui.AddEmptyBlock(autoCropPage)
@@ -176,6 +177,11 @@ Partial Public Class MainForm
             thresholdEnd.Help = "Number of frames at the ending of the video, that are ignored when setting the crop values."
             thresholdEnd.Config = thresholdBegin.Config
             thresholdEnd.Field = NameOf(p.AutoCropFrameRangeThresholdEnd)
+
+            autoCropSideMode.Text = "Side Selection Mode"
+            autoCropSideMode.Help = "Decide which sides shall be cropped."
+            autoCropSideMode.Expanded = True
+            autoCropSideMode.Field = NameOf(p.AutoCropSideMode)
 
             autoCropFrameRangeMode.Text = "Frame Range Mode"
             autoCropFrameRangeMode.Help = "Defines the range frames are considered to be taken into account for processing:" + BR2 +
@@ -241,6 +247,8 @@ Partial Public Class MainForm
             ui.AddLabel(doviThresholdEb, "Ending:", 2)
             Dim doviThresholdEnd = ui.AddNumeric(doviThresholdEb)
 
+            Dim autoCropDVSideMode = ui.AddMenu(Of AutoCropDolbyVisionSideMode)()
+
 
             autoCropDVMode.Text = "Threshold Mode"
             autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold to ignore a number of frames at the beginning and/or end."
@@ -251,6 +259,11 @@ Partial Public Class MainForm
                                                            doviThresholdEb.Visible = active
                                                        End Sub
             autoCropDVMode.Button.ValueChangedAction.Invoke(p.AutoCropDolbyVisionMode)
+
+            autoCropDVSideMode.Text = "Side Selection Mode"
+            autoCropDVSideMode.Help = "Decide which sides shall be cropped."
+            autoCropDVSideMode.Expanded = True
+            autoCropDVSideMode.Field = NameOf(p.AutoCropDolbyVisionSideMode)
 
             autoCropFrameSelectionMode.Text = "Frame Selection Mode"
             autoCropFrameSelectionMode.Help = ""

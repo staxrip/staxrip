@@ -348,7 +348,7 @@ Public Class ffmpegDemuxer
             Exit Sub
         End If
 
-        Dim args = "-y -hide_banner -probesize 20M -i " + sourcefile.Escape
+        Dim args = "-y -hide_banner -probesize 20M -analyzeduration 20M -i " + sourcefile.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
             args += " -map 0:a:" & stream.Index

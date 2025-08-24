@@ -1113,9 +1113,45 @@ Public Class Package
     Shared Property BM3D As Package = Add(New PluginPackage With {
         .Name = "BM3D",
         .Filename = "BM3D.dll",
-        .VsFilterNames = {"bm3d.RGB2OPP", "bm3d.OPP2RGB", "bm3d.Basic", "bm3d.Final", "bm3d.VBasic", "bm3d.VFinal", "bm3d.VAggregate"},
         .Description = "BM3D denoising filter for VapourSynth.",
-        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D"})
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D",
+        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D/releases",
+        .VsFilterNames = {"bm3d.RGB2OPP", "bm3d.OPP2RGB", "bm3d.Basic", "bm3d.Final", "bm3d.VBasic", "bm3d.VFinal", "bm3d.VAggregate"}})
+
+    Shared Property BM3DCPU As Package = Add(New PluginPackage With {
+        .Siblings = {"BM3DCUDA vs", "BM3DCUDA_RTC vs"},
+        .Name = "BM3DCPU",
+        .Filename = "bm3dcpu.dll",
+        .Location = IO.Path.Combine("Plugins", "VS", "BM3DCUDA"),
+        .Description = "BM3D denoising filter for VapourSynth, implemented in CUDA.",
+        .WebURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA",
+        .HelpURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/blob/main/README.md",
+        .DownloadURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/releases",
+        .VsFilterNames = {"bm3dcpu.BM3D"}})
+
+    Shared Property BM3DCUDA As Package = Add(New PluginPackage With {
+        .Siblings = {"BM3DCPU vs", "BM3DCUDA_RTC vs"},
+        .Name = "BM3DCUDA",
+        .Filename = "bm3dcuda.dll",
+        .Location = IO.Path.Combine("Plugins", "VS", "BM3DCUDA"),
+        .Description = "BM3D denoising filter for VapourSynth, implemented in CUDA.",
+        .WebURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA",
+        .HelpURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/blob/main/README.md",
+        .DownloadURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/releases",
+        .RequirementsFunc = Function() Cuda.IsSupported,
+        .VsFilterNames = {"bm3dcuda.BM3D"}})
+
+    Shared Property BM3DCUDA_RTC As Package = Add(New PluginPackage With {
+        .Siblings = {"BM3DCPU vs", "BM3DCUDA vs"},
+        .Name = "BM3DCUDA_RTC",
+        .Filename = "bm3dcuda_rtc.dll",
+        .Location = IO.Path.Combine("Plugins", "VS", "BM3DCUDA"),
+        .Description = "BM3D denoising filter for VapourSynth, implemented in CUDA.",
+        .WebURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA",
+        .HelpURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/blob/main/README.md",
+        .DownloadURL = "https://github.com/WolframRhodium/VapourSynth-BM3DCUDA/releases",
+        .RequirementsFunc = Function() Cuda.IsSupported,
+        .VsFilterNames = {"bm3dcuda_rtc.BM3D"}})
 
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
         .Name = "MCTemporalDenoise",

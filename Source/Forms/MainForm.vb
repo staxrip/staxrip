@@ -991,6 +991,7 @@ Partial Public Class MainForm
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
         If loadSettings Then g.LoadSettings()
+        g.LoadEvents()
 
         PowerShell.InitCode =
             "Using namespace StaxRip;" + BR +
@@ -3752,6 +3753,7 @@ Partial Public Class MainForm
         End Using
 
         g.SaveSettings()
+        g.SaveEvents()
     End Sub
 
     Function AddFilterPreferences(

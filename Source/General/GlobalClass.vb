@@ -5,6 +5,7 @@ Imports System.Globalization
 Imports System.Management.Automation
 Imports System.Management.Automation.Language
 Imports System.Runtime.ExceptionServices
+Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -64,7 +65,7 @@ Public Class GlobalClass
         Try
             Using mutex As New Mutex(False, "staxrip settings file")
                 mutex.WaitOne()
-                SafeSerialization.Serialize(s, g.SettingsFile)
+                SafeSerialization.Serialize(s, SettingsFile)
                 mutex.ReleaseMutex()
             End Using
 
@@ -74,7 +75,7 @@ Public Class GlobalClass
                 Directory.CreateDirectory(backupPath)
             End If
 
-            FileHelp.Copy(g.SettingsFile, Path.Combine(backupPath, "Settings(v" + Application.ProductVersion + ").dat"))
+            FileHelp.Copy(SettingsFile, Path.Combine(backupPath, "Settings(v" + Application.ProductVersion + ").dat"))
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -96,7 +97,7 @@ Public Class GlobalClass
                 td.AddButton("Reset")
                 td.AddButton("Exit")
 
-                Select Case td.Show
+                Select Case td.Show()
                     Case "Retry"
                         LoadSettings()
                     Case "Reset"
@@ -106,6 +107,50 @@ Public Class GlobalClass
                         Else
                             LoadSettings()
                         End If
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
+        End Try
+    End Sub
+
+    Sub SaveEvents()
+        Try
+            Dim formatter As New BinaryFormatter
+
+            Using stream As New FileStream(EventsFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                formatter.Serialize(stream, s.EventCommands)
+            End Using
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
+    Sub LoadEvents()
+        If Not EventsFile.FileExists() Then Return
+
+        Try
+            Dim formatter As New BinaryFormatter
+            Dim events As List(Of EventCommand)
+
+            Using stream As New FileStream(EventsFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                events = DirectCast(formatter.Deserialize(stream), List(Of EventCommand))
+            End Using
+
+            s.EventCommands = events
+        Catch ex As Exception
+            Using td As New TaskDialog(Of String)
+                td.Title = "Events file failed to load!"
+                td.Content = ex.Message
+                td.Icon = TaskIcon.Error
+                td.AddButton("Retry")
+                td.AddButton("Ignore")
+                td.AddButton("Exit")
+
+                Select Case td.Show()
+                    Case "Retry"
+                        LoadEvents()
+                    Case "Ignore"
                     Case Else
                         Process.GetCurrentProcess.Kill()
                 End Select
@@ -610,6 +655,12 @@ Public Class GlobalClass
             End If
 
             Return ret
+        End Get
+    End Property
+
+    ReadOnly Property EventsFile As String
+        Get
+            Return Path.Combine(Folder.Settings, "Events.dat")
         End Get
     End Property
 

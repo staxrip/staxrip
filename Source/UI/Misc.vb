@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Windows.Input
@@ -289,16 +289,15 @@ Namespace UI
         Sub RestorePositionInternal(form As Form)
             If Positions.ContainsKey(GetKey(form)) Then
                 Dim pos = Positions(GetKey(form))
-                Dim wa = Screen.FromControl(form).WorkingArea
+                Dim rect = New Rectangle(pos, New Size(form.Width, form.Height))
+                Dim screens = Screen.AllScreens
 
-                If pos.X < 0 OrElse pos.Y < 0 OrElse
-                    pos.X + form.Width > wa.Width OrElse
-                    pos.Y + form.Height > wa.Height Then
-
-                    CenterScreen(form)
-                Else
+                If screens.Any(Function(scr) scr.WorkingArea.IntersectsWith(rect)) Then
                     form.StartPosition = FormStartPosition.Manual
                     form.Location = pos
+                    Return
+                Else
+                    form.CenterScreen()
                 End If
             End If
         End Sub

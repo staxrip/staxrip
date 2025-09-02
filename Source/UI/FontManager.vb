@@ -63,7 +63,7 @@ Public NotInheritable Class FontManager
         Return collections.SelectMany(Function(s) s.Value.Families.Where(Function(x) x.Name = fontName)).FirstOrDefault(Function(x) x IsNot Nothing)
     End Function
 
-    Shared Function GetFont(category As FontCategory, fontName As String, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point) As Font
+    Shared Function GetFont(category As FontCategory, fontName As String, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
         If Not _fontCollections.Any() Then Init()
 
         Dim family = GetFontFamily(category, fontName)
@@ -72,13 +72,13 @@ Public NotInheritable Class FontManager
             Return GetFont(family, size, fontStyle)
         End If
 
-        Return New Font(_fontCollections.First().Value.Families.First(), size * s.UIScaleFactor, fontStyle, graphicsUnit, 1)
+        Return New Font(_fontCollections.First().Value.Families.First(), size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
-    Shared Function GetFont(fontFamily As FontFamily, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point) As Font
+    Shared Function GetFont(fontFamily As FontFamily, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
         If Not _fontCollections.Any() Then Init()
 
-        Return New Font(fontFamily, size * s.UIScaleFactor, fontStyle, graphicsUnit, 1)
+        Return New Font(fontFamily, size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
     Shared Function GetCodeFont(Optional size As Single = 10.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font

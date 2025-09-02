@@ -1302,12 +1302,12 @@ Module ControlExtensions
 
     <Extension()>
     Sub SetFontStyle(instance As Control, style As FontStyle)
-        instance.Font = New Font(instance.Font.FontFamily, instance.Font.Size, style)
+        instance.Font = New Font(instance.Font, style)
     End Sub
 
     <Extension()>
     Sub SetFontSize(instance As Control, fontSize As Single)
-        instance.Font = New Font(instance.Font.FontFamily, fontSize * s.UIScaleFactor)
+        instance.Font = New Font(instance.Font.FontFamily, fontSize * s.UIScaleFactor, instance.Font.Style, instance.Font.Unit, instance.Font.GdiCharSet)
     End Sub
 
     <Extension()>

@@ -1,4 +1,4 @@
-
+﻿
 Imports StaxRip.UI
 
 Public Class VvencffappControl
@@ -193,7 +193,7 @@ Public Class VvencffappControl
                         cms.Items.Add(New MenuItemEx(def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}      ", "      "), Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())})
                     Next
                 Case 1 - offset
-                    For x = -1 To Params.Preset.Options.Length - 1
+                    For x = 0 To Params.Preset.Options.Length - 1
                         Dim temp = x
                         Dim presetMenuItem = New MenuItemEx(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "") With {.Font = If(Params.Preset.Value = x, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())}
                         cms.Items.Add(presetMenuItem)
@@ -242,7 +242,7 @@ Public Class VvencffappControl
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-        ElseIf Params.Mode.Value <> VvencffappRateMode.TwoPass AndAlso lv.Items.Count <> 2 Then
+        ElseIf Params.Mode.Value <> VvencffappRateMode.TwoPass AndAlso lv.Items.Count <> 1 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
         End If

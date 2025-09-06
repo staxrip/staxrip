@@ -642,6 +642,14 @@ Public Class SvtAv1EncParams
         .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
         .Init = 1}
 
+    Property AdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
+        .Init = 1}
+
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
@@ -1230,7 +1238,7 @@ Public Class SvtAv1EncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    Preset, Profile, Level, Tune, FastDecode
+                    Preset, Profile, Level, Tune, FastDecode, AdaptiveFilmGrain
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,

@@ -3657,6 +3657,14 @@ Public Class MainForm
                 End If
             End If
 
+            If TypeOf p.VideoEncoder Is SvtAv1EssentialEnc Then
+                If p.Script.Info.BitDepth <> 10 Then
+                    If ProcessTip("This encoder requires 10-bit sources. Add a filter that converts it to 10-bit.") Then
+                        Return Block("Invalid bit-depth")
+                    End If
+                End If
+            End If
+
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
                 Not Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso

@@ -103,16 +103,16 @@ Whenever this is possible an `UPDATE` archive is also released so you can just d
 
 # Screenshots
 
-![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Main.png)
+![Main Window](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/Main.png)
 
-![Code Editor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/CodeEditor.png)
+![Code Editor](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/CodeEditor.png)
 
-![Event Command Editor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/EventCommandEditor.png)
+![Event Command Editor](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/EventCommandEditor.png)
 
-![x265 Options](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/x265.png)
+![x265 Options](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/x265.png)
 
-![NVEnc Options](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/NVEnc.png)
+![NVEnc Options](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/NVEnc.png)
 
-![Processing](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Processing2.png)
+![Processing](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/Processing2.png)
 
-![Thumbnailer](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/ThumbnailsOptions3.png)
+![Thumbnailer](https://github.com/staxrip/staxrip/blob/master/Images/Screenshots/ThumbnailsOptions3.png)

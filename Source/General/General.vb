@@ -1164,7 +1164,7 @@ Public Class CommandManager
                             Dim stringArg = TryCast(args(x), String)
 
                             If pt.IsArray AndAlso stringArg IsNot Nothing Then
-                                Dim splits = g.MainForm.ParseCommandLine(stringArg.TrimQuotes(), ";"c)
+                                Dim splits = g.MainForm.ParseCommandLine(stringArg, ";"c)
                                 Dim et = pt.GetElementType()
                                 Dim tc = TypeDescriptor.GetConverter(et)
 

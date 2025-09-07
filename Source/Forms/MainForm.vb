@@ -288,33 +288,34 @@ Public Class MainForm
         Me.tlpTarget.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 25.0!))
         Me.tlpTarget.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 25.0!))
         Me.tlpTarget.Controls.Add(Me.tbTargetFile, 0, 0)
-        Me.tlpTarget.Controls.Add(Me.laTarget2, 0, 3)
-        Me.tlpTarget.Controls.Add(Me.tbTargetSize, 1, 1)
-        Me.tlpTarget.Controls.Add(Me.lTarget1, 0, 2)
-        Me.tlpTarget.Controls.Add(Me.tbBitrate, 3, 1)
-        Me.tlpTarget.Controls.Add(Me.laBitrate, 2, 1)
         Me.tlpTarget.Controls.Add(Me.blFilesize, 0, 1)
+        Me.tlpTarget.Controls.Add(Me.tbTargetSize, 1, 1)
+        Me.tlpTarget.Controls.Add(Me.laBitrate, 2, 1)
+        Me.tlpTarget.Controls.Add(Me.tbBitrate, 3, 1)
+        Me.tlpTarget.Controls.Add(Me.lTarget1, 0, 2)
+        Me.tlpTarget.Controls.Add(Me.laTarget2, 0, 3)
         Me.tlpTarget.Dock = DockStyle.Fill
         Me.tlpTarget.Location = New System.Drawing.Point(6, 48)
         Me.tlpTarget.Margin = New Padding(0)
         Me.tlpTarget.Name = "tlpTarget"
         Me.tlpTarget.RowCount = 4
-        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
+        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 34.0!))
+        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
+        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
+        Me.tlpTarget.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
         Me.tlpTarget.Size = New System.Drawing.Size(999, 303)
         Me.tlpTarget.TabIndex = 62
         '
         'tbTargetFile
         '
-        Me.tbTargetFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
+        Me.tbTargetFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
+        Me.tbTargetFile.AutoSize = True
         Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbTargetFile.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
+        Me.tbTargetFile.Margin = New Padding(6, CInt(FontHeight / 1.5), 6, FontHeight \ 2)
+        Me.tbTargetFile.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 2)
         Me.tbTargetFile.Name = "tbTargetFile"
         Me.tbTargetFile.ReadOnly = False
-        Me.tbTargetFile.Size = New System.Drawing.Size(987, 55)
         Me.tbTargetFile.TabIndex = 0
         '
         'laTarget2
@@ -403,19 +404,19 @@ Public Class MainForm
         '
         Me.tlpSource.ColumnCount = 1
         Me.tlpSource.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0!))
-        Me.tlpSource.Controls.Add(Me.tlpSourceValues, 0, 3)
         Me.tlpSource.Controls.Add(Me.tbSourceFile, 0, 0)
         Me.tlpSource.Controls.Add(Me.lSource1, 0, 1)
         Me.tlpSource.Controls.Add(Me.lSource2, 0, 2)
+        Me.tlpSource.Controls.Add(Me.tlpSourceValues, 0, 3)
         Me.tlpSource.Dock = DockStyle.Fill
         Me.tlpSource.Location = New System.Drawing.Point(6, 48)
         Me.tlpSource.Margin = New Padding(0)
         Me.tlpSource.Name = "tlpSource"
         Me.tlpSource.RowCount = 4
-        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
-        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 25.0!))
+        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 34.0!))
+        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
+        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
+        Me.tlpSource.RowStyles.Add(New RowStyle(SizeType.Percent, 22.0!))
         Me.tlpSource.Size = New System.Drawing.Size(996, 303)
         Me.tlpSource.TabIndex = 62
         '
@@ -512,11 +513,12 @@ Public Class MainForm
         'tbSourceFile
         '
         Me.tbSourceFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
+        Me.tbSourceFile.AutoSize = True
         Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbSourceFile.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
+        Me.tbSourceFile.Margin = New Padding(6, CInt(FontHeight / 1.5), 6, FontHeight \ 2)
+        Me.tbSourceFile.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 2)
         Me.tbSourceFile.Name = "tbSourceFile"
         Me.tbSourceFile.ReadOnly = False
-        Me.tbSourceFile.Size = New System.Drawing.Size(984, 55)
         Me.tbSourceFile.TabIndex = 2
         '
         'lSource1
@@ -820,7 +822,7 @@ Public Class MainForm
         Me.lgbFilters.Location = New System.Drawing.Point(9, 438)
         Me.lgbFilters.Margin = New Padding(9, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
-        Me.lgbFilters.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
+        Me.lgbFilters.Padding = New Padding(6, CInt(FontHeight / 1.5), 6, FontHeight \ 4)
         Me.lgbFilters.Size = New System.Drawing.Size(667, _filterHeight)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
@@ -854,7 +856,7 @@ Public Class MainForm
         Me.lgbEncoder.Location = New System.Drawing.Point(1370, 438)
         Me.lgbEncoder.Margin = New Padding(6, 0, 9, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
-        Me.lgbEncoder.Padding = New Padding(9, 3, 9, 9)
+        Me.lgbEncoder.Padding = New Padding(6, CInt(FontHeight / 1.5), 6, FontHeight \ 4)
         Me.lgbEncoder.Size = New System.Drawing.Size(670, _filterHeight)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
@@ -877,7 +879,7 @@ Public Class MainForm
         Me.pnEncoder.Location = New System.Drawing.Point(9, 51)
         Me.pnEncoder.Name = "pnEncoder"
         Me.pnEncoder.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
-        Me.pnEncoder.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
+        Me.pnEncoder.Padding = New Padding(6, 0, 6, 0)
         Me.pnEncoder.Size = New System.Drawing.Size(652, 226)
         Me.pnEncoder.TabIndex = 0
         '

@@ -231,7 +231,7 @@ Public Class ProcController
             Dim pathsFormat = "(""(\\\\\?\\)?[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({0})"")|((?<!"")(\\\\\?\\)?[A-Z]:\\[\S\\]+\.({0})(?![""\.]))"
             Dim isX264 = Proc.Package Is Package.x264
             Dim isX265 = Proc.Package Is Package.x265
-            Dim isSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
+            Dim isSvtAv1 = {Package.SvtAv1EncApp, Package.SvtAv1EncAppEssential, Package.SvtAv1EncAppHdr, Package.SvtAv1EncAppPsyex}.Contains(Proc.Package)
 
             LogTextBox.Text = text?.ReplaceTabsWithSpaces()
 
@@ -336,7 +336,7 @@ Public Class ProcController
                 format(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\]\s*:\s)[^:]*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman|jpsdr))?.*(?=\n)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]\s*:\s)[^:]*encoder(?:[^\d\n]*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman|jpsdr))?.*(?=\n)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
                 format(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
@@ -468,7 +468,7 @@ Public Class ProcController
                             _progressReformattingFailCounter += 1
                         End If
                     End If
-                ElseIf Proc.Package Is Package.SvtAv1EncApp Then
+                ElseIf {Package.SvtAv1EncApp, Package.SvtAv1EncAppEssential, Package.SvtAv1EncAppHdr, Package.SvtAv1EncAppPsyex}.Contains(Proc.Package) Then
                     'Mod by Patman
                     pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\s(fp[s|m])\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)

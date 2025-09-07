@@ -172,12 +172,14 @@ Partial Class TaskDialogBaseForm
         'flpButtons
         '
         Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpButtons.FlowDirection = FlowDirection.LeftToRight
         Me.flpButtons.Location = New System.Drawing.Point(505, 242)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
         Me.flpButtons.Size = New System.Drawing.Size(200, 100)
         Me.flpButtons.TabIndex = 2
         Me.flpButtons.Visible = False
+        Me.flpButtons.WrapContents = False
         '
         'blDetails
         '

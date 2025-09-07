@@ -222,7 +222,7 @@ Public MustInherit Class VideoEncoder
         Try
             If sourceFile <> "" AndAlso (forceWipe OrElse p.TargetFile = "" OrElse p.TargetFile.FileExists() OrElse OverridesTargetFileName) Then
                 Dim oldTargetFileName = ""
-                Dim finalName = ""
+                Dim finalName = sourceFile.Base()
                 Dim targetDir = ""
 
                 If p.TargetFile = "" Then
@@ -246,27 +246,26 @@ Public MustInherit Class VideoEncoder
                 End If
 
 
-                Dim name = OverridingTargetFileName
-                If OverridesTargetFileName AndAlso name.IsValidFileSystemName() Then
-                    finalName = name
-                End If
-
-                name = Macro.Expand(p.DefaultTargetName)
+                Dim name = Macro.Expand(p.DefaultTargetName)
                 If Not OverridesTargetFileName AndAlso name <> oldTargetFileName AndAlso name.IsValidFileSystemName() Then
                     finalName = name
                 End If
 
-                name = sourceFile.Base()
-                Dim newPath = Path.Combine(targetDir, name & p.VideoEncoder.Muxer.OutputExtFull)
-                Dim alreadyExists = newPath.FileExists()
-                If name <> oldTargetFileName AndAlso Not alreadyExists AndAlso Not (FileTypes.VideoIndex.Contains(sourceFile.Ext) AndAlso sourceFile.ReadAllText.Contains(newPath)) Then
+                name = OverridingTargetFileName
+                If OverridesTargetFileName AndAlso name.IsValidFileSystemName() Then
                     finalName = name
                 End If
 
-                name = sourceFile.Base() + "_new"
-                If name <> oldTargetFileName AndAlso String.IsNullOrEmpty(finalName) Then
-                    finalName = name
-                End If
+                Const extension = "_new"
+                Dim counter = 1
+                Dim newPath = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                name = finalName
+                Do While newPath.FileExists() OrElse (FileTypes.VideoIndex.Contains(sourceFile.Ext) AndAlso sourceFile.ReadAllText.Contains(newPath))
+                    name = finalName & extension & If(counter > 1, counter.ToString(), "")
+                    counter += 1
+                    newPath = Path.Combine(targetDir, name & p.VideoEncoder.Muxer.OutputExtFull)
+                Loop
+                finalName = name
 
                 If Not String.IsNullOrEmpty(finalName) AndAlso p.TargetFile.Base() <> finalName Then
                     g.MainForm.tbTargetFile.Text = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)

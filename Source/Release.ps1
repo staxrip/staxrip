@@ -65,6 +65,8 @@ else {
     $targetDirectory += "-v$($versionInfo.FileVersion)-x64"
 }
 
+Write-Host $versionInfo -ForegroundColor Green
+
 #   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 if( Test-Path $targetDirectory ) { Remove-Item $targetDirectory -Recurse }
@@ -89,7 +91,7 @@ $targetFile = "$targetDirectory.7z"
 
 if( Test-Path $targetFile ) { Remove-Item $targetFile -Recurse }
 
-& $7zExe a -t7z -mx9 -m0=LZMA -md128m -mfb128 "$targetFile" -r "$targetDirectory"
+& $7zExe a -t7z -mx9 -m0=LZMA2 -md1024m -mfb256 -mmt3 -sse "$targetFile" -r "$targetDirectory"
 if( $LastExitCode ) { throw $LastExitCode }
 
 #   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

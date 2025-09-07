@@ -14,6 +14,30 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.50.1 (2025-09-09)
+====================
+
+- Audio: Fix audio demuxing of PCM and DTS tracks ([#1780](/../../issues/1780))
+- CommandLine: Fix command line parameter parsing ([#1788](/../../issues/1788))
+- UI: Improve vertical ScrollBars next to Trees/Lists ([#1782](/../../issues/1782))
+- UI: Multiple improvements
+- UI: Fix Override Target File Name giving the wrong file name under rare circumstances
+- SvtAv1EncApp-Essential: Block Assistant, if bit-depth is not 10-bit
+- SvtAv1EncApp-Essential: Fix UI crash under some circumstances
+- VvencFFapp: Fix encoder control causing crash on preset selection
+- Update tools
+    - SvtAv1EncApp v3.1.2-69+31-bb6d9b6d-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-Essential-2+11-03ac7823-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-Essential]
+    - SvtAv1EncApp v3.1.0-14+7-51647873-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-HDR]
+    - SvtAv1EncApp v3.0.2-A-1+8-63e8a0a4-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-PSYEX]
+    - vvencFFapp v1.13.1 r484-a169666
+- Update Dual plugins
+    - Neo_f3kdb r10
+- Update VapourSynth plugins
+    - VapourSynth-BM3DCUDA R2.16
+    - VS-DFTTest2 v9
+
+
 v2.50.0 (2025-09-05)
 ====================
 

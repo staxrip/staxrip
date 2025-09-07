@@ -14,20 +14,6 @@ v2.5x.0 (not published yet)
 -->
 
 
-v2.51.3 (not published yet)
-====================
-
-- UI: Improve restoring of window positions on multi-display systems ([#1724](/../../issues/1724))
-- Update tools
-    - VCEEncC v9.00
-- Update AviSynth+ plugins
-    - ...
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
-
-
 v2.51.2 (2025-09-02)
 ====================
 

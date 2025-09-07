@@ -357,12 +357,14 @@ Public Class ffmpegDemuxer
         args += " -vn -sn"
 
         If stream.FormatString.ToLowerEx().StartsWith("dts") Then
-            args += " -f dts -c:a copy"
+            If outPath.Ext.ToLowerEx().StartsWith("dts") Then args += $" -f dts"
+            args += " -c:a copy"
         ElseIf stream.FormatString.ToLowerEx() = "pcm" Then
             Dim bd = stream.BitDepth
             If bd = 20 Then bd = 24
 
-            args += $" -f s{bd}le -c:a pcm_s{bd}le"
+            If outPath.Ext.ToLowerEx() = "pcm" Then args += $" -f s{bd}le"
+            args += $" -c:a pcm_s{bd}le"
         Else
             args += " -c:a copy"
         End If

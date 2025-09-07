@@ -199,10 +199,9 @@ Public Class SimpleUI
         Dim visibleNodesCount = visibleNodes.Count
         Dim maxVisibleNodes = Tree.MaxVisibleNodes
 
-        VScrollBar.Value = Math.Max(0, visibleNodes.IndexOf(Tree.TopNode))
-
         If visibleNodesCount > maxVisibleNodes Then
             VScrollBar.Maximum = Math.Max(0, visibleNodesCount - maxVisibleNodes)
+            VScrollBar.Value = Math.Max(0, visibleNodes.IndexOf(Tree.TopNode))
             VScrollBar.LargeChange = 1
             VScrollBar.Enabled = True
         Else

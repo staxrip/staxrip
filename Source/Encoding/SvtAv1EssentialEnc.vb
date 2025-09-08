@@ -298,8 +298,7 @@ Public Class SvtAv1EssentialEnc
         Dim enc As New SvtAv1EssentialEnc
         enc.Params = newParams
         enc.Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality
-        enc.Params.ConstantRateFactor.Value = enc.Params.CompCheck.Value
-        enc.Params.QuantizationParameter.Value = enc.Params.CompCheck.Value
+        enc.Params.QuantizationParameterHigh.Value = enc.Params.CompCheck.Value
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
@@ -525,13 +524,6 @@ Public Class SvtAv1EssentialEncParams
         .Values = {"", "slower", "slow", "medium", "fast", "faster"},
         .Init = 0}
 
-    ReadOnly Property Preset As OptionParam
-        Get
-            If p.Script?.Info.Height > 1080 Then Return PresetM5
-            Return PresetM4
-        End Get
-    End Property
-
     Property PresetM4 As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
@@ -539,6 +531,7 @@ Public Class SvtAv1EssentialEncParams
         .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower (default)", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .ValueChangedAction = Sub(v)
+                                  PresetM5.Value = v
                                   Dim hlv = If(v <= 13, 3, 2)
                                   If HierarchicalLevels.IsDefaultValue Then
                                       HierarchicalLevels.DefaultValue = hlv
@@ -548,7 +541,7 @@ Public Class SvtAv1EssentialEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
-        .VisibleFunc = Function() Speed.Value = 0,
+        .VisibleFunc = Function() Speed.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
         .Init = 5}
 
     Property PresetM5 As New OptionParam With {
@@ -558,6 +551,7 @@ Public Class SvtAv1EssentialEncParams
         .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow (default)", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .ValueChangedAction = Sub(v)
+                                  PresetM4.Value = v
                                   Dim hlv = If(v <= 13, 3, 2)
                                   If HierarchicalLevels.IsDefaultValue Then
                                       HierarchicalLevels.DefaultValue = hlv
@@ -567,7 +561,7 @@ Public Class SvtAv1EssentialEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
-        .VisibleFunc = Function() Speed.Value = 0,
+        .VisibleFunc = Function() Speed.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
         .Init = 6}
 
     '   --------------------------------------------------------
@@ -697,54 +691,56 @@ Public Class SvtAv1EssentialEncParams
         .AlwaysOn = True,
         .Value = 0}
 
-    ReadOnly Property QuantizationParameter As NumParam
-        Get
-            If p.Script?.Info.Height > 1080 Then Return QuantizationParameterHigh
-            Return QuantizationParameterLow
-        End Get
-    End Property
-
     Property QuantizationParameterHigh As New NumParam With {
         .HelpSwitch = "--qp",
         .Text = "Quantization Parameter",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
-        .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0 AndAlso Quality.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
+        .ValueChangedAction = Sub(x)
+                                  QuantizationParameterLow.Value = CInt(x)
+                                  ConstantRateFactorHigh.Value = CInt(x)
+                                  ConstantRateFactorLow.Value = CInt(x)
+                              End Sub,
         .Config = {1, 63, 1.0, 0},
         .Init = 35}
 
     Property QuantizationParameterLow As New NumParam With {
         .HelpSwitch = "--qp",
         .Text = "Quantization Parameter",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
-        .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0 AndAlso Quality.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
+        .ValueChangedAction = Sub(x)
+                                  QuantizationParameterHigh.Value = CInt(x)
+                                  ConstantRateFactorHigh.Value = CInt(x)
+                                  ConstantRateFactorLow.Value = CInt(x)
+                              End Sub,
         .Config = {1, 63, 1.0, 0},
         .Init = 30}
-
-    ReadOnly Property ConstantRateFactor As NumParam
-        Get
-            If p.Script?.Info.Height > 1080 Then Return ConstantRateFactorHigh
-            Return ConstantRateFactorLow
-        End Get
-    End Property
 
     Property ConstantRateFactorHigh As New NumParam With {
        .HelpSwitch = "--crf",
        .Text = "Constant Rate Factor",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0,
-       .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
+       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
+       .ValueChangedAction = Sub(x)
+                                 ConstantRateFactorLow.Value = CInt(x)
+                                 QuantizationParameterHigh.Value = CInt(x)
+                                 QuantizationParameterLow.Value = CInt(x)
+                             End Sub,
        .Config = {1, 63, 1.0, 0},
        .Init = 35}
 
     Property ConstantRateFactorLow As New NumParam With {
        .HelpSwitch = "--crf",
        .Text = "Constant Rate Factor",
-       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0,
-       .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
+       .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
+       .ValueChangedAction = Sub(x)
+                                 ConstantRateFactorHigh.Value = CInt(x)
+                                 QuantizationParameterHigh.Value = CInt(x)
+                                 QuantizationParameterLow.Value = CInt(x)
+                             End Sub,
        .Config = {1, 63, 1.0, 0},
        .Init = 30}
 
     Property Quality As New OptionParam With {
-        .Switch = "--quality",
+        .HelpSwitch = "--quality",
         .Text = "Quality",
         .Expanded = True,
         .Options = {"CRF / QP (default)", "Higher", "High", "Medium", "Low", "Lower"},
@@ -761,7 +757,7 @@ Public Class SvtAv1EssentialEncParams
     Property MaximumBitrate As New NumParam With {
         .Switch = "--mbr",
         .Text = "Maximum Bitrate",
-        .VisibleFunc = Function() ConstantRateFactor.Visible,
+        .VisibleFunc = Function() ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible,
         .Config = {0, 100000, 100},
         .Init = 0}
 
@@ -928,7 +924,7 @@ Public Class SvtAv1EssentialEncParams
        .Expanded = True,
        .Options = {"-1: ~5 seconds (default)", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
        .Values = {"-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-       .VisibleFunc = Function() Not ConstantRateFactor.Visible,
+       .VisibleFunc = Function() Not (ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible),
        .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
        .Init = 0}
 
@@ -938,7 +934,7 @@ Public Class SvtAv1EssentialEncParams
        .Expanded = True,
         .Options = {"-1: ~5 seconds (default)", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-1", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-       .VisibleFunc = Function() ConstantRateFactor.Visible,
+       .VisibleFunc = Function() ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible,
        .ValueChangedAction = Sub(x) KeyInt.Value = x,
        .Init = 0}
 
@@ -1333,10 +1329,10 @@ Public Class SvtAv1EssentialEncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    Speed, Preset, Profile, Level, Tune, LowMemory, FastDecode
+                    Speed, PresetM4, PresetM5, Profile, Level, Tune, LowMemory, FastDecode
                 )
                 Add("Rate Control",
-                    RateControlMode, Quality, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
+                    RateControlMode, Quality, ConstantRateFactorHigh, ConstantRateFactorLow, QuantizationParameterHigh, QuantizationParameterLow, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
                     AqMode, QpScaleCompressStrength, AutoTiling, RecodeLoop,
@@ -1399,7 +1395,7 @@ Public Class SvtAv1EssentialEncParams
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
         If BlockValueChanged Then Exit Sub
 
-        If item Is Preset Then
+        If item Is PresetM4 OrElse item Is PresetM5 Then
             BlockValueChanged = True
             ApplyPresetValues()
             BlockValueChanged = False
@@ -1537,13 +1533,25 @@ Public Class SvtAv1EssentialEncParams
         End If
 
         If RateControlMode.Value = SvtAv1EncAppRateMode.Quality Then
-            If ConstantRateFactor.Visible Then
-                If Not IsCustom(pass, "--crf") AndAlso Not ConstantRateFactor.IsDefaultValue Then
-                    sb.Append(" --crf " + ConstantRateFactor.Value.ToString("0.##", CultureInfo.InvariantCulture))
+            If ConstantRateFactorHigh.Visible Then
+                If Not IsCustom(pass, "--crf") AndAlso Not ConstantRateFactorHigh.IsDefaultValue Then
+                    sb.Append(" --crf " + ConstantRateFactorHigh.Value.ToString("0.##", CultureInfo.InvariantCulture))
                 End If
-            ElseIf QuantizationParameter.Visible Then
-                If Not IsCustom(pass, "--qp") AndAlso Not QuantizationParameter.IsDefaultValue Then
-                    sb.Append(" --qp " + QuantizationParameter.Value.ToString("0.##", CultureInfo.InvariantCulture))
+            ElseIf ConstantRateFactorLow.Visible Then
+                If Not IsCustom(pass, "--crf") AndAlso Not ConstantRateFactorLow.IsDefaultValue Then
+                    sb.Append(" --crf " + ConstantRateFactorLow.Value.ToString("0.##", CultureInfo.InvariantCulture))
+                End If
+            ElseIf QuantizationParameterHigh.Visible Then
+                If Not IsCustom(pass, "--qp") AndAlso Not QuantizationParameterHigh.IsDefaultValue Then
+                    sb.Append(" --qp " + QuantizationParameterHigh.Value.ToString("0.##", CultureInfo.InvariantCulture))
+                End If
+            ElseIf QuantizationParameterLow.Visible Then
+                If Not IsCustom(pass, "--qp") AndAlso Not QuantizationParameterLow.IsDefaultValue Then
+                    sb.Append(" --qp " + QuantizationParameterLow.Value.ToString("0.##", CultureInfo.InvariantCulture))
+                End If
+            ElseIf Not Quality.IsDefaultValue Then
+                If Not IsCustom(pass, "--quality") Then
+                    sb.Append(" --quality " + Quality.ValueText)
                 End If
             End If
         Else

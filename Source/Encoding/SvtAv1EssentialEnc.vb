@@ -516,22 +516,33 @@ Public Class SvtAv1EssentialEncParams
         .DefaultValue = 2,
         .Value = 3}
 
-    Property Speed As New OptionParam With {
-        .Switch = "--speed",
+    Property SpeedHigh As New OptionParam With {
+        .HelpSwitch = "--speed",
         .Text = "Speed",
         .Expanded = True,
-        .Options = {"Preset (default)", "Slower", "Slow", "Medium", "Fast", "Faster"},
+        .Options = {"[ Preset Override ]", "Slower", "Slow", "Medium (default)", "Fast", "Faster"},
         .Values = {"", "slower", "slow", "medium", "fast", "faster"},
-        .Init = 0}
+        .VisibleFunc = Function() p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
+        .ValueChangedAction = Sub(x) SpeedLow.Value = x,
+        .Init = 3}
 
-    Property PresetM4 As New OptionParam With {
+    Property SpeedLow As New OptionParam With {
+        .HelpSwitch = "--speed",
+        .Text = "Speed",
+        .Expanded = True,
+        .Options = {"[ Preset Override ]", "Slower", "Slow (default)", "Medium", "Fast", "Faster"},
+        .Values = {"", "slower", "slow", "medium", "fast", "faster"},
+        .VisibleFunc = Function() p.Script Is Nothing OrElse p.Script.Info.Height <= 1080,
+        .ValueChangedAction = Sub(x) SpeedHigh.Value = x,
+        .Init = 2}
+
+    Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
         .Expanded = True,
         .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower (default)", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .ValueChangedAction = Sub(v)
-                                  PresetM5.Value = v
                                   Dim hlv = If(v <= 13, 3, 2)
                                   If HierarchicalLevels.IsDefaultValue Then
                                       HierarchicalLevels.DefaultValue = hlv
@@ -541,28 +552,9 @@ Public Class SvtAv1EssentialEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
-        .VisibleFunc = Function() Speed.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
+        .VisibleFunc = Function() SpeedLow.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
+        .AlwaysOn = True,
         .Init = 5}
-
-    Property PresetM5 As New OptionParam With {
-        .Switch = "--preset",
-        .Text = "Preset",
-        .Expanded = True,
-        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow (default)", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
-        .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
-        .ValueChangedAction = Sub(v)
-                                  PresetM4.Value = v
-                                  Dim hlv = If(v <= 13, 3, 2)
-                                  If HierarchicalLevels.IsDefaultValue Then
-                                      HierarchicalLevels.DefaultValue = hlv
-                                      HierarchicalLevels.ValueChangedUser(hlv)
-                                  Else
-                                      HierarchicalLevels.DefaultValue = hlv
-                                      HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
-                                  End If
-                              End Sub,
-        .VisibleFunc = Function() Speed.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
-        .Init = 6}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -812,7 +804,7 @@ Public Class SvtAv1EssentialEncParams
     Property QpScaleCompressStrength As New NumParam With {
         .Switch = "--qp-scale-compress-strength",
         .Text = "QP Scale Compress Strength",
-        .Config = {0, 8, 0.01, 2},
+        .Config = {0, 8, 1, 0},
         .Init = 1}
 
     Property AutoTiling As New OptionParam With {
@@ -1329,7 +1321,7 @@ Public Class SvtAv1EssentialEncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    Speed, PresetM4, PresetM5, Profile, Level, Tune, LowMemory, FastDecode
+                    SpeedLow, SpeedHigh, Preset, Profile, Level, Tune, LowMemory, FastDecode
                 )
                 Add("Rate Control",
                     RateControlMode, Quality, ConstantRateFactorHigh, ConstantRateFactorLow, QuantizationParameterHigh, QuantizationParameterLow, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
@@ -1395,7 +1387,7 @@ Public Class SvtAv1EssentialEncParams
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
         If BlockValueChanged Then Exit Sub
 
-        If item Is PresetM4 OrElse item Is PresetM5 Then
+        If item Is Preset OrElse item Is SpeedHigh OrElse item Is SpeedLow Then
             BlockValueChanged = True
             ApplyPresetValues()
             BlockValueChanged = False
@@ -1557,6 +1549,12 @@ Public Class SvtAv1EssentialEncParams
         Else
             If Not IsCustom(pass, "--tbr") Then
                 sb.Append(" --tbr " & If(pass = 1, TargetBitrate.Value, p.VideoBitrate))
+            End If
+        End If
+
+        If Not IsCustom(pass, SpeedLow.HelpSwitch) Then
+            If SpeedLow.Value > 0 AndAlso Not SpeedLow.IsDefaultValue Then
+                sb.Append($" {SpeedLow.HelpSwitch} {SpeedLow.ValueText}")
             End If
         End If
 

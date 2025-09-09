@@ -193,17 +193,30 @@ Public Class SvtAv1EncAppEssentialControl
             Dim selectedIndex = lv.SelectedIndices(0)
             Select Case selectedIndex
                 Case 0 - offset
-                    Dim param = Params.QuantizationParameterLow
+                    Dim qualityParam = Params.Quality
+                    Dim quantParam = Params.QuantizationParameterLow
+                    Dim isCrf = Params.ConstantRateFactorHigh.Visible OrElse Params.ConstantRateFactorLow.Visible
+                    For x = 1 To qualityParam.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, "Quality | " + qualityParam.Options(temp) + "  ", Sub() SetQuality(selectedIndex, temp))
+                        item.Font = If(qualityParam.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                    Next
                     For Each def In QualityDefinitions
-                        Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim item = MenuItemEx.Add(cms.Items, If(isCrf, "CRF | ", "QP | ") & def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuant(selectedIndex, def.Value), def.Tooltip)
+                        item.Font = If(quantParam.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 1 - offset
-                    Dim param = If(Params.PresetM5.Visible, Params.PresetM5, Params.PresetM4)
-                    For x = 0 To param.Options.Length - 1
+                    Dim speedParam = If(Params.SpeedHigh.Visible, Params.SpeedHigh, Params.SpeedLow)
+                    Dim presetParam = Params.Preset
+                    For x = 1 To speedParam.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim item = MenuItemEx.Add(cms.Items, "Speed | " + speedParam.Options(temp) + "  ", Sub() SetSpeed(selectedIndex, temp))
+                        item.Font = If(speedParam.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                    Next
+                    For x = 0 To presetParam.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, "Preset | " + presetParam.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
+                        item.Font = If(presetParam.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 2 - offset
                     Dim param = Params.Tune
@@ -247,7 +260,16 @@ Public Class SvtAv1EncAppEssentialControl
         End If
     End Sub
 
-    Sub SetQuality(index As Integer, value As Double)
+    Sub SetQuality(index As Integer, value As Integer)
+        Params.Quality.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
+        UpdateControls()
+    End Sub
+
+    Sub SetQuant(index As Integer, value As Double)
+        Params.Quality.Value = 0
         Params.QuantizationParameterLow.Value = value
         Params.QuantizationParameterLow.ValueChangedAction.Invoke(value)
 
@@ -256,9 +278,20 @@ Public Class SvtAv1EncAppEssentialControl
         UpdateControls()
     End Sub
 
+    Sub SetSpeed(index As Integer, value As Integer)
+        Params.SpeedLow.Value = value
+
+        Params.ApplyPresetValues()
+
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+    End Sub
+
     Sub SetPreset(index As Integer, value As Integer)
-        Params.PresetM4.Value = value
-        Params.PresetM5.Value = value
+        Params.SpeedLow.Value = 0
+        Params.Preset.Value = value
 
         Params.ApplyPresetValues()
 
@@ -323,11 +356,21 @@ Public Class SvtAv1EncAppEssentialControl
 
         lv.Items.Clear()
         If offset = 0 Then
-            Dim param = Params.QuantizationParameterLow
-            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(param.Value)}))
+            Dim qualityParam = Params.Quality
+            If qualityParam.Value > 0 Then
+                lv.Items.Add(New ListViewItem({"Quality", qualityParam.OptionText}))
+            Else
+                Dim quantParam = Params.QuantizationParameterLow
+                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(quantParam.Value)}))
+            End If
         End If
-        Dim preset = If(Params.PresetM5.Visible, Params.PresetM5, Params.PresetM4)
-        lv.Items.Add(New ListViewItem({"Preset", preset.OptionText}))
+        Dim speedParam = If(Params.SpeedHigh.Visible, Params.SpeedHigh, Params.SpeedLow)
+        If speedParam.Value > 0 Then
+            lv.Items.Add(New ListViewItem({"Speed", speedParam.OptionText}))
+        Else
+            Dim presetParam = Params.Preset
+            lv.Items.Add(New ListViewItem({"Preset", presetParam.OptionText}))
+        End If
         lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         lv.Items.Add(New ListViewItem({"Fast Decode", Params.FastDecode.OptionText}))
         lv.Items.Add(New ListViewItem({"Lookahead", Params.Lookahead.Value.ToInvariantString() + If(Params.Lookahead.Value = Params.Lookahead.InitialValue, " (default)", "")}))

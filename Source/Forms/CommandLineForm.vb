@@ -1,4 +1,7 @@
 ﻿
+Imports System.Collections.Concurrent
+Imports System.Threading
+Imports System.Threading.Tasks
 Imports StaxRip.VideoEncoderCommandLine
 Imports StaxRip.UI
 
@@ -9,6 +12,7 @@ Public Class CommandLineForm
     Private HighlightedControl As Control
     Private CommandLineHighlightingMenuItem As MenuItemEx
     Private CommandLineMouseUpSearchMenuItem As MenuItemEx
+    Private GoToComboBoxCts As CancellationTokenSource
 
     Property HTMLHelpFunc As Func(Of String)
 
@@ -121,6 +125,8 @@ Public Class CommandLineForm
         rtbCommandLine.SetText(Params.GetCommandLine(False, False))
         rtbCommandLine.SelectionLength = 0
         rtbCommandLine.UpdateHeight()
+
+        Task.Run(AddressOf UpdateSearchComboBox)
     End Sub
 
     Sub InitUI()
@@ -311,8 +317,6 @@ Public Class CommandLineForm
             End If
         Next
 
-        UpdateSearchComboBox()
-
         For Each panel In flowPanels
             panel.ResumeLayout()
         Next
@@ -380,7 +384,7 @@ Public Class CommandLineForm
             HighlightedControl = Nothing
         End If
 
-        Dim find = cbGoTo.Text.ToLowerInvariant
+        Dim find = cbGoTo.Text.ToLowerInvariant()
         Dim findNoSpace = find.Replace(" ", "")
         Dim matchedItems As New HashSet(Of Item)
 
@@ -485,32 +489,58 @@ Public Class CommandLineForm
         End If
     End Sub
 
-    Sub UpdateSearchComboBox()
-        cbGoTo.Items.Clear()
+    Private Sub UpdateSearchComboBox()
+        If GoToComboBoxCts IsNot Nothing Then
+            GoToComboBoxCts.Cancel()
+            GoToComboBoxCts.Dispose()
+        End If
 
-        For Each i In Items
-            If i.Param.Visible Then
-                If i.Param.Switches IsNot Nothing Then
-                    For Each switch In i.Param.Switches
-                        If Not cbGoTo.Items.Contains(switch) Then
-                            cbGoTo.Items.Add(switch)
-                        End If
-                    Next
-                End If
+        GoToComboBoxCts = New CancellationTokenSource()
+        Dim token = GoToComboBoxCts.Token
+        Dim queue = New ConcurrentQueue(Of String)
+        Dim array As String()
 
-                If i.Param.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch) Then
-                    cbGoTo.Items.Add(i.Param.Switch)
-                End If
+        Try
+            Task.Run(Sub()
+                         Dim source = Items.Where(Function(x) TypeOf x.Param IsNot NumParam AndAlso x.Param.Visible).Select(Function(x) x.Param)
+                         Dim options = New ParallelOptions() With {.MaxDegreeOfParallelism = Environment.ProcessorCount \ 2, .CancellationToken = token}
 
-                If i.Param.NoSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.NoSwitch) Then
-                    cbGoTo.Items.Add(i.Param.NoSwitch)
-                End If
+                         Parallel.ForEach(source, options, Sub(item)
+                                                               token.ThrowIfCancellationRequested()
 
-                If i.Param.HelpSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.HelpSwitch) Then
-                    cbGoTo.Items.Add(i.Param.HelpSwitch)
-                End If
+                                                               If item.Switches IsNot Nothing Then
+                                                                   For Each switch In item.Switches
+                                                                       If Not queue.Contains(switch) Then
+                                                                           token.ThrowIfCancellationRequested()
+                                                                           queue.Enqueue(switch)
+                                                                       End If
+                                                                   Next
+                                                               End If
+
+                                                               If item.Switch <> "" AndAlso Not queue.Contains(item.Switch) Then
+                                                                   token.ThrowIfCancellationRequested()
+                                                                   queue.Enqueue(item.Switch)
+                                                               End If
+
+                                                               If item.NoSwitch <> "" AndAlso Not queue.Contains(item.NoSwitch) Then
+                                                                   token.ThrowIfCancellationRequested()
+                                                                   queue.Enqueue(item.NoSwitch)
+                                                               End If
+
+                                                               If item.HelpSwitch <> "" AndAlso Not queue.Contains(item.HelpSwitch) Then
+                                                                   token.ThrowIfCancellationRequested()
+                                                                   queue.Enqueue(item.HelpSwitch)
+                                                               End If
+                                                           End Sub)
+                         array = queue.OrderBy(Function(x) x).ToArray()
+                     End Sub, token)
+
+            If array IsNot Nothing Then
+                cbGoTo.Items.Clear()
+                cbGoTo.Items.AddRange(array)
             End If
-        Next
+        Catch ex As Exception
+        End Try
     End Sub
 
     Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed

@@ -664,8 +664,8 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM", "4: Still Picture"},
-        .Init = 2}
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Subjective SSIM", "4: Still Picture"},
+        .Init = 1}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -785,7 +785,7 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Min quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Value,
-        .Init = 2}
+        .Init = 4}
 
     Property QmMax As New NumParam With {
         .Switch = "--qm-max",
@@ -1272,12 +1272,6 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Dolby Vision RPU",
         .BrowseFile = True}
 
-    Property RestrictedMotionVector As New BoolParam With {
-        .Switch = "--rmv",
-        .Text = "Restrict Motion Vectors",
-        .IntegerValue = True,
-        .Init = False}
-
     Property QpScaleCompressStrength As New NumParam With {
         .Switch = "--qp-scale-compress-strength",
         .Text = "QP Scale Compress Strength",
@@ -1307,7 +1301,7 @@ Public Class SvtAv1PsyexEncParams
         .Config = {0, 15, 1},
         .Init = 15}
 
-    Property SpecificMinChromaQmLevel As New NumParam With {
+    Property MinChromaQmLevel As New NumParam With {
         .Switch = "--chroma-qm-min",
         .Text = "Min chroma quant matrix flatness",
         .Config = {0, 15, 1},
@@ -1318,7 +1312,7 @@ Public Class SvtAv1PsyexEncParams
         .Switch = "--psy-rd",
         .Text = "Psychovisual Rate Distortion Optimization",
         .Config = {0, 6, 0.01, 2},
-        .Init = 0.5}
+        .Init = 1.0}
 
     Property SpyRd As New OptionParam With {
         .Switch = "--spy-rd",
@@ -1342,6 +1336,22 @@ Public Class SvtAv1PsyexEncParams
         .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: Off (default)", "1: Forces 10-bit+ (HBD)", "2: 8/10-bit Hybrid", "3: Full 8-bit"},
+        .Init = 0}
+
+    Property ComplexHvs As New OptionParam With {
+        .Switch = "--complex-hvs",
+        .Text = "Complexity HVS Model",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Behavior (default)", "1: Highest Complexity HVS Model"},
+        .Init = 0}
+
+    Property LowQTaper As New OptionParam With {
+        .Switch = "--low-q-taper",
+        .Text = "Low Q Taper",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
         .Init = 0}
 
     Property NoiseNormStrength As New OptionParam With {
@@ -1412,7 +1422,7 @@ Public Class SvtAv1PsyexEncParams
                     NoiseNormStrength, AdaptiveFilmGrain, KeyframeTemporalFilteringStrength
                 )
                 Add("PSYEX Specific 2",
-                    RestrictedMotionVector, SpecificMinChromaQmLevel, MaxChromaQmLevel, PsyRd, SpyRd, SharpTx, HbdMds
+                    MinChromaQmLevel, MaxChromaQmLevel, PsyRd, SpyRd, SharpTx, HbdMds, ComplexHvs, LowQTaper
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

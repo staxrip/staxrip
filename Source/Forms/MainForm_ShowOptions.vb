@@ -315,8 +315,8 @@ Partial Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
-            Dim fixFramerate = ui.AddBool()
             Dim takeOverVideoLanguage = ui.AddBool()
+            Dim importVui = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
 
             videoExist.Text = "Existing Video Output"
@@ -330,8 +330,9 @@ Partial Public Class MainForm
             takeOverVideoLanguage.Text = "Take over language"
             takeOverVideoLanguage.Field = NameOf(p.TakeOverVideoLanguage)
 
-            fixFramerate.Text = "Add filter to automatically correct the frame rate."
-            fixFramerate.Field = NameOf(p.FixFrameRate)
+            importVui.Text = "Import VUI metadata"
+            importVui.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
+            importVui.Field = NameOf(p.ImportVUIMetadata)
 
             extractHdrmetadata.Text = "Extract HDR metadata"
             extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"
@@ -340,27 +341,6 @@ Partial Public Class MainForm
             extractHdrmetadata.Button.ValueChangedAction = Sub(value)
                                                                Dim visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
                                                            End Sub
-
-            b = ui.AddBool
-            b.Text = "Import VUI metadata"
-            b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
-            b.Field = NameOf(p.ImportVUIMetadata)
-
-            b = ui.AddBool
-            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
-            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
-            b.Field = NameOf(p.ConvertChromaSubsampling)
-
-            Dim cb = ui.AddMenu(Of ConvertTo420BitDepth)
-            cb.Text = "Add filter to convert bit depth to"
-            cb.Help = "After a source is loaded, automatically add a filter to convert bit-depth to x-bit"
-            cb.Expanded = True
-            cb.Field = NameOf(p.ConvertToBits)
-
-            b = ui.AddBool
-            b.Text = "Auto-rotate video after loading when possible"
-            b.Help = "Auto-rotate video after loading when the source file/container supports it."
-            b.Field = NameOf(p.AutoRotation)
 
             ui.AddLine()
 
@@ -1012,11 +992,36 @@ Partial Public Class MainForm
             '   ----------------------------------------------------------------
             Dim filtersPage = ui.CreateFlowPage("Filters")
 
-            l = ui.AddLabel(filtersPage, "Code appended to trim functions:")
+            Dim cb = ui.AddMenu(Of ConvertTo420BitDepth)
+            cb.Text = "Add filter to convert bit depth to"
+            cb.Help = "After a source is loaded, automatically add a filter to convert bit-depth to x-bit"
+            cb.Expanded = True
+            cb.Field = NameOf(p.ConvertToBits)
+
+            b = ui.AddBool
+            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
+            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
+            b.Field = NameOf(p.ConvertChromaSubsampling)
+
+            b = ui.AddBool
+            b.Text = "Add filter to automatically correct the frame rate."
+            b.Field = NameOf(p.FixFrameRate)
+
+            b = ui.AddBool
+            b.Text = "Auto-rotate video after loading when possible"
+            b.Help = "Auto-rotate video after loading when the source file/container supports it."
+            b.Field = NameOf(p.AutoRotation)
+
+
+
+            '   ----------------------------------------------------------------
+            Dim filtersCustomPage = ui.CreateFlowPage("Filters | Custom", True)
+
+            l = ui.AddLabel(filtersCustomPage, "Code appended to trim functions:")
             l.Help = "Code appended to trim functions StaxRip generates using the cut feature."
             l.MarginTop = Font.Height \ 2
 
-            t = ui.AddText(filtersPage)
+            t = ui.AddText(filtersCustomPage)
             t.Label.Visible = False
             t.Edit.Expand = True
             t.Edit.TextBox.Multiline = True
@@ -1024,11 +1029,11 @@ Partial Public Class MainForm
             t.Edit.Text = p.TrimCode
             t.Edit.SaveAction = Sub(value) p.TrimCode = value
 
-            l = ui.AddLabel(filtersPage, "Code inserted at top of scripts:")
+            l = ui.AddLabel(filtersCustomPage, "Code inserted at top of scripts:")
             l.Help = "Code inserted at the top of every script StaxRip generates."
             l.MarginTop = Font.Height \ 2
 
-            t = ui.AddText(filtersPage)
+            t = ui.AddText(filtersCustomPage)
             t.Label.Visible = False
             t.Edit.Expand = True
             t.Edit.TextBox.Multiline = True
@@ -1036,17 +1041,18 @@ Partial Public Class MainForm
             t.Edit.Text = p.CodeAtTop
             t.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
-            l = ui.AddLabel(filtersPage, "Code inserted at bottom of scripts:")
+            l = ui.AddLabel(filtersCustomPage, "Code inserted at bottom of scripts:")
             l.Help = "Code inserted at the bottom of every script StaxRip generates."
             l.MarginTop = Font.Height \ 2
 
-            t = ui.AddText(filtersPage)
+            t = ui.AddText(filtersCustomPage)
             t.Label.Visible = False
             t.Edit.Expand = True
             t.Edit.TextBox.Multiline = True
             t.Edit.UseMacroEditor = True
             t.Edit.Text = p.CodeAtBottom
             t.Edit.SaveAction = Sub(value) p.CodeAtBottom = value
+
 
 
             '   ----------------------------------------------------------------

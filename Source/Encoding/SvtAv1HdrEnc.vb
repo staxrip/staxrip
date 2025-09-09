@@ -1282,12 +1282,6 @@ Public Class SvtAv1HdrEncParams
         .Text = "Dolby Vision RPU",
         .BrowseFile = True}
 
-    Property RestrictedMotionVector As New BoolParam With {
-        .Switch = "--rmv",
-        .Text = "Restrict Motion Vectors",
-        .IntegerValue = True,
-        .Init = False}
-
     Property QpScaleCompressStrength As New NumParam With {
         .Switch = "--qp-scale-compress-strength",
         .Text = "QP Scale Compress Strength",
@@ -1431,7 +1425,7 @@ Public Class SvtAv1HdrEncParams
                     AltSsimTuning, NoiseNormStrength, AdaptiveFilmGrain, KeyframeTemporalFilteringStrength, AltLambdaFactors
                 )
                 Add("HDR Specific 2",
-                    RestrictedMotionVector, MinChromaQmLevel, MaxChromaQmLevel, AcBias, SpyRd, SharpTx, HbdMds, ComplexHvs
+                    MinChromaQmLevel, MaxChromaQmLevel, AcBias, SpyRd, SharpTx, HbdMds, ComplexHvs
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

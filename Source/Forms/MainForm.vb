@@ -177,11 +177,13 @@ Public Class MainForm
         Me.gbAssistant.Anchor = CType((((AnchorStyles.Top) Or AnchorStyles.Left) Or AnchorStyles.Right), AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAssistant, 4)
         Me.gbAssistant.Controls.Add(Me.tlpAssistant)
+        Me.gbAssistant.Dock = DockStyle.Fill
+        Me.gbAssistant.AutoSize = False
+        Me.gbAssistant.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.gbAssistant.Location = New System.Drawing.Point(9, 1534)
         Me.gbAssistant.Margin = New Padding(9, 0, 9, 9)
         Me.gbAssistant.Name = "gbAssistant"
-        Me.gbAssistant.Padding = New Padding(6, 0, 6, 6)
-        Me.gbAssistant.Size = New System.Drawing.Size(2031, 191)
+        Me.gbAssistant.Padding = New Padding(6, 6, 6, 6)
         Me.gbAssistant.TabIndex = 44
         Me.gbAssistant.TabStop = False
         Me.gbAssistant.Text = "Assistant"
@@ -189,8 +191,10 @@ Public Class MainForm
         'tlpAssistant
         '
         Me.tlpAssistant.Anchor = CType((((AnchorStyles.Top) Or AnchorStyles.Left) Or AnchorStyles.Right), AnchorStyles)
+        Me.tlpAssistant.AutoSize = True
+        Me.tlpAssistant.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.tlpAssistant.ColumnCount = 2
-        Me.tlpAssistant.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0!))
+        Me.tlpAssistant.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 75.0!))
         Me.tlpAssistant.ColumnStyles.Add(New ColumnStyle())
         Me.tlpAssistant.Controls.Add(Me.laTip, 0, 0)
         Me.tlpAssistant.Controls.Add(Me.bnNext, 1, 0)
@@ -199,8 +203,7 @@ Public Class MainForm
         Me.tlpAssistant.Margin = New Padding(0)
         Me.tlpAssistant.Name = "tlpAssistant"
         Me.tlpAssistant.RowCount = 1
-        Me.tlpAssistant.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0!))
-        Me.tlpAssistant.Size = New System.Drawing.Size(2019, 137)
+        Me.tlpAssistant.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0!))
         Me.tlpAssistant.TabIndex = 62
         '
         'laTip
@@ -208,9 +211,9 @@ Public Class MainForm
         Me.laTip.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
             Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
+        Me.laTip.Dock = DockStyle.Fill
         Me.laTip.Location = New System.Drawing.Point(0, 0)
-        Me.laTip.Margin = New Padding(0)
-        Me.laTip.Size = New System.Drawing.Size(1880, 137)
+        Me.laTip.Margin = New Padding(20, 5, 20, 5)
         Me.laTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'gbAudio
@@ -252,15 +255,14 @@ Public Class MainForm
         Me.MenuStrip.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
             Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
-        Me.MenuStrip.AutoSize = False
+        Me.MenuStrip.AutoSize = True
         Me.tlpMain.SetColumnSpan(Me.MenuStrip, 4)
-        Me.MenuStrip.Dock = DockStyle.None
+        Me.MenuStrip.Dock = DockStyle.Fill
         Me.MenuStrip.GripMargin = New Padding(2, 2, 0, 2)
         Me.MenuStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
         Me.MenuStrip.Padding = New Padding(6, 6, 0, 6)
-        Me.MenuStrip.Size = New System.Drawing.Size(2049, 81)
         Me.MenuStrip.TabIndex = 60
         Me.MenuStrip.Text = "MenuStrip"
         '
@@ -908,8 +910,7 @@ Public Class MainForm
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 357.0!))
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, _filterHeight))
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.AutoSize))
-        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 200.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(2049, 2334)
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 250.0!))
         Me.tlpMain.TabIndex = 61
         '
         'MainForm
@@ -8221,7 +8222,11 @@ Public Class MainForm
     End Sub
 
     Sub SetFormBoundaries(ateHeight As Integer)
-        Dim h = MainMenuStrip.Height + lgbSource.Height + lgbFilters.Height + ateHeight * p.AudioTracksAvailable + (gbAssistant.Height << 1) - Font.Height \ 3
+        Dim assistantHeight = tlpMain.RowStyles.Item(4).Height
+        Dim heights = tlpMain.GetRowHeights()
+        Dim selectedHeights = heights.TakeWhile(Function(x,y) y < heights.Length - 1)
+        Dim sum = CInt(selectedHeights.Sum(Function(s) s))
+        Dim h = sum + assistantHeight + (Size.Height - ClientSize.Height)
         MinimumSize = New Size(Font.Height * 48, CInt(h))
         MaximumSize = New Size(Font.Height * 80, CInt(h))
     End Sub

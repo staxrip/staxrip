@@ -114,6 +114,50 @@ Public Class GlobalClass
         End Try
     End Sub
 
+    Sub SaveAudioProfiles()
+        Try
+            Dim formatter As New BinaryFormatter
+
+            Using stream As New FileStream(AudioProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                formatter.Serialize(stream, s.AudioProfiles)
+            End Using
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
+    Sub LoadAudioProfiles()
+        If Not AudioProfilesFile.FileExists() Then Return
+
+        Try
+            Dim formatter As New BinaryFormatter
+            Dim audioProfiles As List(Of AudioProfile)
+
+            Using stream As New FileStream(AudioProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                audioProfiles = DirectCast(formatter.Deserialize(stream), List(Of AudioProfile))
+            End Using
+
+            s.AudioProfiles = audioProfiles
+        Catch ex As Exception
+            Using td As New TaskDialog(Of String)
+                td.Title = "Audio Profiles file failed to load!"
+                td.Content = ex.Message
+                td.Icon = TaskIcon.Error
+                td.AddButton("Retry")
+                td.AddButton("Ignore")
+                td.AddButton("Exit")
+
+                Select Case td.Show()
+                    Case "Retry"
+                        LoadAudioProfiles()
+                    Case "Ignore"
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
+        End Try
+    End Sub
+
     Sub SaveEvents()
         Try
             Dim formatter As New BinaryFormatter
@@ -655,6 +699,12 @@ Public Class GlobalClass
             End If
 
             Return ret
+        End Get
+    End Property
+
+    ReadOnly Property AudioProfilesFile As String
+        Get
+            Return Path.Combine(Folder.Settings, "AudioProfiles.dat")
         End Get
     End Property
 

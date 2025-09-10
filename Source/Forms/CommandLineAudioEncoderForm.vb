@@ -527,6 +527,7 @@ End Sub
         If name <> "" Then
             gap.Name = name
             s.AudioProfiles.Add(gap)
+            g.SaveAudioProfiles()
             MsgInfo("The profile was saved.")
         End If
     End Sub

@@ -991,6 +991,7 @@ Partial Public Class MainForm
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
         If loadSettings Then g.LoadSettings()
+        g.LoadAudioProfiles()
         g.LoadEvents()
 
         PowerShell.InitCode =
@@ -5463,9 +5464,13 @@ Partial Public Class MainForm
 
     <Command("Dialog to manage audio profiles.")>
     Sub ShowAudioProfilesDialog(<DispName("Track Number")> number As Integer)
+        g.LoadAudioProfiles()
+
         Dim form = New ProfilesForm("Audio Profiles", s.AudioProfiles, Sub(profile) g.LoadAudioProfile(profile, number), Function() GetNewAudioProfile(p.AudioTracks(number).AudioProfile), AddressOf AudioProfile.GetDefaults)
 
-        form.ShowDialog()
+        If form.ShowDialog() = DialogResult.OK Then
+            g.SaveAudioProfiles()
+        End If
         form.Dispose()
 
         UpdateAudioMenus()

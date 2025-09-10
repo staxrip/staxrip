@@ -1147,6 +1147,7 @@ Public Class AudioForm
             gap.Name = name
             gap.Clean()
             s.AudioProfiles.Add(gap)
+            g.SaveAudioProfiles()
             MsgInfo("The profile was saved.")
         End If
     End Sub

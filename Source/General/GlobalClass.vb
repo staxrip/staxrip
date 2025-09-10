@@ -115,6 +115,8 @@ Public Class GlobalClass
     End Sub
 
     Sub SaveAudioProfiles()
+        If Not s?.SaveAudioProfilesSeparately Then Return
+
         Try
             Dim formatter As New BinaryFormatter
 
@@ -127,6 +129,7 @@ Public Class GlobalClass
     End Sub
 
     Sub LoadAudioProfiles()
+        If Not s?.SaveAudioProfilesSeparately Then Return
         If Not AudioProfilesFile.FileExists() Then Return
 
         Try
@@ -159,6 +162,8 @@ Public Class GlobalClass
     End Sub
 
     Sub SaveVideoEncoderProfiles()
+        If Not s?.SaveVideoEncoderProfilesSeparately Then Return
+
         Try
             Dim formatter As New BinaryFormatter
 
@@ -171,6 +176,7 @@ Public Class GlobalClass
     End Sub
 
     Sub LoadVideoEncoderProfiles()
+        If Not s?.SaveVideoEncoderProfilesSeparately Then Return
         If Not VideoEncoderProfilesFile.FileExists() Then Return
 
         Try
@@ -203,6 +209,8 @@ Public Class GlobalClass
     End Sub
 
     Sub SaveEvents()
+        If Not s?.SaveEventsSeparately Then Return
+
         Try
             Dim formatter As New BinaryFormatter
 
@@ -215,6 +223,7 @@ Public Class GlobalClass
     End Sub
 
     Sub LoadEvents()
+        If Not s?.SaveEventsSeparately Then Return
         If Not EventsFile.FileExists() Then Return
 
         Try

@@ -24,6 +24,18 @@ Partial Public Class MainForm
             b.Text = "Save projects automatically"
             b.Field = NameOf(s.AutoSaveProject)
 
+            b = ui.AddBool
+            b.Text = "In addition save video encoder profiles separately"
+            b.Field = NameOf(s.SaveVideoEncoderProfilesSeparately)
+
+            b = ui.AddBool
+            b.Text = "In addition save audio profiles separately"
+            b.Field = NameOf(s.SaveAudioProfilesSeparately)
+
+            b = ui.AddBool
+            b.Text = "In addition save events separately"
+            b.Field = NameOf(s.SaveEventsSeparately)
+
             b = ui.AddBool()
             b.Text = "Reverse mouse wheel video seek direction"
             b.Field = NameOf(s.ReverseVideoScrollDirection)

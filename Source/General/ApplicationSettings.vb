@@ -82,6 +82,9 @@ Public Class ApplicationSettings
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)
     Public ReverseVideoScrollDirection As Boolean
+    Public SaveAudioProfilesSeparately As Boolean = True
+    Public SaveEventsSeparately As Boolean = True
+    Public SaveVideoEncoderProfilesSeparately As Boolean = True
     Public SaveImagePreviewFrameNumberPosition As ImageFrameNumberPosition = ImageFrameNumberPosition.Suffix
     Public SaveImageVideoComparisonFrameNumberPosition As ImageFrameNumberPosition = ImageFrameNumberPosition.Prefix
     Public ShowChangelog As String = ""

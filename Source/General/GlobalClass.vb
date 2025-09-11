@@ -158,6 +158,50 @@ Public Class GlobalClass
         End Try
     End Sub
 
+    Sub SaveVideoEncoderProfiles()
+        Try
+            Dim formatter As New BinaryFormatter
+
+            Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                formatter.Serialize(stream, s.VideoEncoderProfiles)
+            End Using
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
+    Sub LoadVideoEncoderProfiles()
+        If Not VideoEncoderProfilesFile.FileExists() Then Return
+
+        Try
+            Dim formatter As New BinaryFormatter
+            Dim videoEncoderProfiles As List(Of VideoEncoder)
+
+            Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                videoEncoderProfiles = DirectCast(formatter.Deserialize(stream), List(Of VideoEncoder))
+            End Using
+
+            s.VideoEncoderProfiles = videoEncoderProfiles
+        Catch ex As Exception
+            Using td As New TaskDialog(Of String)
+                td.Title = "Video Encoder Profiles file failed to load!"
+                td.Content = ex.Message
+                td.Icon = TaskIcon.Error
+                td.AddButton("Retry")
+                td.AddButton("Ignore")
+                td.AddButton("Exit")
+
+                Select Case td.Show()
+                    Case "Retry"
+                        LoadVideoEncoderProfiles()
+                    Case "Ignore"
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
+        End Try
+    End Sub
+
     Sub SaveEvents()
         Try
             Dim formatter As New BinaryFormatter
@@ -717,6 +761,12 @@ Public Class GlobalClass
     ReadOnly Property SettingsFile As String
         Get
             Return Path.Combine(Folder.Settings, "Settings.dat")
+        End Get
+    End Property
+
+    ReadOnly Property VideoEncoderProfilesFile As String
+        Get
+            Return Path.Combine(Folder.Settings, "VideoEncoderProfiles.dat")
         End Get
     End Property
 

@@ -465,16 +465,16 @@ Public MustInherit Class VideoEncoder
             encoder.Name = name
             encoder.Clean()
 
-            For Each i In From prof In s.VideoEncoderProfiles.ToArray
-                          Where prof.GetType Is encoder.GetType
-
+            For Each i In From prof In s.VideoEncoderProfiles.ToArray Where prof.GetType Is encoder.GetType
                 If i.Name = name Then
                     s.VideoEncoderProfiles(s.VideoEncoderProfiles.IndexOf(i)) = encoder
+                    g.SaveVideoEncoderProfiles()
                     Exit Sub
                 End If
             Next
 
             s.VideoEncoderProfiles.Insert(0, encoder)
+            g.SaveVideoEncoderProfiles()
         End If
     End Sub
 

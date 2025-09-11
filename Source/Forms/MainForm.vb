@@ -992,6 +992,7 @@ Partial Public Class MainForm
         g.MainForm = Me
         If loadSettings Then g.LoadSettings()
         g.LoadAudioProfiles()
+        g.LoadVideoEncoderProfiles()
         g.LoadEvents()
 
         PowerShell.InitCode =
@@ -3929,16 +3930,15 @@ Partial Public Class MainForm
 
     <Command("Shows a dialog to manage video encoder profiles.")>
     Sub ShowEncoderProfilesDialog()
-        Using form As New ProfilesForm(
-            "Encoder Profiles", s.VideoEncoderProfiles,
-            AddressOf g.LoadVideoEncoder,
-            AddressOf GetNewVideoEncoderProfile,
-            AddressOf VideoEncoder.GetDefaults)
+        g.LoadVideoEncoderProfiles()
 
+        Using form As New ProfilesForm("Encoder Profiles", s.VideoEncoderProfiles, AddressOf g.LoadVideoEncoder, AddressOf GetNewVideoEncoderProfile, AddressOf VideoEncoder.GetDefaults)
             If form.ShowDialog() = DialogResult.OK Then
-                PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
+                g.SaveVideoEncoderProfiles()
             End If
         End Using
+
+        PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
     End Sub
 
     <Command("Dialog to manage Muxer profiles.")>

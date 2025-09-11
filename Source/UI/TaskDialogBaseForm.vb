@@ -121,15 +121,12 @@ Public Class TaskDialogBaseForm
         Property Title As String
         Property Description As String
 
-        Private _TitleFont As Font
+        Private _titleFont As Font
 
         ReadOnly Property TitleFont As Font
             Get
-                If _TitleFont Is Nothing Then
-                    _TitleFont = New Font(Font.FontFamily, 10, FontStyle.Regular)
-                End If
-
-                Return _TitleFont
+                If _titleFont Is Nothing Then _titleFont = FontManager.GetDefaultFont(1.5)
+                Return _titleFont
             End Get
         End Property
 

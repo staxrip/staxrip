@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 
 Imports StaxRip.UI
@@ -122,7 +122,7 @@ Public Class MacroEditorControl
         Me.flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.flpButtons.Controls.Add(Me.llMacros)
         Me.flpButtons.Controls.Add(Me.llHelp)
-        Me.flpButtons.Font = FontManager.GetDefaultFont(10)
+        Me.flpButtons.Font = FontManager.GetDefaultFont(1)
         Me.flpButtons.Location = New System.Drawing.Point(0, 466)
         Me.flpButtons.Margin = New Padding(0)
         Me.flpButtons.Name = "flpButtons"

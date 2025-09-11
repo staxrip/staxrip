@@ -482,7 +482,7 @@ Public Class CommandLineForm
 
                 Dim control = visibleItems(SearchIndex).Control
                 SimpleUI.ShowPage(visibleItems(SearchIndex).Page)
-                control.Font = FontManager.GetDefaultFont(9, FontStyle.Bold)
+                control.Font = FontManager.GetDefaultFont(0, FontStyle.Bold)
                 HighlightedControl = control
                 Exit Sub
             End If

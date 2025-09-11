@@ -1745,7 +1745,7 @@ Namespace UI
                 item.CheckState = If(Not sameLevel AndAlso (selectedSubPath.Equals(item.Path) OrElse (selectedPathLevel > 1 AndAlso selectedSubSubPath.StartsWith(item.Path))), CheckState.Indeterminate, item.CheckState)
                 item.CheckState = If(item.Path = selectedItem?.Path, CheckState.Checked, item.CheckState)
 
-                Dim desiredFont = FontManager.GetDefaultFont(9, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
+                Dim desiredFont = FontManager.GetDefaultFont(0, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
 
                 If Not item.Font.Equals(desiredFont) Then item.Font = desiredFont
             Next
@@ -3694,7 +3694,7 @@ Namespace UI
             Rtb = New RichTextBoxEx(False, True) With {
                 .BorderStyle = BorderStyle.None,
                 .Dock = DockStyle.Fill,
-                .Font = FontManager.GetCodeFont(9),
+                .Font = FontManager.GetCodeFont(-1),
                 .Padding = New Padding(5, 5, 5, 0)
             }
 

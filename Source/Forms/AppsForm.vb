@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -442,14 +442,14 @@ Public Class AppsForm
         SetupButton.ForeColor = Color.Red
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
-        SetupButton.Font = FontManager.GetDefaultFont(10)
+        SetupButton.Font = FontManager.GetDefaultFont(1)
         SetupButton.Margin = New Padding(FontHeight \ 3)
         SetupButton.Padding = New Padding(FontHeight \ 5)
         SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         SetupButton.AutoSize = True
 
         Dim titleHeaderLabel = New LabelEx With {
-            .Font = FontManager.GetDefaultFont(14, FontStyle.Bold),
+            .Font = FontManager.GetDefaultFont(5, FontStyle.Bold),
             .AutoSize = True
         }
 
@@ -547,7 +547,7 @@ Public Class AppsForm
         Contents("Status").ForeColor = If(status <> "",
                                                 If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor),
                                                 ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
-        Contents("Status").Font = FontManager.GetDefaultFont(10, FontStyle.Bold)
+        Contents("Status").Font = FontManager.GetDefaultFont(1, FontStyle.Bold)
 
         Dim correctVersion = CurrentPackage.IsVersionCorrect()
         Contents("Version").Text = "-"
@@ -636,7 +636,7 @@ Public Class AppsForm
 
         Dim headerLabel = New LabelEx With {
             .Text = title,
-            .Font = FontManager.GetDefaultFont(9, FontStyle.Bold),
+            .Font = FontManager.GetDefaultFont(0, FontStyle.Bold),
             .AutoSize = True,
             .Margin = New Padding(controlMargin, controlMargin, 0, 0),
             .Padding = New Padding(0, headerPadding, 0, 0)}

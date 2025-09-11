@@ -7,6 +7,10 @@ Public NotInheritable Class FontManager
     Private Shared ReadOnly _currentFontFamilies As New Dictionary(Of FontCategory, FontFamily)
     Private Shared ReadOnly _fontCollections As New Dictionary(Of FontCategory, PrivateFontCollection)
 
+    Public Const DefaultCodeFontSize As Single = 10.0
+    Public Const DefaultFontSize As Single = 9.0
+    Public Const DefaultThumbnailFontSize As Single = 10.0
+
     Public Shared Sub Init()
         For Each category As FontCategory In [Enum].GetValues(GetType(FontCategory)).Cast(Of FontCategory)().Skip(1)
             AddCollection(category)
@@ -63,7 +67,7 @@ Public NotInheritable Class FontManager
         Return collections.SelectMany(Function(s) s.Value.Families.Where(Function(x) x.Name = fontName)).FirstOrDefault(Function(x) x IsNot Nothing)
     End Function
 
-    Shared Function GetFont(category As FontCategory, fontName As String, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
+    Shared Function GetFont(category As FontCategory, fontName As String, Optional size As Single = DefaultFontSize, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
         If Not _fontCollections.Any() Then Init()
 
         Dim family = GetFontFamily(category, fontName)
@@ -75,14 +79,15 @@ Public NotInheritable Class FontManager
         Return New Font(_fontCollections.First().Value.Families.First(), size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
-    Shared Function GetFont(fontFamily As FontFamily, Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
+    Shared Function GetFont(fontFamily As FontFamily, Optional size As Single = DefaultFontSize, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
         If Not _fontCollections.Any() Then Init()
 
         Return New Font(fontFamily, size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
-    Shared Function GetCodeFont(Optional size As Single = 10.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
+    Shared Function GetCodeFont(Optional sizeOffset As Single = 0.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
         Dim family As FontFamily
+        Dim size = DefaultCodeFontSize + sizeOffset
 
         If _currentFontFamilies.TryGetValue(FontCategory.Code, family) Then
             Return GetFont(family, size, fontStyle)
@@ -93,8 +98,9 @@ Public NotInheritable Class FontManager
         Return font
     End Function
 
-    Shared Function GetDefaultFont(Optional size As Single = 9.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
+    Shared Function GetDefaultFont(Optional sizeOffset As Single = 0.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
         Dim family As FontFamily
+        Dim size = DefaultFontSize + sizeOffset
 
         If _currentFontFamilies.TryGetValue(FontCategory.Default, family) Then
             Return GetFont(family, size, fontStyle)
@@ -105,8 +111,9 @@ Public NotInheritable Class FontManager
         Return font
     End Function
 
-    Shared Function GetThumbnailFont(Optional size As Single = 10.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
+    Shared Function GetThumbnailFont(Optional sizeOffset As Single = 0.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
         Dim family As FontFamily
+        Dim size = DefaultThumbnailFontSize + sizeOffset
 
         If _currentFontFamilies.TryGetValue(FontCategory.Thumbnail, family) Then
             Return GetFont(family, size, fontStyle)

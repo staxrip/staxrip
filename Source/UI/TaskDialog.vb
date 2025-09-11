@@ -95,7 +95,7 @@ Public Class TaskDialog(Of T)
             pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
         End If
 
-        TitleLabel.Font = FontManager.GetDefaultFont(10, If(String.IsNullOrWhiteSpace(Content) AndAlso String.IsNullOrWhiteSpace(ExpandedContent), FontStyle.Regular, FontStyle.Bold))
+        TitleLabel.Font = FontManager.GetDefaultFont(2, If(String.IsNullOrWhiteSpace(Content) AndAlso String.IsNullOrWhiteSpace(ExpandedContent), FontStyle.Regular, FontStyle.Bold))
         TitleLabel.Text = Title
 
         Dim firstCommandButton As CommandButton = Nothing
@@ -108,7 +108,7 @@ Public Class TaskDialog(Of T)
                     .AutoSize = False,
                     .BorderStyle = BorderStyle.None,
                     .Dock = DockStyle.Top,
-                    .Font = FontManager.GetDefaultFont(),
+                    .Font = FontManager.GetDefaultFont(0.5),
                     .Margin = New Padding(0),
                     .Name = "Information",
                     .Text = Content

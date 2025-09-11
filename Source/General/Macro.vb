@@ -388,6 +388,7 @@ Public Class Macro
         If value.Contains("%target_width%") Then value = value.Replace("%target_width%", proj.TargetWidth.ToString)
         If value.Contains("%target_height%") Then value = value.Replace("%target_height%", proj.TargetHeight.ToString)
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", proj.TargetSeconds.ToString)
+        If value.Contains("%target_bitdepth%") Then value = value.Replace("%target_bitdepth%", proj.Script.Info.BitDepth.ToString)
         If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", proj.Script.Info.FrameCount.ToString)
         If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", proj.Script.GetCachedFrameRate.ToString("0.######", CultureInfo.InvariantCulture))
         If value.Contains("%target_framerate6%") Then value = value.Replace("%target_framerate6%", proj.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture))

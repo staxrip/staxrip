@@ -1902,8 +1902,9 @@ Partial Public Class MainForm
 
                 textEdit.TextBox.ContextMenuStrip = textEditContextMenuStripEx
 
-                TipProvider.SetTip("Opens audio settings for the current project/template", editLabel)
+                TipProvider.SetTip("Shows the assigned language", languageLabel)
                 TipProvider.SetTip("Shows audio profiles", nameLabel)
+                TipProvider.SetTip("Opens audio settings for the current project/template", editLabel)
 
                 Dim textEditTextChanged = Sub(sender As Object, e As EventArgs)
                                               AudioTextEditChanged(audioTrack)
@@ -1964,7 +1965,7 @@ Partial Public Class MainForm
         files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_cut_"))
         files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_out"))
         files = files.Where(Function(x) Not x.ToLowerInvariant().Matches("_chunk\d+$"))
-        files = files.OrderBy(Function(x) x, New StringLogicalComparer())
+        files = files.OrderBy(Function(x) x, New StringLogicalComparer()).ToList()
 
         Dim hqAudioFiles = files.Where(Function(x) FileTypes.AudioHQ.Contains(x.Ext()))
         Dim normalAudioFiles = files.Where(Function(x) (FileTypes.Audio.Except(FileTypes.AudioHQ)).Contains(x.Ext()))
@@ -1983,11 +1984,11 @@ Partial Public Class MainForm
                                 If groupedAudioFiles(groupIndex)(pathIndex) = "" Then Exit Sub
 
                                 Dim filePath = groupedAudioFiles(groupIndex)(pathIndex)
-                                Dim baseName = UnescapeIllegalFileSysChars(filePath.Base)
+                                Dim baseName = filePath.Base().UnescapeIllegalFileSysChars()
                                 Dim titleMatch = Regex.Match(baseName, "\{(.+)\}", RegexOptions.IgnoreCase)
                                 Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
 
-                                If Not audioTracks?.Where(Function(x) x.FilePath = filePath)?.Any() Then
+                                If Not audioTracks.Any(Function (x) x.FilePath = filePath) Then
                                     audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, title, Nothing))
                                 End If
                             End Sub
@@ -1999,7 +2000,7 @@ Partial Public Class MainForm
                                  If p.DemuxAudio = DemuxMode.Dialog Then Exit Sub
                                  If s.Demuxers.Any(Function (x) x.Active AndAlso TypeOf x Is eac3toDemuxer AndAlso x.InputExtensions.Contains(p.SourceFile.Ext())) Then Exit Sub
 
-                                 If Not audioTracks?.Where(Function(x) x.Stream?.Name = audioStreams(index).Name)?.Any() Then
+                                 If Not audioTracks.Any(Function (x) x.Stream?.Name = audioStreams(index).Name) Then
                                      audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))
                                  End If
                              End Sub
@@ -2053,7 +2054,7 @@ Partial Public Class MainForm
 
                     If item IsNot Nothing Then
                         If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Language.ThreeLetterCode AndAlso prefLang.Name <> item.Language.Name Then Continue For
-                        If audioTracks?.Where(Function(x) x.FilePath.ContainsEx("ID" + (item.Index + 1).ToString()) AndAlso x.Language.ThreeLetterCode = item.Language.ThreeLetterCode)?.Any() Then Continue For
+                        If audioTracks?.Any(Function(x) x.FilePath.ContainsEx("ID" + (item.Index + 1).ToString()) AndAlso x.Language.ThreeLetterCode = item.Language.ThreeLetterCode) Then Continue For
 
                         addAudioStream(j)
                     End If
@@ -2086,7 +2087,7 @@ Partial Public Class MainForm
 
             Dim sameLanguages = p.AudioTracks.Where(Function(x) x.TextEdit.Text = "" AndAlso
                                                         TypeOf x.AudioProfile IsNot NullAudioProfile AndAlso
-                                                        x.AudioProfile.Language.ThreeLetterCode = audioTracks(i).Language.ThreeLetterCode)
+                                                        x.AudioProfile.Language.ThreeLetterCode = audioTracks(i).Language.ThreeLetterCode).ToList()
 
             If sameLanguages.Any() Then
                 addTrack(audioTracks(i), sameLanguages.First())

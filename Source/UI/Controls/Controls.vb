@@ -1732,7 +1732,7 @@ Namespace UI
             Menu.MinimumSize = New Size(Width, 0)
             Dim minItemSize As Integer = Menu.MinimumSize.Width
 
-            Dim allItems = Menu.GetItems().OfType(Of MenuItemEx)
+            Dim allItems = Menu.GetItems().OfType(Of MenuItemEx).ToList()
             Dim selectedItem = allItems.Where(Function(x) Value IsNot Nothing AndAlso Value.Equals(x.Tag)).OrderBy(Function(x) x.Path.Length).FirstOrDefault()
             Dim selectedSubPath = If(selectedItem IsNot Nothing, selectedItem.Path.LeftLast(" | "), "")
             Dim selectedSubSubPath = selectedSubPath.LeftLast(" | ")

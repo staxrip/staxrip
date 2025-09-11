@@ -696,12 +696,7 @@ Namespace UI
             Return value
         End Function
 
-        Shared Function GetMenu(
-            definition As String,
-            owner As Control,
-            components As IContainer,
-            action As Action(Of String)) As ContextMenuStripEx
-
+        Shared Function GetMenu(definition As String, owner As Control, components As IContainer, action As Action(Of String)) As ContextMenuStripEx
             If owner.ContextMenuStrip Is Nothing Then
                 owner.ContextMenuStrip = New ContextMenuStripEx(components)
             End If
@@ -709,16 +704,18 @@ Namespace UI
             Dim ret = DirectCast(owner.ContextMenuStrip, ContextMenuStripEx)
             ret.Items.ClearAndDisplose
 
-            For Each i In definition.SplitKeepEmpty(BR)
-                If i.Contains("=") Then
-                    Dim arg = i.Right("=").Trim
-                    MenuItemEx.Add(ret.Items, i.Left("=").Trim, action, arg, Nothing)
-                ElseIf i.EndsWith("-") Then
-                    MenuItemEx.Add(ret.Items, i)
-                ElseIf i = "" Then
-                    ret.Items.Add(New ToolStripSeparator)
-                End If
-            Next
+            If Not String.IsNullOrWhiteSpace(definition) Then
+                For Each i In definition.SplitKeepEmpty(BR)
+                    If i.Contains("=") Then
+                        Dim arg = i.Right("=").Trim
+                        MenuItemEx.Add(ret.Items, i.Left("=").Trim, action, arg, Nothing)
+                    ElseIf i.EndsWith("-") Then
+                        MenuItemEx.Add(ret.Items, i)
+                    ElseIf i = "" Then
+                        ret.Items.Add(New ToolStripSeparator)
+                    End If
+                Next
+            End If
 
             Return ret
         End Function

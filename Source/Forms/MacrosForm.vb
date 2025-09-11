@@ -228,7 +228,7 @@ Public Class MacrosForm
 
     Sub New()
         InitializeComponent()
-        ScaleClientSize(46, 25)
+        ScaleClientSize(50, 36)
         lv.View = View.Tile
         lv.FullRowSelect = True
         lv.MultiSelect = False

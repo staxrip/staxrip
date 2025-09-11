@@ -1165,6 +1165,7 @@ Public Class x265Params
 
     Property RdRefine As New BoolParam With {
         .Switch = "--rd-refine",
+        .NoSwitch = "--no-rd-refine",
         .Text = "RD Refine"}
 
     Property MasterDisplay As New StringParam With {

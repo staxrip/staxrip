@@ -78,7 +78,6 @@ Public Class ApplicationSettings
     Public ProgressHighlightingColorName As String = ThemeManager.DefaultProgressHighlightingColorName
     Public ProgressReformatting As Boolean = True
     Public ProjectsMruNum As Integer = 15
-    Public RecentFramePositions As List(Of String)
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)
     Public ReverseVideoScrollDirection As Boolean
@@ -100,10 +99,8 @@ Public Class ApplicationSettings
     Public StartWithoutFocus As Boolean = False
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
-    Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
     Public ThemeName As String = ThemeManager.DefaultThemeName
-    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public UIFallback As Boolean = False
     Public UIScaleFactor As Single = 1.0F
     Public VapourSynthFilterPreferences As StringPairList
@@ -294,14 +291,6 @@ Public Class ApplicationSettings
 
         If Check(TargetImageSizeMenu, "Target image size menu", 16) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
-        End If
-
-        If StringList Is Nothing Then
-            StringList = New List(Of String)
-        End If
-
-        If RecentFramePositions Is Nothing Then
-            RecentFramePositions = New List(Of String)
         End If
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 18) Then

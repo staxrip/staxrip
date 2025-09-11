@@ -1170,7 +1170,7 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--progress-header", .NoSwitch = "--no-progress-header", .Text = "Show progress header", .Init = True, .VisibleFunc = Function() Package.x264Type <> x264Type.Patman})
                 Add("Misc",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
-                    New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
+                    New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Unset ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
                     DeblockA,

@@ -172,7 +172,6 @@ Public Class SimpleUI
     End Sub
 
     Private Sub Tree_MouseWheel(sender As Object, e As MouseEventArgs) Handles Tree.MouseWheel
-        Dim visibleNodes = Tree.GetAllVisibleNodes()
         Dim delta = e.Delta \ 120
         Dim scrollLength = delta * Tree.WheelScrollLines
         Dim value = VScrollBar.Value - scrollLength
@@ -211,7 +210,7 @@ Public Class SimpleUI
 
     Sub ShowPage(pagePath As String)
         For Each i In Pages
-            If i.Path = pagePath Then
+            If i.Path.Replace(" ", "") = pagePath.Replace(" ", "") Then
                 Tree.SelectedNode = i.Node
             End If
         Next

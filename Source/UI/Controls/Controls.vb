@@ -744,6 +744,7 @@ Namespace UI
         End Property
 
         Sub New()
+            Font = FontManager.GetDefaultFont()
             ApplyTheme()
             BorderStyle = BorderStyle.None
 
@@ -1654,7 +1655,7 @@ Namespace UI
                 item.CheckState = If(Not sameLevel AndAlso (selectedSubPath.Equals(item.Path) OrElse (selectedPathLevel > 1 AndAlso selectedSubSubPath.StartsWith(item.Path))), CheckState.Indeterminate, item.CheckState)
                 item.CheckState = If(item.Path = selectedItem?.Path, CheckState.Checked, item.CheckState)
 
-                Dim desiredFont = New Font(item.Font, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
+                Dim desiredFont = FontManager.GetDefaultFont(9, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
 
                 If Not item.Font.Equals(desiredFont) Then item.Font = desiredFont
             Next

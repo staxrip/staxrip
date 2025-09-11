@@ -1761,17 +1761,15 @@ Public Class MainForm
 
             FiltersListView.Load()
             FiltersListView.Items(0).Selected = True
-            p.VideoEncoder.OnStateChange()
 
-            Dim targetPath = p.TargetFile
+            If p.SourceFile = "" AndAlso p.SourceFiles.Any() Then p.SourceFile = p.SourceFiles(0)
+            If p.SourceFile <> "" Then s.LastSourceDir = p.SourceFile.Dir
+
+            p.VideoEncoder.OnStateChange()
 
             BlockSourceTextBoxTextChanged = True
             tbSourceFile.Text = p.SourceFile
             BlockSourceTextBoxTextChanged = False
-
-            If p.SourceFile <> "" Then
-                s.LastSourceDir = p.SourceFile.Dir
-            End If
 
             SetAudioTracks(p)
 
@@ -2455,11 +2453,11 @@ Public Class MainForm
                 End If
             Next
 
-            Debug.WriteLine(isEncoding)
-            Debug.WriteLine(p.SourceFile)
-
             p.SourceFiles = files.ToList()
             p.SourceFile = files(0)
+
+            Debug.WriteLine(isEncoding)
+            Debug.WriteLine(p.SourceFile)
 
             If p.SourceFile.Ext.EqualsAny(FileTypes.Image) Then
                 If p.SourceFile.Base(p.SourceFile.Base.Length - 1).IsDigit Then
@@ -2476,10 +2474,8 @@ Public Class MainForm
                         Dim images As New List(Of String)
                         Dim allFiles = Directory.GetFiles(p.SourceFile.Dir)
 
-                        For Each file In Directory.GetFiles(p.SourceFile.Dir)
-                            If file.Base.Length = p.SourceFile.Base.Length AndAlso
-                                file.Ext = p.SourceFile.Ext AndAlso file.Base.StartsWith(startText) Then
-
+                        For Each file In allFiles
+                            If file.Base.Length = p.SourceFile.Base.Length AndAlso file.Ext = p.SourceFile.Ext AndAlso file.Base.StartsWith(startText) Then
                                 images.Add(file)
                             End If
                         Next
@@ -6600,7 +6596,7 @@ Public Class MainForm
         ret.Add("Help|-")
         ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate), Symbol.fa_recycle)
         ret.Add("Help|-")
-        ret.Add("Help|What's new...", NameOf(ShowChangelog), Symbol.Shield, {True})
+        ret.Add("Help|What's new...", NameOf(ShowChangelog), Symbol.fa_shield, {True})
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
 
         Return ret
@@ -6738,6 +6734,8 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSizeOrBitrate()
+        If p.VideoEncoder.QualityMode Then Return
+
         If p.BitrateIsFixed Then
             tbBitrate_TextChanged()
         Else
@@ -8243,12 +8241,13 @@ Public Class MainForm
         Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
         If Not force AndAlso s.ShowChangelog = appDetails Then Exit Sub
 
-        Dim currentVersion = Assembly.GetExecutingAssembly.GetName.Version
+        Dim ass = Assembly.GetExecutingAssembly()
+        Dim currentVersion = ass.GetName().Version
         If Not force AndAlso currentVersion.Minor >= 99 Then Exit Sub
 
         Dim filepath = If((currentVersion.Minor Mod 2) = 1, "StaxRip.CHANGELOG-SUPPORTER.md", "StaxRip.CHANGELOG.md")
 
-        Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filepath)
+        Using stream = ass.GetManifestResourceStream(filepath)
             Using reader As New StreamReader(stream)
                 Dim lastChangelogVersionMatch = Regex.Match(s.ShowChangelog, "\d+\.\d+(?:\.\d+)*")
                 Dim lastChangelogVersion = If(lastChangelogVersionMatch.Success, New Version(lastChangelogVersionMatch.Value), Nothing)

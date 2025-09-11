@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 
 Imports StaxRip.UI
@@ -671,7 +671,7 @@ Public Class CropForm
 
     <Command("Shows a dialog with crop options.")>
     Sub ShowOptions()
-        g.MainForm.ShowOptionsDialog("Image|Crop")
+        g.MainForm.ShowOptionsDialog("Image | Crop")
         UpdateAll()
     End Sub
 

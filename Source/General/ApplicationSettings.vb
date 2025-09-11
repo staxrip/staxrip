@@ -65,7 +65,6 @@ Public Class ApplicationSettings
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public OutputHighlighting As Boolean = True
-    Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 3
     Public ParMenu As String
     Public PreferWindowsTerminal As Boolean = False
@@ -235,10 +234,6 @@ Public Class ApplicationSettings
         If Not Fonts.ContainsKey(FontCategory.Code) Then Fonts.Add(FontCategory.Code, "Roboto Mono")
         If Not Fonts.ContainsKey(FontCategory.Default) Then Fonts.Add(FontCategory.Default, "Anuphan")
         If Not Fonts.ContainsKey(FontCategory.Thumbnail) Then Fonts.Add(FontCategory.Thumbnail, "Roboto Mono")
-
-        If PackagePaths Is Nothing Then
-            PackagePaths = New Dictionary(Of String, String)
-        End If
 
         If RecentProjects Is Nothing Then
             RecentProjects = New List(Of String)

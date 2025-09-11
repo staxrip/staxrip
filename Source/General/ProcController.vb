@@ -516,6 +516,7 @@ Public Class ProcController
                         Dim speed = 0.0F
                         Dim speedParse = Single.TryParse($"{match.Groups(7).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, speed)
                         Dim frames = Proc.FrameCount
+                        Dim framesString = If(frames > 0, frames.ToString(), "?")
                         Dim percentString = ""
 
                         If frameParse AndAlso frames > 0 Then
@@ -526,7 +527,7 @@ Public Class ProcController
                             percentString = $"[{percent.ToString("0.0", CultureInfo.InvariantCulture),4}%] "
                         End If
 
-                        value = $"{percentString}{match.Groups(1).Value.PadLeft(frames.ToString().Length)}/{frames} frames @ {fps.ToInvariantString()} fps ({speed.ToInvariantString("0.0")}x){_progressSeparator}{bitrate.ToInvariantString("0"),4} kb/s"
+                        value = $"{percentString}{match.Groups(1).Value.PadLeft(framesString.Length)}/{framesString} frames @ {fps.ToInvariantString()} fps ({speed.ToInvariantString("0.0")}x){_progressSeparator}{bitrate.ToInvariantString("0"),4} kb/s"
                     Else
                         _progressReformattingFailCounter += 1
                     End If

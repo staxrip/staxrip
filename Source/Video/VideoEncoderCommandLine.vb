@@ -486,7 +486,7 @@ Namespace VideoEncoderCommandLine
 
         Property Value As Double
             Get
-                If Store?.Double?.ContainsKey(GetKey) Then
+                If Store.Double.ContainsKey(GetKey) Then
                     Return Store.Double(GetKey)
                 Else
                     Return InitialValue

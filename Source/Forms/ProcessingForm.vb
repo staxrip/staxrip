@@ -1,4 +1,4 @@
-
+﻿
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
@@ -188,6 +188,7 @@ Public Class ProcessingForm
 #End Region
 
     Private Shared ReadOnly _priorities() As KeyValuePair(Of ProcessPriorityClass, String) = {
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.Realtime, "Realtime"),
         New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.High, "High"),
         New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.AboveNormal, "Above Normal"),
         New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.Normal, "Normal"),

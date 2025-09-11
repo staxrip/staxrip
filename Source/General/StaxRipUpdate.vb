@@ -55,7 +55,7 @@ Public Class StaxRipUpdate
         If Not (proceed OrElse force) Then Exit Sub
 
         Try
-            Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
+            Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/CHANGELOG.md"
             Dim releaseUrl = "https://github.com/staxrip/staxrip/releases"
 
             Dim currentVersion = Assembly.GetEntryAssembly.GetName.Version
@@ -63,22 +63,19 @@ Public Class StaxRipUpdate
             Dim response = Await HttpClient.GetAsync(releaseUrl)
             response.EnsureSuccessStatusCode()
             Dim content = Await response.Content.ReadAsStringAsync()
-            Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/tag/v?((\d+\.\d+\.\d+(?:\.\d+)?)(?:(-RC\d+))?)(?="")")
+            Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/tag/v?((\d+\.\d+\.\d+(?:\.\d+)?))(?="")")
 
             For Each linkMatch As Match In linkMatches
                 Dim onlineVersionString = linkMatch.Groups(2).Value
                 Dim onlineVersion = Version.Parse(onlineVersionString)
-                Dim isRC = linkMatch.Groups(3).Success
-                Dim rcString = If(isRC, linkMatch.Groups(3).Value, "")
 
                 If onlineVersion <= currentVersion Then Exit For
 
-                Dim filename = $"StaxRip-v{onlineVersionString}{rcString}-x64.7z"
+                Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
                 Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
                 Dim releaseUri = $"https://github.com/staxrip/staxrip/releases/tag/v{onlineVersionString}"
-                Dim releaseType = If(isRC, "release candidate", "release")
 
-                latestVersions.Add((onlineVersion, releaseType, releaseUri, downloadUri, filename))
+                latestVersions.Add((onlineVersion, "release", releaseUri, downloadUri, filename))
             Next
 
             If latestVersions.Count > 0 Then

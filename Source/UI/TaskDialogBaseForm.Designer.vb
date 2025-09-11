@@ -225,7 +225,6 @@ Partial Class TaskDialogBaseForm
         Me.spBottom.ResumeLayout(False)
         Me.spBottom.PerformLayout()
         Me.ResumeLayout(False)
-
     End Sub
 
     Friend WithEvents tlpMain As TableLayoutPanel

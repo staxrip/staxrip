@@ -185,6 +185,8 @@ Public Class TaskDialog(Of T)
                 originalButtonText = button.Text
             End If
 
+            button.SetFontStyle(FontStyle.Bold)
+
             g.RunTask(Sub()
                           Dim buttonText = originalButtonText
                           Dim windowTitle = originalWindowTitle

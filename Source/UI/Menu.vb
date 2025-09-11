@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
 
@@ -497,7 +497,6 @@ Namespace UI
                             item.Tag = tag
                             item.SetImage(symbol)
                             l.Add(item)
-                            l = item.DropDownItems
                             Return item
                         End If
                     Else

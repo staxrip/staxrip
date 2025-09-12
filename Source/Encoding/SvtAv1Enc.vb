@@ -645,7 +645,7 @@ Public Class SvtAv1EncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality"},
         .Init = 1}
 
     Property AdaptiveFilmGrain As New OptionParam With {
@@ -655,6 +655,12 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
         .Init = 1}
+
+    Property MaxTxSize As New NumParam With {
+        .Switch = "--max-tx-size",
+        .Text = "Max TX Size",
+        .Config = {32, 64, 1, 0},
+        .Init = 64}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -673,7 +679,7 @@ Public Class SvtAv1EncParams
         .Text = "Quantization Parameter",
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
         .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
-        .Config = {1, 63, 1.0, 0},
+        .Config = {1, 63, 1, 0},
         .Init = 35}
 
     Property ConstantRateFactor As New NumParam With {
@@ -681,7 +687,7 @@ Public Class SvtAv1EncParams
        .Text = "Constant Rate Factor",
        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
-       .Config = {1, 63, 1, 0},
+       .Config = {1, 63, 0.25, 2},
        .Init = 35}
 
     Property TargetBitrate As New NumParam With {
@@ -974,7 +980,7 @@ Public Class SvtAv1EncParams
         .Text = "Screen Content Detection Level",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off", "1: On", "2: Content Adaptive (default)"},
+        .Options = {"0: None", "1: Block Copy + Palette", "2: Content Adaptive (default)", "3: Content Adaptive (Anti-Alias Aware)"},
         .Init = 2}
 
     Property FilmGrain As New NumParam With {
@@ -1244,7 +1250,7 @@ Public Class SvtAv1EncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    Preset, Profile, Level, Tune, FastDecode, AdaptiveFilmGrain
+                    Preset, Profile, Level, Tune, FastDecode, AdaptiveFilmGrain, MaxTxSize
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,

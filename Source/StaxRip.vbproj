@@ -225,6 +225,12 @@
     <Compile Include="Forms\CodeForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MainForm_ShowOptions.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm_ShowSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\FontManager.vb" />
     <Compile Include="General\AsyncStreamReader.vb" />
     <Compile Include="General\Documentation.vb" />

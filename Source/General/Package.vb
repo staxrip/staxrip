@@ -1193,6 +1193,17 @@ Public Class Package
         .AvsFilterNames = {"EEDI2_CUDA", "EEDI2_CUDA_AA2", "EEDI2_CUDA_Enlarge2"},
         .VsFilterNames = {"eedi2cuda.aa2", "eedi2cuda.EEDI2", "eedi2cuda.Enlarge2"}})
 
+    Shared Property Vship As Package = Add(New PluginPackage With {
+        .Siblings = {"BM3DCPU vs", "BM3DCUDA vs"},
+        .Name = "Vship",
+        .Filename = If(OS.VideoControllers.Any(Function(x) x.ToUpper().Contains("NVIDIA")), "libvship_NVIDIA.dll", "libvship_AMD.dll"),
+        .Location = IO.Path.Combine("Plugins", "VS", "Vship"),
+        .Description = "A library for GPU-accelerated visual fidelity metrics, featuring SSIMULACRA2, Butteraugli and CVVDP.",
+        .WebURL = "https://codeberg.org/Line-fr/Vship",
+        .HelpURL = "https://codeberg.org/Line-fr/Vship/src/branch/main/README.md",
+        .DownloadURL = "https://codeberg.org/Line-fr/Vship/releases",
+        .VsFilterNames = {"vship.BUTTERAUGLI", "vship.CVVDP", "vship.SSIMULACRA2"}})
+
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
         .Name = "MCTemporalDenoise",
         .Filename = "MCTemporalDenoise.avsi",

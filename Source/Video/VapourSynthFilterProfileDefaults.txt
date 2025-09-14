@@ -82,7 +82,7 @@ Weave = clip = havsfunc.Weave(clip, tff=True)
 
 [Frame Rate]
 AssumeFPS | AssumeFPS = clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)
-AssumeFPS | AssumeFPS Source = clip = core.std.AssumeFPS(clip, fpsnum=int(%media_info_video:FrameRate% * 1000), fpsden=1000)
+AssumeFPS | AssumeFPS Source = clip = core.std.AssumeFPS(clip, fpsnum=int(%source_mi_v:FrameRate% * 1000), fpsden=1000)
 InterFrame = clip = havsfunc.InterFrame(clip, Preset='Medium', Tuning='$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$', NewNum=$enter_text:Enter the NewNum Value$, NewDen=$enter_text:Enter the NewDen Value$, OverrideAlgo=$select:msg:Which Algorithm Do you Wish to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)
 
 SVPFlow | Core =
@@ -167,7 +167,7 @@ SelectEvery =
 
 UnSpec =
     clip = core.resize.Point(clip, matrix_in_s='unspec',range_s='limited')
-    clip = core.std.AssumeFPS(clip, fpsnum=int(%media_info_video:FrameRate% * 1000), fpsden=1000)
+    clip = core.std.AssumeFPS(clip, fpsnum=int(%source_mi_v:FrameRate% * 1000), fpsden=1000)
     clip = core.std.SetFrameProp(clip=clip, prop='_ColorRange', intval=1)
 
 [Noise]

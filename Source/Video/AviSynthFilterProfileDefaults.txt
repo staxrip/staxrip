@@ -94,7 +94,7 @@ Weave = Weave()
 
 [Frame Rate]
 AssumeFPS = AssumeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;47.952|48000, 1001;48;50;59.940|60000, 1001;60;100;120;144;240$)
-AssumeFPS Source File = AssumeFPS(%media_info_video:FrameRate%)
+AssumeFPS Source File = AssumeFPS(%source_mi_v:FrameRate%)
 ChangeFPS = ChangeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;47.952|48000, 1001;48;50;59.940|60000, 1001;60;100;120;144;240$)
 ConvertFPS = ConvertFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;47.952|48000, 1001;48;50;59.940|60000, 1001;60;100;120;144;240$)
 InterFrame = InterFrame(preset="Medium", tuning="$select:msg:Select the Tuning Preset;Film;Animation;Smooth;Weak$", newNum=$enter_text:Enter the New Num value for output fps$, newDen=$enter_text:Enter the New Den value for output fps$, cores=$enter_text:Enter the Number of Cores you want to use$, overrideAlgo=$select:msg:Which Algorithm do you want to use?;Strong Predictions (Animation Default)|2;Intelligent (Default)|13;Smoothest (Smooth Default)|23$, GPU=$select:msg:Enable GPU Feature?;True;False$, InputType="$select:msg:Is your source a 3D Video?;No, it is 2D (Default)|2D;3D Full SBS|SBS;3D Full OU|OU;3D Half SBS|HSBS;3D Half OU|HOU$")

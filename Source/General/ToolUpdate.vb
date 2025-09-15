@@ -28,19 +28,14 @@ Public Class ToolUpdate
         For Each match As Match In matches
             Dim url = match.Value
 
-            If Ignore(url) Then
-                Continue For
-            End If
-
-            If Package.Include <> "" AndAlso Not url.Contains(Package.Include) Then
-                Continue For
-            End If
+            If Ignore(url) Then Continue For
+            If Package.Include <> "" AndAlso Not url.Contains(Package.Include) Then Continue For
 
             url = url.Substring(6, url.Length - 7)
 
-            If Not url.StartsWith("http") AndAlso url.StartsWith("/") Then
+            If Not url.StartsWith("http") Then
                 Dim match2 = Regex.Match(Package.DownloadURL, "https?://[^/]+")
-                url = match2.Value + url
+                url = match2.Value + If(url.StartsWith("/"), "", "/") + url
             End If
 
             DownloadFile = IO.Path.Combine(Folder.Desktop, IO.Path.GetFileName(url))

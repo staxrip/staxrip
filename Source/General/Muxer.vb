@@ -24,6 +24,8 @@ Public MustInherit Class Muxer
     MustOverride ReadOnly Property OutputExt As String
 
     Sub New()
+        MyBase.New()
+        CanEditValue = True
     End Sub
 
     Sub New(name As String)
@@ -153,6 +155,8 @@ Public MustInherit Class Muxer
     End Function
 
     Overridable Sub Init()
+        CanEditValue = True     'backward compatibility
+
         If Not p.SourceFile.FileExists() Then Exit Sub
 
         Dim files = g.GetFilesInTempDirAndParent
@@ -444,6 +448,11 @@ Public Class MP4Muxer
         End If
     End Sub
 
+    Public Overrides Sub Init()
+        MyBase.Init()
+        CanEditValue = True     'backward compatibility
+    End Sub
+
     Overrides Sub Mux()
         Using proc As New Proc
             proc.Header = "Muxing to MP4"
@@ -485,6 +494,11 @@ End Class
 Public Class NullMuxer
     Inherits Muxer
 
+    Sub New()
+        MyBase.New("No Muxing")
+        CanEditValue = False
+    End Sub
+
     Sub New(name As String)
         MyBase.New(name)
         CanEditValue = False
@@ -496,7 +510,19 @@ Public Class NullMuxer
 
     Overrides ReadOnly Property OutputExt As String
         Get
-            Return p.VideoEncoder.OutputExt
+            Dim ext = p.VideoEncoder.OutputExt
+
+            If TypeOf p.VideoEncoder Is NullEncoder Then
+                If FileTypes.VideoAudio.Contains(ext) Then
+                    Dim streams = MediaInfo.GetVideoStreams(p.VideoEncoder.OutputPath)
+
+                    If streams.Count = 0 Then Return ext
+
+                    Return streams(0).Ext
+                End If
+            End If
+
+            Return ext
         End Get
     End Property
 
@@ -601,7 +627,7 @@ Public Class MkvMuxer
     Property DAR As String = ""
 
     Sub New()
-        Name = "MKV (mkvmerge)"
+        MyClass.New("MKV (mkvmerge)")
     End Sub
 
     Sub New(name As String)
@@ -622,6 +648,7 @@ Public Class MkvMuxer
 
     Public Overrides Sub Init()
         MyBase.Init()
+        CanEditValue = True     'backward compatibility
 
         For Each iDir In {p.TempDir, p.TempDir.Parent}
             For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
@@ -1019,6 +1046,11 @@ Public Class ffmpegMuxer
 
         Return True
     End Function
+
+    Public Overrides Sub Init()
+        MyBase.Init()
+        CanEditValue = True     'backward compatibility
+    End Sub
 
     Overrides Sub Mux()
         Dim args = "-y -hide_banner -probesize 10M -i "

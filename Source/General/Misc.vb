@@ -929,7 +929,7 @@ Public MustInherit Class Profile
 
     Protected CanEditValue As Boolean
 
-    Overridable ReadOnly Property CanEdit() As Boolean
+    Overridable ReadOnly Property CanEdit As Boolean
         Get
             Return CanEditValue
         End Get

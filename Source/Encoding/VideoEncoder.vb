@@ -220,9 +220,10 @@ Public MustInherit Class VideoEncoder
     Sub UpdateTargetFile(Optional forceWipe As Boolean = False)
         Dim sourceFile = p.SourceFile
         If String.IsNullOrWhiteSpace(sourceFile) AndAlso p.SourceFiles.Any() Then sourceFile = p.SourceFiles(0)
+        Dim extChanged = p.TargetFile.Ext() <> Muxer.OutputExt
 
         Try
-            If sourceFile <> "" AndAlso (forceWipe OrElse p.TargetFile = "" OrElse p.TargetFile.FileExists() OrElse OverridesTargetFileName) Then
+            If sourceFile <> "" AndAlso (forceWipe OrElse OverridesTargetFileName OrElse p.TargetFile = "" OrElse p.TargetFile = sourceFile OrElse extChanged) Then
                 Dim oldTargetFileName = ""
                 Dim finalName = sourceFile.Base()
                 Dim targetDir = ""
@@ -260,17 +261,17 @@ Public MustInherit Class VideoEncoder
 
                 Const extension = "_new"
                 Dim counter = 1
-                Dim newPath = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                Dim newPath = Path.Combine(targetDir, finalName & Muxer.OutputExtFull)
                 name = finalName
                 Do While newPath.FileExists() OrElse (FileTypes.VideoIndex.Contains(sourceFile.Ext) AndAlso sourceFile.ReadAllText.Contains(newPath))
                     name = finalName & extension & If(counter > 1, counter.ToString(), "")
                     counter += 1
-                    newPath = Path.Combine(targetDir, name & p.VideoEncoder.Muxer.OutputExtFull)
+                    newPath = Path.Combine(targetDir, name & Muxer.OutputExtFull)
                 Loop
                 finalName = name
 
-                If Not String.IsNullOrEmpty(finalName) AndAlso p.TargetFile.Base() <> finalName Then
-                    newPath = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                If Not String.IsNullOrEmpty(finalName) AndAlso (p.TargetFile.Base() <> finalName OrElse extChanged) Then
+                    newPath = Path.Combine(targetDir, finalName & Muxer.OutputExtFull)
                     g.MainForm.LastTbTargetFileText = newPath
                     g.MainForm.tbTargetFile.Text = newPath
                     g.MainForm.tbTargetFile.TextBox.SelectionStart = g.MainForm.tbTargetFile.Text.Length
@@ -325,11 +326,13 @@ Public MustInherit Class VideoEncoder
 
     Sub OnStateChange(Optional forceTargetWipe As Boolean = False)
         g.MainForm.UpdateEncoderStateRelatedControls()
-        g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
-        g.MainForm.lgbEncoder.Tag = p.VideoEncoder.Name
-        g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name, 45).Shorten(40)
-        g.MainForm.llMuxer.Tag = p.VideoEncoder.Muxer.Name
-        g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpperInvariant
+        g.MainForm.SetEncoderControl(CreateEditControl)
+        g.MainForm.lgbEncoder.Tag = Name
+        g.MainForm.lgbEncoder.Text = g.ConvertPath(Name, 45).Shorten(40)
+
+        Dim text = Muxer.OutputExt.ToUpperInvariant()
+        g.MainForm.llMuxer.Tag = Muxer.Name
+        g.MainForm.llMuxer.Text = If(String.IsNullOrWhiteSpace(text), "[ ? ]", text)
 
         If Not QualityMode Then
             If Bitrate = 0 Then
@@ -352,7 +355,7 @@ Public MustInherit Class VideoEncoder
     Sub OpenMuxerConfigDialog()
         Dim muxer = ObjectHelp.GetCopy(Of Muxer)(Me.Muxer)
 
-        If muxer.Edit = DialogResult.OK Then
+        If muxer.CanEdit AndAlso muxer.Edit() = DialogResult.OK Then
             Me.Muxer = muxer
             g.MainForm.llMuxer.Tag = Me.Muxer.Name
             g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpperInvariant
@@ -373,15 +376,12 @@ Public MustInherit Class VideoEncoder
     Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
+
+        Dim text = Muxer.OutputExt.ToUpperInvariant()
         g.MainForm.llMuxer.Tag = Muxer.Name
-        g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpperInvariant
-        Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
+        g.MainForm.llMuxer.Text = If(String.IsNullOrWhiteSpace(text), "[ ? ]", text)
 
-        If p.SourceFile <> "" AndAlso newPath.ToLowerInvariant = p.SourceFile.ToLowerInvariant Then
-            newPath = Path.Combine(newPath.Dir, newPath.Base + "_new" + newPath.ExtFull)
-        End If
-
-        g.MainForm.tbTargetFile.Text = newPath
+        UpdateTargetFile()
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
     End Sub
@@ -797,16 +797,13 @@ Public Class NullEncoder
             Dim sourceFile = GetSourceFile()
 
             If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
-                Select Case sourceFile.Ext
-                    Case "mkv"
-                        Dim streams = MediaInfo.GetVideoStreams(sourceFile)
+                If FileTypes.VideoAudio.Contains(sourceFile.Ext()) Then
+                    Dim streams = MediaInfo.GetVideoStreams(sourceFile)
 
-                        If streams.Count = 0 Then
-                            Return sourceFile
-                        End If
+                    If streams.Count = 0 Then Return sourceFile
 
-                        Return Path.Combine(p.TempDir, sourceFile.Base + streams(0).ExtFull)
-                End Select
+                    Return Path.Combine(p.TempDir, sourceFile.Base + streams(0).ExtFull)
+                End If
             End If
 
             Return sourceFile

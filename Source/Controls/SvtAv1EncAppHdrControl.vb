@@ -197,16 +197,17 @@ Public Class SvtAv1EncAppHdrControl
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
 
-        Dim fh = FontHeight \ 4
+        Dim horizontalOffset = FontHeight \ 3
+        Dim verticalOffset = FontHeight \ 7
 
-        blConfigCodec.Left = fh
-        blConfigCodec.Top = Height - blConfigCodec.Height - fh
+        blConfigCodec.Left = horizontalOffset
+        blConfigCodec.Top = Height - blConfigCodec.Height - verticalOffset
 
-        blCompCheck.Left = fh
-        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - fh * 2
+        blCompCheck.Left = horizontalOffset
+        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - verticalOffset * 2
 
-        blConfigContainer.Left = Width - blConfigContainer.Width - fh
-        blConfigContainer.Top = Height - blConfigContainer.Height - fh
+        blConfigContainer.Left = Width - blConfigContainer.Width - horizontalOffset
+        blConfigContainer.Top = Height - blConfigContainer.Height - verticalOffset
 
         Dim right = blConfigContainer.Left - blConfigCodec.Left
         Dim left = blConfigCodec.Left + blConfigCodec.Width + blConfigCodec.Left
@@ -220,7 +221,7 @@ Public Class SvtAv1EncAppHdrControl
 
         tblOverrideName.Text = adjustedText
         tblOverrideName.Left = (right - left - tblOverrideName.Width) \ 2 + left
-        tblOverrideName.Top = Height - tblOverrideName.Height - fh
+        tblOverrideName.Top = Height - tblOverrideName.Height - verticalOffset
     End Sub
 
     Sub ParamsValueChanged(item As CommandLineParam)

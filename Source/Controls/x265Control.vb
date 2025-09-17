@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Reflection
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -28,7 +28,7 @@ Public Class x265Control
         '
         Me.blConfigCodec.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left), AnchorStyles)
         Me.blConfigCodec.AutoSize = True
-        Me.blConfigCodec.Location = New System.Drawing.Point(3, 408)
+        Me.blConfigCodec.Location = New System.Drawing.Point(15, 408)
         Me.blConfigCodec.Margin = New Padding(3)
         Me.blConfigCodec.Name = "llConfigCodec"
         Me.blConfigCodec.Size = New System.Drawing.Size(128, 37)
@@ -194,16 +194,17 @@ Public Class x265Control
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
 
-        Dim fh = FontHeight \ 4
+        Dim horizontalOffset = FontHeight \ 3
+        Dim verticalOffset = FontHeight \ 7
 
-        blConfigCodec.Left = fh
-        blConfigCodec.Top = Height - blConfigCodec.Height - fh
+        blConfigCodec.Left = horizontalOffset
+        blConfigCodec.Top = Height - blConfigCodec.Height - verticalOffset
 
-        blCompCheck.Left = fh
-        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - fh * 2
+        blCompCheck.Left = horizontalOffset
+        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - verticalOffset * 2
 
-        blConfigContainer.Left = Width - blConfigContainer.Width - fh
-        blConfigContainer.Top = Height - blConfigContainer.Height - fh
+        blConfigContainer.Left = Width - blConfigContainer.Width - horizontalOffset
+        blConfigContainer.Top = Height - blConfigContainer.Height - verticalOffset
 
         Dim right = blConfigContainer.Left - blConfigCodec.Left
         Dim left = blConfigCodec.Left + blConfigCodec.Width + blConfigCodec.Left
@@ -217,7 +218,7 @@ Public Class x265Control
 
         tblOverrideName.Text = adjustedText
         tblOverrideName.Left = (right - left - tblOverrideName.Width) \ 2 + left
-        tblOverrideName.Top = Height - tblOverrideName.Height - fh
+        tblOverrideName.Top = Height - tblOverrideName.Height - verticalOffset
     End Sub
 
     Sub ParamsValueChanged(item As CommandLineParam)

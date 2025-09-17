@@ -177,12 +177,19 @@ Public Class QSVEnc
     End Property
 
     Overrides Sub Encode()
-        If OutputExt = "hevc" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-features").Right("Codec")
+        Dim codecs = ProcessHelp.GetConsoleOutput(Package.Path, "--check-hw").Right("Codec").ToLower().Replace(".", "")
+        Dim title = Package.Name + " Hardware Compatibility Check Error"
 
-            If Not codecs.ToLowerEx.Contains("hevc") Then
-                Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
-            End If
+        If Codec = "h264" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.264/AVC isn't supported by your Hardware.")
+        ElseIf Codec = "hevc" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.265/HEVC isn't supported by your Hardware.")
+        ElseIf Codec = "mpeg2" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "MPEG2 isn't supported by your Hardware.")
+        ElseIf Codec = "vp9" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "VP9 isn't supported by your Hardware.")
+        ElseIf Codec = "av1" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "AV1 isn't supported by your Hardware.")
         End If
 
         p.Script.Synchronize()
@@ -190,7 +197,7 @@ Public Class QSVEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.QSVEncC
+            proc.Package = Package
             proc.SkipString = " frames: "
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"

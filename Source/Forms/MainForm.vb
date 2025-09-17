@@ -2080,7 +2080,7 @@ Public Class MainForm
     End Sub
 
     Function GetAudioTextBox(ap As AudioProfile) As TextEdit
-        Return p.AudioTracks.Where(Function(x) x.AudioProfile Is ap)?.FirstOrDefault()?.TextEdit
+        Return p.AudioTracks.FirstOrDefault(Function (x) x.AudioProfile Is ap)?.TextEdit
     End Function
 
     Dim BlockAudioTextChanged As Boolean
@@ -3428,7 +3428,7 @@ Public Class MainForm
             End If
 
             If p.WarnNoAudio Then
-                If Not p.AudioTracks.Any(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile AndAlso track.AudioProfile.File <> "") Then
+                If Not p.AudioTracks.Any(Function(track) track.IsRelevant) Then
                     If ProcessTip("There will be no audio in the output file.") Then
                         Return Warn("No audio", p.AudioTracks.Select(Function(x) x.TextEdit).ToArray())
                     End If
@@ -7969,7 +7969,7 @@ Public Class MainForm
         cms.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         cms.Add("-")
         cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.LightningBolt)
-        cms.Add("Execute All", Sub() ExecuteAllAudio(), p.AudioTracks.Any(Function (x) x.TextEdit.Text <> "" AndAlso TypeOf x.AudioProfile IsNot NullAudioProfile), "Processes all audio profiles.")
+        cms.Add("Execute All", Sub() ExecuteAllAudio(), p.AudioTracks.Any(Function(x) x.IsRelevant), "Processes all audio profiles.")
         cms.Add("-")
         cms.Add("Copy Path", Sub() Clipboard.SetText(ap.File), te.Text <> "")
         cms.Add("Copy Selection", Sub() Clipboard.SetText(te.TextBox.SelectedText), te.Text <> "").SetImage(Symbol.Copy)

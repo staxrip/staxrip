@@ -998,6 +998,12 @@ Public Class AudioTrack
         End Get
     End Property
 
+    Public ReadOnly Property IsRelevant As Boolean
+        Get
+            Return TextEdit.Text <> "" AndAlso TypeOf AudioProfile IsNot NullAudioProfile
+        End Get
+    End Property
+
     Public Property LanguageLabel As AudioLanguageLabel
         Get
             Dim ret = If(_languageLabel, New AudioLanguageLabel())

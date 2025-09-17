@@ -555,7 +555,7 @@ Module StringExtensions
             Dim pos = i.IndexOf(delimiter)
 
             If pos > 0 Then
-                leftSides.Add(i.Substring(0, pos).Trim)
+                leftSides.Add(i.Substring(0, pos).TrimEnd())
             Else
                 leftSides.Add(i)
             End If
@@ -568,7 +568,7 @@ Module StringExtensions
             Dim line = lines(i)
 
             If line.Contains(delimiter) Then
-                ret.Add(leftSides(i).PadRight(highest) + " " + delimiter + " " + line.Substring(line.IndexOf(delimiter) + 1).Trim)
+                ret.Add(leftSides(i).PadRight(highest) + " " + delimiter + " " + line.Substring(line.IndexOf(delimiter) + 1).Trim())
             Else
                 ret.Add(leftSides(i))
             End If

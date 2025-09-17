@@ -120,12 +120,24 @@ Public Class LogBuilder
     Sub WriteConfiguration()
         WriteHeader("Configuration")
 
+        Dim sb = New StringBuilder()
+        For i = 1 To p.AudioTracksAvailable
+            Dim at = p.AudioTracks(i - 1)
+            If Not at.IsRelevant Then Continue For
+            sb.AppendLine($"{i,3}. {at.AudioProfile.Name} ({at.AudioProfile.AudioCodec}) [{at.AudioProfile.Language.Name}]: {at.TextEdit.Text}")
+        Next
+        Dim audioConfig = sb.ToString()
+
         If ConfigurationString = "" Then ConfigurationString =
             $"Template: {p.TemplateName}{BR}" +
             $"Video Encoder: {p.VideoEncoder.GetType().Name}{BR}" +
             $"Video Encoder Profile: {p.VideoEncoder.Name}{BR}" +
             $"Container/Muxer Profile: {p.VideoEncoder.Muxer.Name}{BR}" +
             $"+++++{BR}" +
+            $"Audio Tracks...{BR}" +
+            $"{audioConfig}" +
+            $"+++++{BR}" +
+            $"AviSynth/VapourSynth Mode: {s.AviSynthMode}/{s.VapourSynthMode}{BR}" +
             $"Process Priority: {s.ProcessPriority}{BR}" +
             $"Delete Temp Files: {p.DeleteTempFilesMode}{BR}" + 
             $"Delete Temp Files Selection: {p.DeleteTempFilesSelectionMode}{BR}"

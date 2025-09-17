@@ -168,11 +168,22 @@ Public Class VCEEnc
     End Property
 
     Overrides Sub Encode()
+        Dim codecs = ProcessHelp.GetConsoleOutput(Package.Path, "--check-hw").Right("Codec").ToLower().Replace(".", "")
+        Dim title = Package.Name + " Hardware Compatibility Check Error"
+
+        If Codec = "h264" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.264/AVC isn't supported by your Hardware.")
+        ElseIf Codec = "hevc" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.265/HEVC isn't supported by your Hardware.")
+        ElseIf Codec = "av1" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "AV1 isn't supported by your Hardware.")
+        End If
+
         p.Script.Synchronize()
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.VCEEncC
+            proc.Package = Package
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"

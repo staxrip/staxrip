@@ -172,19 +172,22 @@ Public Class NVEnc
     End Property
 
     Overrides Sub Encode()
-        If OutputExt = "h265" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-hw").Right("Codec(s)")
+        Dim codecs = ProcessHelp.GetConsoleOutput(Package.Path, "--check-hw").Right("Codec").ToLower().Replace(".", "")
+        Dim title = Package.Name + " Hardware Compatibility Check Error"
 
-            If Not codecs.ToLowerInvariant.Contains("hevc") Then
-                Throw New ErrorAbortException("NVEncC Error", "H.265/HEVC isn't supported by the graphics card.")
-            End If
+        If Codec = "h264" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.264/AVC isn't supported by your Hardware.")
+        ElseIf Codec = "h265" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "H.265/HEVC isn't supported by your Hardware.")
+        ElseIf Codec = "av1" Then
+            If Not codecs.Contains(Codec) Then Throw New ErrorAbortException(title, "AV1 isn't supported by your Hardware.")
         End If
 
         p.Script.Synchronize()
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.NVEncC
+            proc.Package = Package
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"

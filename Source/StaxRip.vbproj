@@ -225,6 +225,9 @@
     <Compile Include="Forms\CodeForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MainForm_Assistant.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\MainForm_ShowOptions.vb">
       <SubType>Form</SubType>
     </Compile>

@@ -259,12 +259,16 @@ Public MustInherit Class VideoEncoder
                     finalName = name
                 End If
 
-                Const extension = "_new"
                 Dim counter = 1
+                Dim postfix = "_new"
+                If finalName.EndsWith(postfix) Then
+                    counter = 2
+                    postfix = ""
+                End If
                 Dim newPath = Path.Combine(targetDir, finalName & Muxer.OutputExtFull)
                 name = finalName
                 Do While newPath.FileExists() OrElse (FileTypes.VideoIndex.Contains(sourceFile.Ext) AndAlso sourceFile.ReadAllText.Contains(newPath))
-                    name = finalName & extension & If(counter > 1, counter.ToString(), "")
+                    name = finalName & postfix & If(counter > 1, counter.ToString(), "")
                     counter += 1
                     newPath = Path.Combine(targetDir, name & Muxer.OutputExtFull)
                 Loop

@@ -2817,12 +2817,12 @@ Namespace UI
             Controls.Add(DownControl)
 
             UpControl.ClickAction = Sub()
-                                        Value += Increment
+                                        Value += UpIncrement
                                         Value = Math.Round(Value, DecimalPlaces)
                                     End Sub
 
             DownControl.ClickAction = Sub()
-                                          Value -= Increment
+                                          Value -= DownIncrement
                                           Value = Math.Round(Value, DecimalPlaces)
                                       End Sub
 
@@ -2897,7 +2897,21 @@ Namespace UI
 
         <Category("Data")>
         <DefaultValue(GetType(Double), "1")>
-        Property Increment As Double = 1
+        Property UpIncrement As Double = 1
+
+        <Category("Data")>
+        <DefaultValue(GetType(Double), "1")>
+        Property DownIncrement As Double = 1
+
+        Property Increment As Double
+            Get
+                Return UpIncrement
+            End Get
+            Set(value As Double)
+                UpIncrement = value
+                DownIncrement = value
+            End Set
+        End Property
 
         Private ValueValue As Double
 
@@ -2998,6 +3012,20 @@ Namespace UI
                     Me.UpdateText()
                 End If
 
+                OnValueChanged(Me)
+            End If
+        End Sub
+
+        Overloads Sub Update()
+            MyBase.Update()
+
+            If ValueValue < Minimum Then
+                ValueValue = Minimum
+                UpdateText()
+                OnValueChanged(Me)
+            ElseIf ValueValue > Maximum Then
+                ValueValue = Maximum
+                UpdateText()
                 OnValueChanged(Me)
             End If
         End Sub

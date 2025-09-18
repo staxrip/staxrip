@@ -182,6 +182,29 @@ Public MustInherit Class AudioProfile
         End Get
     End Property
 
+    <NonSerialized>
+    Private SourceChannelsValue As Integer = 0
+
+    ReadOnly Property SourceChannels As Integer
+        Get
+            If SourceChannelsValue = 0 Then
+                If Stream Is Nothing Then
+                    If File <> "" AndAlso IO.File.Exists(File) Then
+                        SourceChannelsValue = MediaInfo.GetChannels(File)
+                    End If
+                Else
+                    If Stream.Channels > Stream.Channels2 Then
+                        SourceChannelsValue = Stream.Channels
+                    Else
+                        SourceChannelsValue = Stream.Channels2
+                    End If
+                End If
+            End If
+
+            Return SourceChannelsValue
+        End Get
+    End Property
+
     ReadOnly Property HasStream As Boolean
         Get
             Return Stream IsNot Nothing
@@ -1072,8 +1095,8 @@ Public Class GUIAudioProfile
 
         If includePaths Then
             sb.Append(Package.DeeZy.Path.Escape)
+            sb.Append(" --no-progress-bars")
         Else
-            sb.Clear()
             sb.Append(Package.DeeZy.Filename.Base)
         End If
 
@@ -1081,7 +1104,16 @@ Public Class GUIAudioProfile
             Case AudioCodec.AC3
                 sb.Append(" encode dd")
             Case AudioCodec.EAC3
-                sb.Append(" encode ddp")
+                Select Case Params.DeezyDdpMode
+                    Case DeezyDdpMode.Ddp
+                        sb.Append(" encode ddp")
+                    Case DeezyDdpMode.DdpBluray
+                        sb.Append(" encode ddp-bluray")
+                    Case DeezyDdpMode.Atmos
+                        sb.Append(" encode atmos")
+                    Case Else
+                        Throw New NotImplementedException("GetDeezyCommandLine-Encode")
+                End Select
             Case Else
                 Throw New NotImplementedException("GetDeezyCommandLine")
         End Select
@@ -1090,12 +1122,15 @@ Public Class GUIAudioProfile
         sb.Append($" --bitrate={CInt(Bitrate)}")
         If Delay <> 0 Then sb.Append($" --delay={Delay}ms")
         If Params.DeezyKeeptemp Then sb.Append(" --keep-temp")
-        If Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd <> DeezyChannelsDd.Original Then sb.Append($" --channels={Params.DeezyChannelsDd.ToString().TrimStart("_"c)}")
-        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Original Then sb.Append($" --channels={Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
-        If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Standard Then sb.Append($" --stereo-down-mix={CInt(Params.DeezyStereodownmix)}")
-        If Params.DeezyDynamicrangecompression <> DeezyDynamicrangecompression.Music_Light Then sb.Append($" --dynamic-range-compression={CInt(Params.DeezyDynamicrangecompression)}")
+        If Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd <> DeezyChannelsDd.Auto Then sb.Append($" --channels={Params.DeezyChannelsDd.ToString().TrimStart("_"c)}")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Auto Then sb.Append($" --channels={Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.DdpBluray Then sb.Append($" --channels={Params.DeezyChannelsDdpBluray.ToString().TrimStart("_"c)}")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Atmos AndAlso Params.DeezyChannelsAtmos = DeezyChannelsAtmos._6 Then sb.Append($" --atmos-mode streaming")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Atmos AndAlso Params.DeezyChannelsAtmos = DeezyChannelsAtmos._8 Then sb.Append($" --atmos-mode bluray")
+        If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Auto Then sb.Append($" --stereo-down-mix={Params.DeezyStereodownmix.ToString().ToLower()}")
+        If Params.DeezyDynamicrangecompression <> DeezyDrcLineMode.Music_Light Then sb.Append($" --drc-line-mode={Params.DeezyDynamicrangecompression.ToString().ToLower()}")
         If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
-        If includePaths Then sb.Append($" --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
+        If includePaths Then sb.Append($" --overwrite --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
 
         Return sb.ToString()
     End Function
@@ -1751,10 +1786,13 @@ Public Class GUIAudioProfile
         Property MigrateffNormalizeMode As Boolean = True
 
         Property DeezyKeeptemp As Boolean = False
-        Property DeezyChannelsDd As DeezyChannelsDd = DeezyChannelsDd.Original
-        Property DeezyChannelsDdp As DeezyChannelsDdp = DeezyChannelsDdp.Original
-        Property DeezyStereodownmix As DeezyStereodownmix = DeezyStereodownmix.Standard
-        Property DeezyDynamicrangecompression As DeezyDynamicrangecompression = DeezyDynamicrangecompression.Music_Light
+        Property DeezyChannelsAtmos As DeezyChannelsAtmos = DeezyChannelsAtmos._6
+        Property DeezyChannelsDd As DeezyChannelsDd = DeezyChannelsDd.Auto
+        Property DeezyChannelsDdp As DeezyChannelsDdp = DeezyChannelsDdp.Auto
+        Property DeezyChannelsDdpBluray As DeezyChannelsDdpBluray = DeezyChannelsDdpBluray._8
+        Property DeezyDdpMode As DeezyDdpMode = DeezyDdpMode.Ddp
+        Property DeezyStereodownmix As DeezyStereodownmix = DeezyStereodownmix.Auto
+        Property DeezyDynamicrangecompression As DeezyDrcLineMode = DeezyDrcLineMode.Music_Light
 
         Property OpusencOpusRateMode As OpusRateMode = OpusRateMode.VBR
         Property OpusencTune As OpusTune = OpusTune.Auto
@@ -1907,26 +1945,43 @@ Public Enum AudioRateMode
 End Enum
 
 Public Enum DeezyChannelsDd
-    <DispName("Original (default)")> Original
+    <DispName("Auto (default)")> Auto
     <DispName("Mono")> _1
     <DispName("Stereo")> _2
     <DispName("Surround (5.1)")> _6
 End Enum
 
 Public Enum DeezyChannelsDdp
-    <DispName("Original (default)")> Original
+    <DispName("Auto (default)")> Auto
     <DispName("Mono")> _1
     <DispName("Stereo")> _2
     <DispName("Surround (5.1)")> _6
     <DispName("SurroundEX (7.1)")> _8
 End Enum
 
-Public Enum DeezyStereodownmix
-    <DispName("Standard (default)")> Standard
-    <DispName("DPLII")> DPLII
+Public Enum DeezyChannelsDdpBluray
+    <DispName("SurroundEX (7.1)")> _8
 End Enum
 
-Public Enum DeezyDynamicrangecompression
+Public Enum DeezyChannelsAtmos
+    <DispName("Streaming (5.1)")> _6
+    <DispName("Bluray (7.1)")> _8
+End Enum
+
+Public Enum DeezyDdpMode
+    <DispName("Dolby Digital Plus (default)")> Ddp
+    <DispName("Dolby Digital Plus Bluray")> DdpBluray
+    <DispName("Atmos")> Atmos
+End Enum
+
+Public Enum DeezyStereodownmix
+    <DispName("Auto (default)")> Auto
+    <DispName("Loro")> Loro
+    <DispName("Ltrt")> Ltrt
+    <DispName("Dpl2")> Dplii
+End Enum
+
+Public Enum DeezyDrcLineMode
     <DispName("Film Standard")> Film_Standard
     <DispName("Film Light")> Film_Light
     <DispName("Music Standard")> Music_Standard

@@ -698,7 +698,7 @@ Public Class AudioForm
     Sub New()
         MyBase.New()
         InitializeComponent()
-        RestoreClientSize(50, 33)
+        RestoreClientSize(55, 35)
 
         rtbCommandLine.ReadOnly = True
 
@@ -903,6 +903,7 @@ Public Class AudioForm
 
         UpdateEncoderMenu()
 
+#Region "SamplingRate"
         If TempProfile.AudioCodec = AudioCodec.Opus Then
             mbSamplingRate.Clear()
             mbSamplingRate.Add("Original", 0)
@@ -931,6 +932,7 @@ Public Class AudioForm
                 TempProfile.Params.SamplingRate = 0
             End If
         End If
+#End Region
 
         Dim enc = TempProfile.GetEncoder()
 
@@ -940,9 +942,98 @@ Public Class AudioForm
         cbNormalize.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.deezy
         cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso enc <> GuiAudioEncoder.deezy AndAlso ((TempProfile.Params.Codec <> AudioCodec.Opus AndAlso TempProfile.Params.ChannelsMode = ChannelsMode._2) OrElse (TempProfile.Params.Codec = AudioCodec.Opus AndAlso TempProfile.Params.OpusencDownmix = OpusDownmix.Stereo))
         numGain.Enabled = Not TempProfile.ExtractCore
-        numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), If(CInt(numBitrate.Value) >= 320, 64, 32), 1D)
-        numBitrate.Maximum = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 1664D, 10000D)
-        numBitrate.Minimum = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 32D, 1D)
+
+#Region "Bitrate"
+        Dim setIncrement = Sub(bitrate As Double, increment As Double)
+                               If CInt(numBitrate.Value) >= bitrate Then numBitrate.UpIncrement = increment
+                               If CInt(numBitrate.Value) > bitrate Then numBitrate.DownIncrement = increment
+                           End Sub
+
+        If TempProfile.Params.Codec = AudioCodec.AC3 Then
+            If enc = GuiAudioEncoder.deezy Then
+                numBitrate.Increment = 8
+                setIncrement(128, 32)
+                setIncrement(256, 64)
+                numBitrate.Maximum = 640
+                numBitrate.Minimum = 96
+                If {6}.Contains(TempProfile.SourceChannels) OrElse TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._6 Then numBitrate.Minimum = 224
+            Else
+                numBitrate.Increment = 32
+                setIncrement(320, 64)
+                numBitrate.Maximum = 1664
+                numBitrate.Minimum = 32
+            End If
+        ElseIf TempProfile.Params.Codec = AudioCodec.EAC3 Then
+            If enc = GuiAudioEncoder.deezy Then
+                If TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp Then
+                    numBitrate.Increment = 8
+                    numBitrate.Maximum = 1024
+                    If {1}.Contains(TempProfile.SourceChannels) OrElse {DeezyChannelsDdp._1}.Contains(TempProfile.Params.DeezyChannelsDdp) Then
+                        setIncrement(128, 16)
+                        setIncrement(400, 48)
+                        setIncrement(448, 64)
+                        setIncrement(960, 48)
+                        setIncrement(1008, 16)
+                        numBitrate.Minimum = 32
+                    ElseIf {2}.Contains(TempProfile.SourceChannels) OrElse {DeezyChannelsDdp._2}.Contains(TempProfile.Params.DeezyChannelsDdp) Then
+                        setIncrement(128, 16)
+                        setIncrement(400, 48)
+                        setIncrement(448, 64)
+                        setIncrement(960, 48)
+                        setIncrement(1008, 16)
+                        numBitrate.Minimum = 96
+                    ElseIf {6}.Contains(TempProfile.SourceChannels) OrElse {DeezyChannelsDdp._6}.Contains(TempProfile.Params.DeezyChannelsDdp) Then
+                        setIncrement(256, 16)
+                        setIncrement(400, 48)
+                        setIncrement(448, 64)
+                        setIncrement(960, 48)
+                        setIncrement(1008, 16)
+                        numBitrate.Minimum = 192
+                    Else
+                        numBitrate.Increment = 64
+                        setIncrement(960, 48)
+                        setIncrement(1008, 16)
+                        numBitrate.Minimum = 384
+                    End If
+                ElseIf TempProfile.Params.DeezyDdpMode = DeezyDdpMode.DdpBluray Then
+                    numBitrate.Increment = 256
+                    setIncrement(1536, 128)
+                    numBitrate.Maximum = 1664
+                    numBitrate.Minimum = 768
+                ElseIf TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Atmos Then
+                    If TempProfile.Params.DeezyChannelsAtmos = DeezyChannelsAtmos._6 Then
+                        numBitrate.Increment = 64
+                        setIncrement(640, 128)
+                        setIncrement(768, 256)
+                        numBitrate.Maximum = 1024
+                        numBitrate.Minimum = 384
+                    ElseIf TempProfile.Params.DeezyChannelsAtmos = DeezyChannelsAtmos._8 Then
+                        numBitrate.Increment = 128
+                        setIncrement(1408, 104)
+                        setIncrement(1512, 24)
+                        setIncrement(1536, 128)
+                        numBitrate.Maximum = 1664
+                        numBitrate.Minimum = 1152
+                    Else
+                        Throw New NotImplementedException("AudioForm.UpdateControls()")
+                    End If
+                Else
+                    Throw New NotImplementedException("AudioForm.UpdateControls()")
+                End If
+            Else
+                numBitrate.UpIncrement = If(CInt(numBitrate.Value) >= 320, 64, 32)
+                numBitrate.DownIncrement = If(CInt(numBitrate.Value) > 320, 64, 32)
+                numBitrate.Maximum = 1664
+                numBitrate.Minimum = 32
+            End If
+        Else
+            numBitrate.Increment = 1
+            numBitrate.Maximum = 10_000
+            numBitrate.Minimum = 1
+        End If
+        numBitrate.Update()
+#End Region
+
         tbProfileName.SendMessageCue(TempProfile.Name, False)
         rtbCommandLine.SetText(TempProfile.GetCommandLine(False))
         rtbCommandLine.UpdateHeight()
@@ -1123,11 +1214,15 @@ Public Class AudioForm
 
         Select Case TempProfile.GetEncoder
             Case GuiAudioEncoder.deezy
+                Dim mbDdpMode As SimpleUI.MenuBlock(Of DeezyDdpMode)
+                Dim mbChannelsDdp As SimpleUI.MenuBlock(Of DeezyChannelsDdp)
+                Dim mbChannelsDdpBluray As SimpleUI.MenuBlock(Of DeezyChannelsDdpBluray)
+                Dim mbChannelsAtmos As SimpleUI.MenuBlock(Of DeezyChannelsAtmos)
                 Dim mbStereodownmix As SimpleUI.MenuBlock(Of DeezyStereodownmix)
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.AC3
                         Dim mbChannelsDd = ui.AddMenu(Of DeezyChannelsDd)(page)
-                        mbChannelsDd.Label.Text = "Channels"
+                        mbChannelsDd.Label.Text = "Channels:"
                         mbChannelsDd.Button.Expand = True
                         mbChannelsDd.Button.Value = TempProfile.Params.DeezyChannelsDd
                         mbChannelsDd.Button.SaveAction = Sub(value)
@@ -1136,28 +1231,61 @@ Public Class AudioForm
                                                              'TempProfile.Params.ChannelsMode = If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._1, ChannelsMode._1, If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._6, ChannelsMode._6, ChannelsMode.Original)))
                                                          End Sub
                     Case AudioCodec.EAC3
-                        Dim mbChannelsDdp = ui.AddMenu(Of DeezyChannelsDdp)(page)
-                        mbChannelsDdp.Label.Text = "Channels"
+                        mbDdpMode = ui.AddMenu(Of DeezyDdpMode)(page)
+                        mbDdpMode.Label.Text = "Mode:"
+                        mbDdpMode.Button.Expand = True
+                        mbDdpMode.Button.Value = TempProfile.Params.DeezyDdpMode
+                        mbDdpMode.Button.SaveAction = Sub(value)
+                                                          TempProfile.Params.DeezyDdpMode = value
+                                                          mbChannelsDdp.Visible = value = DeezyDdpMode.Ddp
+                                                          mbChannelsDdpBluray.Visible = value = DeezyDdpMode.DdpBluray
+                                                          mbChannelsAtmos.Visible = value = DeezyDdpMode.Atmos
+                                                          mbStereodownmix.Enabled = value = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2
+                                                          'TempProfile.Params.ChannelsMode = If(TempProfile.Params.Codec = AudioCodec.AC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._1, ChannelsMode._1, If(TempProfile.Params.Codec = AudioCodec.EAC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._6, ChannelsMode._6, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._8, ChannelsMode._8, ChannelsMode.Original))))
+                                                      End Sub
+                        mbChannelsDdp = ui.AddMenu(Of DeezyChannelsDdp)(page)
+                        mbChannelsDdp.Label.Text = "Channels:"
+                        mbChannelsDdp.Visible = TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp
                         mbChannelsDdp.Button.Expand = True
                         mbChannelsDdp.Button.Value = TempProfile.Params.DeezyChannelsDdp
                         mbChannelsDdp.Button.SaveAction = Sub(value)
                                                               TempProfile.Params.DeezyChannelsDdp = value
-                                                              mbStereodownmix.Enabled = value = DeezyChannelsDd._2
+                                                              mbStereodownmix.Enabled = value = DeezyChannelsDdp._2
                                                               'TempProfile.Params.ChannelsMode = If(TempProfile.Params.Codec = AudioCodec.AC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._1, ChannelsMode._1, If(TempProfile.Params.Codec = AudioCodec.EAC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._6, ChannelsMode._6, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._8, ChannelsMode._8, ChannelsMode.Original))))
                                                           End Sub
+                        mbChannelsDdpBluray = ui.AddMenu(Of DeezyChannelsDdpBluray)(page)
+                        mbChannelsDdpBluray.Label.Text = "Channels:"
+                        mbChannelsDdpBluray.Visible = TempProfile.Params.DeezyDdpMode = DeezyDdpMode.DdpBluray
+                        mbChannelsDdpBluray.Button.Expand = True
+                        mbChannelsDdpBluray.Button.Value = TempProfile.Params.DeezyChannelsDdpBluray
+                        mbChannelsDdpBluray.Button.SaveAction = Sub(value)
+                                                                    TempProfile.Params.DeezyChannelsDdpBluray = value
+                                                                    mbStereodownmix.Enabled = TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2
+                                                                    'TempProfile.Params.ChannelsMode = If(TempProfile.Params.Codec = AudioCodec.AC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._1, ChannelsMode._1, If(TempProfile.Params.Codec = AudioCodec.EAC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._6, ChannelsMode._6, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._8, ChannelsMode._8, ChannelsMode.Original))))
+                                                                End Sub
+                        mbChannelsAtmos = ui.AddMenu(Of DeezyChannelsAtmos)(page)
+                        mbChannelsAtmos.Label.Text = "Atmos Mode:"
+                        mbChannelsAtmos.Visible = TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Atmos
+                        mbChannelsAtmos.Button.Expand = True
+                        mbChannelsAtmos.Button.Value = TempProfile.Params.DeezyChannelsAtmos
+                        mbChannelsAtmos.Button.SaveAction = Sub(value)
+                                                                TempProfile.Params.DeezyChannelsAtmos = value
+                                                                mbStereodownmix.Enabled = TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2
+                                                                'TempProfile.Params.ChannelsMode = If(TempProfile.Params.Codec = AudioCodec.AC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._1, ChannelsMode._1, If(TempProfile.Params.Codec = AudioCodec.EAC3 AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._6, ChannelsMode._6, If(TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._8, ChannelsMode._8, ChannelsMode.Original))))
+                                                            End Sub
                     Case Else
                         Throw New NotImplementedException("LoadAdvanced")
                 End Select
 
                 mbStereodownmix = ui.AddMenu(Of DeezyStereodownmix)(page)
-                mbStereodownmix.Enabled = TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2 OrElse TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2
-                mbStereodownmix.Label.Text = "Stereo Downmix"
+                mbStereodownmix.Enabled = TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2 OrElse (TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2)
+                mbStereodownmix.Label.Text = "Stereo Downmix:"
                 mbStereodownmix.Button.Expand = True
                 mbStereodownmix.Button.Value = TempProfile.Params.DeezyStereodownmix
                 mbStereodownmix.Button.SaveAction = Sub(value) TempProfile.Params.DeezyStereodownmix = value
 
-                Dim mbDrc = ui.AddMenu(Of DeezyDynamicrangecompression)(page)
-                mbDrc.Label.Text = "Dynamic Range Comp."
+                Dim mbDrc = ui.AddMenu(Of DeezyDrcLineMode)(page)
+                mbDrc.Label.Text = "Dynamic Range Comp.:"
                 mbDrc.Button.Expand = True
                 mbDrc.Button.Value = TempProfile.Params.DeezyDynamicrangecompression
                 mbDrc.Button.SaveAction = Sub(value) TempProfile.Params.DeezyDynamicrangecompression = value
@@ -1168,7 +1296,7 @@ Public Class AudioForm
                 bKeeptemp.SaveAction = Sub(value) TempProfile.Params.DeezyKeeptemp = value
             Case GuiAudioEncoder.eac3to
                 Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
-                mbFrameRateMode.Label.Text = "Frame rate:"
+                mbFrameRateMode.Label.Text = "Frame Rate:"
                 mbFrameRateMode.Button.Expand = True
                 mbFrameRateMode.Button.Value = TempProfile.Params.FrameRateMode
                 mbFrameRateMode.Button.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
@@ -1203,7 +1331,7 @@ Public Class AudioForm
                     Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                     Case AudioCodec.AAC
                         Dim mbRateMode = ui.AddMenu(Of SimpleAudioRateMode)
-                        mbRateMode.Text = "Rate Mode"
+                        mbRateMode.Text = "Rate Mode:"
                         mbRateMode.Expanded = True
                         mbRateMode.Button.Value = TempProfile.Params.SimpleRateMode
                         mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.SimpleRateMode = value
@@ -1213,7 +1341,7 @@ Public Class AudioForm
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
                     Case AudioCodec.FLAC
                         Dim mbBitDepth = ui.AddMenu(Of FlacBitDepth)
-                        mbBitDepth.Text = "Bit Depth"
+                        mbBitDepth.Text = "Bit Depth:"
                         mbBitDepth.Expanded = True
                         mbBitDepth.Button.Value = TempProfile.Params.ffmpegFlacBitDepth
                         mbBitDepth.Button.SaveAction = Sub(value)
@@ -1223,19 +1351,19 @@ Public Class AudioForm
                                                        End Sub
                     Case AudioCodec.Opus
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
-                        mbRateMode.Text = "Rate Mode"
+                        mbRateMode.Text = "Rate Mode:"
                         mbRateMode.Expanded = True
                         mbRateMode.Button.Value = TempProfile.Params.ffmpegOpusRateMode
                         mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusRateMode = value
 
                         Dim mbOpusApp = ui.AddMenu(Of OpusApp)
-                        mbOpusApp.Text = "Application Type"
+                        mbOpusApp.Text = "Application Type:"
                         mbOpusApp.Expanded = True
                         mbOpusApp.Button.Value = TempProfile.Params.ffmpegOpusApp
                         mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusApp = value
 
                         Dim frame = ui.AddMenu(Of Double)
-                        frame.Text = "Frame Duration"
+                        frame.Text = "Frame Duration:"
                         frame.Expanded = True
                         frame.Add("2.5", 2.5)
                         frame.Add("5", 5)
@@ -1249,7 +1377,7 @@ Public Class AudioForm
                         frame.Property = NameOf(TempProfile.Params.ffmpegOpusFrame)
 
                         Dim map = ui.AddMenu(Of Integer)
-                        map.Text = "Mapping Family"
+                        map.Text = "Mapping Family:"
                         map.Expanded = True
                         map.Add("-1", -1)
                         map.Add("0", 0)
@@ -1258,13 +1386,13 @@ Public Class AudioForm
                         map.Property = NameOf(TempProfile.Params.ffmpegOpusMap)
 
                         Dim comp = ui.AddNum(page)
-                        comp.Text = "Compression Level"
+                        comp.Text = "Compression Level:"
                         comp.Config = {0, 10, 1}
                         comp.NumEdit.Value = TempProfile.Params.ffmpegOpusCompress
                         comp.NumEdit.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusCompress = CInt(value)
 
                         Dim packet = ui.AddNum(page)
-                        packet.Text = "Packet Loss"
+                        packet.Text = "Packet Loss:"
                         packet.Config = {0, 100, 1}
                         packet.NumEdit.Value = TempProfile.Params.ffmpegOpusPacket
                         packet.NumEdit.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusPacket = CInt(value)
@@ -1304,7 +1432,7 @@ Public Class AudioForm
                 Dim getHelpAction = Function(switch As String) Sub() CommandLineParams.ShowConsoleHelp(Package.fdkaac, {switch})
 
                 Dim modeMenu = ui.AddMenu(Of SimpleAudioRateMode)
-                modeMenu.Text = "Rate Mode"
+                modeMenu.Text = "Rate Mode:"
                 modeMenu.Expanded = True
                 modeMenu.HelpAction = getHelpAction("--bitrate-mode")
                 modeMenu.Button.Value = TempProfile.Params.SimpleRateMode
@@ -1314,7 +1442,7 @@ Public Class AudioForm
                                              End Sub
 
                 Dim profileMenu = ui.AddMenu(Of Integer)
-                profileMenu.Text = "Profile"
+                profileMenu.Text = "Profile:"
                 profileMenu.Expanded = True
                 profileMenu.HelpAction = getHelpAction("--profile")
                 profileMenu.Add("AAC LC", 2)
@@ -1325,7 +1453,7 @@ Public Class AudioForm
                 profileMenu.Property = NameOf(TempProfile.Params.fdkaacProfile)
 
                 Dim lowDelaySBR = ui.AddMenu(Of Integer)
-                lowDelaySBR.Text = "Lowdelay SBR"
+                lowDelaySBR.Text = "Lowdelay SBR:"
                 lowDelaySBR.Expanded = True
                 lowDelaySBR.HelpAction = getHelpAction("--lowdelay-sbr")
                 lowDelaySBR.Add("ELD SBR auto configuration", -1)
@@ -1334,7 +1462,7 @@ Public Class AudioForm
                 lowDelaySBR.Property = NameOf(TempProfile.Params.fdkaacLowDelaySBR)
 
                 Dim sbrRatio = ui.AddMenu(Of Integer)
-                sbrRatio.Text = "SBR Ratio"
+                sbrRatio.Text = "SBR Ratio:"
                 sbrRatio.Expanded = True
                 sbrRatio.HelpAction = getHelpAction("--sbr-ratio")
                 sbrRatio.Add("Library Default", 0)
@@ -1343,7 +1471,7 @@ Public Class AudioForm
                 sbrRatio.Property = NameOf(TempProfile.Params.fdkaacSbrRatio)
 
                 Dim gaplessMode = ui.AddMenu(Of Integer)
-                gaplessMode.Text = "Gapless Mode"
+                gaplessMode.Text = "Gapless Mode:"
                 gaplessMode.Expanded = True
                 gaplessMode.HelpAction = getHelpAction("--gapless-mode")
                 gaplessMode.Add("iTunSMPB", 0)
@@ -1352,7 +1480,7 @@ Public Class AudioForm
                 gaplessMode.Property = NameOf(TempProfile.Params.fdkaacGaplessMode)
 
                 Dim transportFormat = ui.AddMenu(Of Integer)
-                transportFormat.Text = "Transport Format"
+                transportFormat.Text = "Transport Format:"
                 transportFormat.Expanded = True
                 transportFormat.HelpAction = getHelpAction("--transport-format")
                 transportFormat.Add("M4A", 0)
@@ -1364,7 +1492,7 @@ Public Class AudioForm
                 transportFormat.Property = NameOf(TempProfile.Params.fdkaacTransportFormat)
 
                 Dim n = ui.AddNum
-                n.Text = "Bandwidth"
+                n.Text = "Bandwidth:"
                 n.HelpAction = getHelpAction("--bandwidth")
                 n.Property = NameOf(TempProfile.Params.fdkaacBandwidth)
 
@@ -1394,7 +1522,7 @@ Public Class AudioForm
                 cb.Property = NameOf(TempProfile.Params.fdkaacMoovBeforeMdat)
             Case GuiAudioEncoder.qaac
                 Dim mbMode = ui.AddMenu(Of Integer)
-                mbMode.Text = "Mode"
+                mbMode.Text = "Mode:"
                 mbMode.Expanded = True
                 mbMode.Add("True VBR", 0)
                 mbMode.Add("Constrained VBR", 1)
@@ -1408,7 +1536,7 @@ Public Class AudioForm
                                            End Sub
 
                 Dim mbQuality = ui.AddMenu(Of Integer)(page)
-                mbQuality.Label.Text = "Quality"
+                mbQuality.Label.Text = "Quality:"
                 mbQuality.Button.Expand = True
                 mbQuality.Button.Add("Low", 0)
                 mbQuality.Button.Add("Medium", 1)
@@ -1417,7 +1545,7 @@ Public Class AudioForm
                 mbQuality.Button.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
 
                 Dim num = ui.AddNum(page)
-                num.Text = "Lowpass"
+                num.Text = "Lowpass:"
                 num.Config = {0, Integer.MaxValue}
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
@@ -1441,7 +1569,7 @@ Public Class AudioForm
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value
             Case GuiAudioEncoder.opusenc
                 Dim mbMode = ui.AddMenu(Of OpusRateMode)
-                mbMode.Text = "Mode"
+                mbMode.Text = "Mode:"
                 mbMode.Expanded = True
                 mbMode.Button.Value = TempProfile.Params.OpusencOpusRateMode
                 mbMode.Button.SaveAction = Sub(value)
@@ -1451,13 +1579,13 @@ Public Class AudioForm
                                            End Sub
 
                 Dim mbTune = ui.AddMenu(Of OpusTune)(page)
-                mbTune.Label.Text = "Tune"
+                mbTune.Label.Text = "Tune:"
                 mbTune.Button.Expand = True
                 mbTune.Button.Value = TempProfile.Params.OpusencTune
                 mbTune.Button.SaveAction = Sub(value) TempProfile.Params.OpusencTune = value
 
                 Dim mbDownmix = ui.AddMenu(Of OpusDownmix)(page)
-                mbDownmix.Label.Text = "Downmix"
+                mbDownmix.Label.Text = "Downmix:"
                 mbDownmix.Button.Expand = True
                 mbDownmix.Button.Value = TempProfile.Params.OpusencDownmix
                 mbDownmix.Button.SaveAction = Sub(value)
@@ -1466,25 +1594,25 @@ Public Class AudioForm
                                               End Sub
 
                 Dim mbFramesize = ui.AddMenu(Of OpusFramesize)(page)
-                mbFramesize.Label.Text = "Framesize in ms"
+                mbFramesize.Label.Text = "Framesize in ms:"
                 mbFramesize.Button.Expand = True
                 mbFramesize.Button.Value = TempProfile.Params.OpusencFramesize
                 mbFramesize.Button.SaveAction = Sub(value) TempProfile.Params.OpusencFramesize = value
 
                 Dim numExpectloss = ui.AddNum(page)
-                numExpectloss.Text = "Expect Packet Loss in %"
+                numExpectloss.Text = "Expect Packet Loss in %:"
                 numExpectloss.Config = {0, 100, 1, 0}
                 numExpectloss.NumEdit.Value = TempProfile.Params.OpusencExpectloss
                 numExpectloss.NumEdit.SaveAction = Sub(value) TempProfile.Params.OpusencExpectloss = CInt(value)
 
                 Dim numComplexity = ui.AddNum(page)
-                numComplexity.Text = "Complexity (10: best)"
+                numComplexity.Text = "Complexity (10: best):"
                 numComplexity.Config = {0, 10, 1, 0}
                 numComplexity.NumEdit.Value = TempProfile.Params.OpusencComp
                 numComplexity.NumEdit.SaveAction = Sub(value) TempProfile.Params.OpusencComp = CInt(value)
 
                 Dim numMaxdelay = ui.AddNum(page)
-                numMaxdelay.Text = "Max Delay in ms"
+                numMaxdelay.Text = "Max Delay in ms:"
                 numMaxdelay.Config = {0, 1000, 1, 0}
                 numMaxdelay.NumEdit.Value = TempProfile.Params.OpusencMaxdelay
                 numMaxdelay.NumEdit.SaveAction = Sub(value) TempProfile.Params.OpusencMaxdelay = CInt(value)

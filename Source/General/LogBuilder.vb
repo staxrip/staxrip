@@ -118,10 +118,6 @@ Public Class LogBuilder
     Shared ConfigurationString As String 'cached due to bug report
 
     Sub WriteConfiguration()
-        If ToString.Contains("- Configuration -") Then
-            Exit Sub
-        End If
-
         WriteHeader("Configuration")
 
         If ConfigurationString = "" Then ConfigurationString =

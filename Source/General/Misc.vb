@@ -2242,6 +2242,15 @@ Public Enum SubtitleMode
     <DispName("Don't include subtitles")> Disabled
 End Enum
 
+Public Enum CommandLinePresetType
+    Eac3to = 1
+    X264 = 50
+    MuxerMkvGeneral = 100
+    MuxerMp4General = 200
+    MuxerMp4Video = 220
+    TargetFileNameOverride = 1000
+End Enum
+
 Public Class StringLogicalComparer
     Implements IComparer, IComparer(Of String)
 

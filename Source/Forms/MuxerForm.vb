@@ -928,7 +928,7 @@ Public Class MuxerForm
         mb.AddMenu("Edit with chapterEditor...", Sub() g.ShellExecute(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
 
         If TypeOf Muxer Is MkvMuxer Then
-            clcGeneral.Presets = s.CmdlPresetsMKV
+            clcGeneral.Presets = If(s.CommandLinePresets.ContainsKey(CommandLinePresetType.MuxerMkvGeneral), s.CommandLinePresets(CommandLinePresetType.MuxerMkvGeneral), "")
 
             mb = UI.AddTextMenu()
             mb.Text = "Tags"
@@ -977,8 +977,8 @@ Public Class MuxerForm
         ElseIf TypeOf Muxer Is MP4Muxer Then
             tpAttachments.Enabled = False
 
-            clcGeneral.Presets = s.CmdlPresetsMP4
-            clcVideo.Presets = s.CmdlVideoPresetsMP4
+            clcGeneral.Presets = If(s.CommandLinePresets.ContainsKey(CommandLinePresetType.MuxerMP4General), s.CommandLinePresets(CommandLinePresetType.MuxerMP4General), "")
+            clcVideo.Presets = If(s.CommandLinePresets.ContainsKey(CommandLinePresetType.MuxerMP4Video), s.CommandLinePresets(CommandLinePresetType.MuxerMP4Video), "")
 
             Dim txt = UI.AddText()
             txt.Text = "Video Track Name"
@@ -1002,10 +1002,10 @@ Public Class MuxerForm
         MyBase.OnFormClosed(e)
 
         If TypeOf Muxer Is MkvMuxer Then
-            s.CmdlPresetsMKV = clcGeneral.Presets
+            s.CommandLinePresets(CommandLinePresetType.MuxerMkvGeneral) = clcGeneral.Presets
         ElseIf TypeOf Muxer Is MP4Muxer Then
-            s.CmdlPresetsMP4 = clcGeneral.Presets
-            s.CmdlVideoPresetsMP4 = clcVideo.Presets
+            s.CommandLinePresets(CommandLinePresetType.MuxerMP4General) = clcGeneral.Presets
+            s.CommandLinePresets(CommandLinePresetType.MuxerMP4Video) = clcVideo.Presets
         End If
 
         s.Storage.SetInt("last selected muxer tab", tcMain.SelectedIndex)

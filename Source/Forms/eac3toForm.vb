@@ -621,7 +621,7 @@ Public Class eac3toForm
         lvSubtitles.OwnerDraw = False
         lvSubtitles.Visible = False
 
-        cmdlOptions.Presets = s.CmdlPresetsEac3to
+        cmdlOptions.Presets = If(s.CommandLinePresets.ContainsKey(CommandLinePresetType.Eac3to), s.CommandLinePresets(CommandLinePresetType.Eac3to), "")
         cmdlOptions.RestoreFunc = Function() ApplicationSettings.GetDefaultEac3toMenu.FormatColumn("=")
 
         bnAudioNative.Visible = False
@@ -1220,7 +1220,7 @@ Public Class eac3toForm
             End If
         Next
 
-        s.CmdlPresetsEac3to = cmdlOptions.Presets
+        s.CommandLinePresets(CommandLinePresetType.Eac3to) = cmdlOptions.Presets
 
         If Not bnOK.Enabled Then
             args.Cancel = True

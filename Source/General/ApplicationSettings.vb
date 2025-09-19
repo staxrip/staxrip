@@ -26,6 +26,7 @@ Public Class ApplicationSettings
     Public CmdlVideoPresetsMP4 As String
     Public CmdlPresetsX264 As String
     Public CommandLineHighlighting As Boolean = True
+    Public CommandLinePresets As Dictionary(Of CommandLinePresetType, String)
     Public CommandLinePreviewMouseUpSearch As Boolean = True
     Public CommandLinePreviewViaCodeForm As Boolean = True
     Public CommandLinePreview As CommandLinePreview = CommandLinePreview.CodePreview
@@ -355,6 +356,17 @@ Public Class ApplicationSettings
 
         If Check(FilterSetupProfiles, "Filter Setup Profiles", 102) Then
             FilterSetupProfiles = VideoScript.GetDefaults
+        End If
+
+        If Check(CommandLinePresets, "Command Line Presets", 1) Then
+            CommandLinePresets = New Dictionary(Of CommandLinePresetType, String)() From {
+                {CommandLinePresetType.TargetFileNameOverride, "Quality = <if(%--crf_Z%; _CRF%--crf%; <if(%--quality_Z%; _Quality%--quality_T%; '')>)>"},
+                {CommandLinePresetType.Eac3to, CmdlPresetsEac3to},
+                {CommandLinePresetType.MuxerMkvGeneral, CmdlPresetsMKV},
+                {CommandLinePresetType.MuxerMP4General, CmdlPresetsMP4},
+                {CommandLinePresetType.MuxerMP4Video, CmdlVideoPresetsMP4},
+                {CommandLinePresetType.X264, CmdlPresetsX264}
+            }
         End If
 
         If LastSourceDir = "" Then

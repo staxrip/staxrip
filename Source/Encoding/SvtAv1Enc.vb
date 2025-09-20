@@ -743,7 +743,7 @@ Public Class SvtAv1EncParams
     Property QpScaleCompressStrength As New NumParam With {
         .Switch = "--qp-scale-compress-strength",
         .Text = "QP Scale Compress Strength",
-        .Config = {0, 3, 0.01, 2},
+        .Config = {0, 3, 1, 0},
         .Init = 0}
 
     Property RecodeLoop As New OptionParam With {

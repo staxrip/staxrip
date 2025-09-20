@@ -1165,6 +1165,18 @@ Public Class Package
         .RequirementsFunc = Function() Cuda.IsSupported,
         .VsFilterNames = {"bm3dcuda_rtc.BM3D", "bm3dcuda_rtc.BM3Dv2"}})
 
+    Shared Property EEDI2CUDA As Package = Add(New PluginPackage With {
+        .Name = "EEDI2CUDA",
+        .Filename = "EEDI2CUDA.dll",
+        .Location = IO.Path.Combine("Plugins", "Dual", "EEDI2CUDA"),
+        .Description = "Enhanced Edge Directed Interpolation implemented in CUDA Enhanced Edge Directed Interpolation implemented in CUDA.",
+        .WebURL = "https://github.com/hooke007/VapourSynth-EEDI2CUDA",
+        .HelpURL = "https://github.com/hooke007/VapourSynth-EEDI2CUDA/blob/main/README.md",
+        .DownloadURL = "http://avisynth.nl/index.php/EEDI2CUDA",
+        .RequirementsFunc = Function() Cuda.IsSupported,
+        .AvsFilterNames = {"EEDI2_CUDA", "EEDI2_CUDA_AA2", "EEDI2_CUDA_Enlarge2"},
+        .VsFilterNames = {"eedi2cuda.aa2", "eedi2cuda.EEDI2", "eedi2cuda.Enlarge2"}})
+
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
         .Name = "MCTemporalDenoise",
         .Filename = "MCTemporalDenoise.avsi",

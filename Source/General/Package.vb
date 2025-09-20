@@ -162,6 +162,18 @@ Public Class Package
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.deezy),
         .Description = "Dolby Encoding Engine."})
 
+    Shared Property Truehdd As Package = Add(New Package With {
+        .Name = "Truehdd",
+        .Filename = "truehdd.exe",
+        .Location = IO.Path.Combine("Audio", "truehdd"),
+        .WebURL = "https://github.com/truehdd/truehdd",
+        .DownloadURL = "https://github.com/truehdd/truehdd/releases",
+        .HelpURL = "https://github.com/truehdd/truehdd",
+        .HelpSwitch = "--help",
+        .SupportsAutoUpdate = False,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.deezy),
+        .Description = "Tools for inspecting and decoding Dolby TrueHD bitstreams."})
+
     Shared Property DeeZy As Package = Add(New Package With {
         .Name = "DeeZy",
         .Filename = "deezy.exe",

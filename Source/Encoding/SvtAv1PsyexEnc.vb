@@ -670,8 +670,8 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Subjective SSIM", "4: Still Picture"},
-        .Init = 1}
+        .Options = {"0: VQ (default)", "1: PSNR", "2: SSIM", "3: Subjective SSIM", "4: Still Picture"},
+        .Init = 0}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -750,10 +750,10 @@ Public Class SvtAv1PsyexEncParams
         .Switch = "--variance-octile",
         .Text = "Variance Octile",
         .Expanded = True,
-        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
+        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th (default)", "6: 6/8th", "7: 7/8th", "8: 8/8th"},
         .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
         .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
-        .Init = 5}
+        .Init = 4}
 
     Property VarianceBoostCurve As New OptionParam With {
         .Switch = "--variance-boost-curve",
@@ -950,10 +950,12 @@ Public Class SvtAv1PsyexEncParams
         .Config = {0, 4, 1},
         .Init = 0}
 
-    Property LoopFilterEnable As New NumParam With {
+    Property LoopFilterEnable As New OptionParam With {
         .Switch = "--enable-dlf",
         .Text = "Deblocking Loop Filter",
-        .Config = {0, 2, 1},
+        .Expanded = True,
+        .Options = {"0: Off", "1: On (default)", "2: Slower, more accurate filtering"},
+        .Values = {"0", "1", "2"},
         .Init = 1}
 
     Property CDEFLevel As New BoolParam With {
@@ -1284,13 +1286,13 @@ Public Class SvtAv1PsyexEncParams
         .Config = {0, 8, 0.01, 2},
         .Init = 1}
 
-    Property FilteringNoiseDetection As New OptionParam With {
-        .Switch = "--filtering-noise-detection",
-        .Text = "Filtering Noise Detection",
+    Property NoiseAdaptiveFiltering As New OptionParam With {
+        .Switch = "--noise-adaptive-filtering",
+        .Text = "Noise Adaptive Filtering",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Default Tune Behavior (default)", "1: On", "2: Off", "3: On (CDEF Only)", "4: On (Restoration Only)"},
-        .Init = 0}
+        .Options = {"0: Default Tune Behavior", "1: Always-On Noise-Adaptive Filters", "2: Off (default)", "3: On (Noise-Adaptive CDEF Only)", "4: On (Noise-Adaptive Restoration Only)"},
+        .Init = 2}
 
     Property Max32TxSize As New OptionParam With {
         .Switch = "--max-32-tx-size",
@@ -1312,7 +1314,7 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Min chroma quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Visible AndAlso EnableQm.Value,
-        .Init = 8}
+        .Init = 10}
 
     Property PsyRd As New NumParam With {
         .Switch = "--psy-rd",
@@ -1424,7 +1426,7 @@ Public Class SvtAv1PsyexEncParams
                 )
                 Add("PSYEX Specific 1",
                     Hdr10PlusJson, DolbyVisionRpu, DolbyVisionRpuMode,
-                    QpScaleCompressStrength, FilteringNoiseDetection, Max32TxSize,
+                    QpScaleCompressStrength, NoiseAdaptiveFiltering, Max32TxSize,
                     NoiseNormStrength, AdaptiveFilmGrain, KeyframeTemporalFilteringStrength
                 )
                 Add("PSYEX Specific 2",

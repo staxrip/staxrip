@@ -1716,10 +1716,12 @@ Public Class GUIAudioProfile
         End Set
     End Property
 
-    Overrides ReadOnly Property CanEdit() As Boolean
+    Overrides Property CanEdit() As Boolean
         Get
             Return True
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Overrides Function HandlesDelay() As Boolean

@@ -929,10 +929,13 @@ Public MustInherit Class Profile
 
     Protected CanEditValue As Boolean
 
-    Overridable ReadOnly Property CanEdit As Boolean
+    Overridable Property CanEdit As Boolean
         Get
             Return CanEditValue
         End Get
+        Set(value As Boolean)
+            If CanEditValue <> value Then CanEditValue = value
+        End Set
     End Property
 
     Overridable Function Edit() As DialogResult

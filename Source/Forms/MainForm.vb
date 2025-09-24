@@ -1752,6 +1752,11 @@ Partial Public Class MainForm
                 p.TemplateName = path.Base
                 p.TemplatePath = path
                 p.BatchMode = False
+                Dim nnm = TypeOf p.Videoencoder.Muxer IsNot NullMuxer
+                If nnm AndAlso Not p.VideoEncoder.Muxer.CanEdit Then
+                    p.VideoEncoder.Muxer.CanEdit = nnm
+                    SaveProjectPath(path)
+                End If
             Else
                 g.ProjectPath = path
             End If

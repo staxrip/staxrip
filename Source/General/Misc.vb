@@ -1919,17 +1919,19 @@ Public Class OS
 
         Public Shared ReadOnly Property Cores As Integer
             Get
-                If _cores > 0 Then
-                    Return _cores
-                Else
-                    _cores = 0
-                    Using moc = New ManagementObjectSearcher("Select * from Win32_Processor").Get()
-                        For Each mbo In moc
-                            _cores += Integer.Parse(mbo("NumberOfCores").ToString())
-                        Next
-                    End Using
-                    Return _cores
+                If _cores <= 0 Then
+                    Try 'bug report received
+                        Using moc = New ManagementObjectSearcher("Select * from Win32_Processor").Get()
+                            For Each mbo In moc
+                                _cores += Integer.Parse(mbo("NumberOfCores").ToString())
+                            Next
+                        End Using
+                    Catch ex As Exception
+                        _cores = Environment.ProcessorCount \ 2
+                    End Try
                 End If
+
+                Return _cores
             End Get
         End Property
 

@@ -6119,7 +6119,7 @@ Partial Public Class MainForm
         Dim currentVersion = ass.GetName().Version
         If Not force AndAlso currentVersion.Minor >= 99 Then Exit Sub
 
-        Dim filepath = If((currentVersion.Minor Mod 2) = 1, "StaxRip.CHANGELOG-SUPPORTER.md", "StaxRip.CHANGELOG.md")
+        Dim filepath = If(g.IsSupporterRelease, "StaxRip.CHANGELOG-SUPPORTER.md", "StaxRip.CHANGELOG.md")
 
         Using stream = ass.GetManifestResourceStream(filepath)
             Using reader As New StreamReader(stream)

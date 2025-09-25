@@ -4,6 +4,8 @@ Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
 Imports System.Management.Automation.Language
+Imports System.Management.Instrumentation
+Imports System.Reflection
 Imports System.Runtime.ExceptionServices
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Security.Principal
@@ -65,6 +67,21 @@ Public Class GlobalClass
             Return _isRunningUnderWine.Value
         End Get
     End Property
+
+    Private _isSupporterRelease As Boolean?
+
+    ReadOnly Property IsSupporterRelease As Boolean
+        Get
+            If Not _isSupporterRelease.HasValue Then
+                Dim ass = Assembly.GetExecutingAssembly()
+                Dim currentVersion = ass.GetName().Version
+                _isSupporterRelease = (currentVersion.Minor Mod 2) = 1
+            End If
+
+            Return _isSupporterRelease.Value
+        End Get
+    End Property
+
 
     Event AfterJobAdded()
     Event AfterJobFailed()

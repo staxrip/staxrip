@@ -219,7 +219,6 @@ Public Class ProcController
                          End If
                      End Sub
 
-        Dim sw = If(g.IsDevelopmentPC(), Stopwatch.StartNew(), Nothing)
         LogTextBox.BlockPaint = True
         LogTextBox.SuspendLayout()
 
@@ -350,12 +349,6 @@ Public Class ProcController
             LogTextBox.Select(0, 0)
             LogTextBox.BlockPaint = False
             LogTextBox.ResumeLayout()
-
-            If sw IsNot Nothing AndAlso ProcForm IsNot Nothing Then
-                sw.Stop()
-                ProcForm.Text = $"Output Highlighting took {sw.ElapsedMilliseconds}ms"
-            End If
-
             SetAndHighlightLog(_lastHighlightedText, theme)
         End Try
     End Sub

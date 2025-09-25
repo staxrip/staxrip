@@ -13,7 +13,7 @@ Partial Public Class MainForm
             ui.Store = s
 
 
-            '################# General
+#Region "General"
             ui.CreateFlowPage("General", True)
 
             Dim b = ui.AddBool
@@ -53,9 +53,9 @@ Partial Public Class MainForm
             n.Help = "Duration of error messages being shown if an error occures and before the next job shall start."
             n.Config = {-1, 3600, 5, 0}
             n.Field = NameOf(s.ErrorMessageTimeout)
+#End Region
 
-
-            '################# Logs
+#Region "Logs"
             ui.CreateFlowPage("Logs", True)
 
             n = ui.AddNum()
@@ -71,9 +71,9 @@ Partial Public Class MainForm
             b = ui.AddBool()
             b.Text = "Enable debug logging"
             b.Field = NameOf(s.WriteDebugLog)
+#End Region
 
-
-            '################# Startup
+#Region "Startup"
             ui.CreateFlowPage("Startup", True)
 
             Dim mb = ui.AddMenu(Of String)()
@@ -107,9 +107,9 @@ Partial Public Class MainForm
             b = ui.AddBool()
             b.Text = "Check for updates approx. once per day"
             b.Field = NameOf(s.CheckForUpdates)
+#End Region
 
-
-            '################# Source Opening
+#Region "Source Opening"
             ui.CreateFlowPage("Source Opening", True)
 
             ui.AddLabel("Template Selection:")
@@ -140,9 +140,9 @@ Partial Public Class MainForm
             stst.Help = "Timeout in seconds the Template Selection is shown befor the current template is used"
             stst.Config = {1, Integer.MaxValue}
             stst.Field = NameOf(s.ShowTemplateSelectionTimeout)
+#End Region
 
-
-            '############# Quality Definitions
+#Region "Quality Definitions"
             Dim qualityDefinitionsPage = ui.CreateFlowPage("Quality Definitions", True)
 
             Dim helpAddition = "Use this format to create your custom values with optional description:" + BR +
@@ -186,9 +186,9 @@ Partial Public Class MainForm
             t.Edit.Expand = True
             t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
+#End Region
 
-
-            '############### Generation
+#Region "Generation"
             Dim generationPage = ui.CreateFlowPage("Generation", True)
 
             ui.AddLabel("Position of frame number in file name:")
@@ -207,9 +207,9 @@ Partial Public Class MainForm
             b.Text = "Add line numbers to generated code"
             b.Help = ""
             b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
+#End Region
 
-
-            '############# System
+#Region "System"
             Dim systemPage = ui.CreateFlowPage("System", True)
 
             Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
@@ -266,9 +266,9 @@ Partial Public Class MainForm
             b = ui.AddBool
             b.Text = "Prefer Windows Terminal over Powershell if present"
             b.Field = NameOf(s.PreferWindowsTerminal)
+#End Region
 
-
-            '################# User Interface
+#Region "User Interface"
             Dim uiPage = ui.CreateFlowPage("User Interface", True)
 
             Dim theme = ui.AddMenu(Of String)
@@ -404,9 +404,9 @@ Partial Public Class MainForm
             b.Text = "Enable tooltips in menus (restart required)"
             b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
+#End Region
 
-
-            '################# Frameserver
+#Region "Frameserver"
             ui.CreateFlowPage("Frameserver", True)
 
             Dim avsMode = ui.AddMenu(Of FrameServerMode)()
@@ -426,18 +426,18 @@ Partial Public Class MainForm
             b.Text = "Load VapourSynth plugins"
             b.Help = "Detects and adds necessary LoadPlugin calls."
             b.Field = NameOf(s.LoadVapourSynthPlugins)
+#End Region
 
-
-            '############# Preprocessing
+#Region "Preprocessing"
             ui.AddControlPage(New PreprocessingControl, "Preprocessing")
+#End Region
 
-
-            '############# Source Filters
+#Region "Source Filters"
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth", s.AviSynthFilterPreferences, s.AviSynthProfiles)
             Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth", s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
+#End Region
 
-
-            '############### Danger Zone
+#Region "Danger Zone"
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
 
             l = ui.AddLabel("Don't change Danger Zone settings unless you are" + BR +
@@ -458,6 +458,8 @@ Partial Public Class MainForm
             b = ui.AddBool
             b.Text = "Verify tool status"
             b.Field = NameOf(s.VerifyToolStatus)
+#End Region
+
 
             ui.SelectLast("last settings page")
 
@@ -508,16 +510,16 @@ Partial Public Class MainForm
         Dim filterPage = ui.CreateDataPage(pagePath)
 
         Dim fn = Function() As StringPairList
-            Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type or format. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
+                     Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type or format. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
 
-            For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
-                If i.Script <> "" Then
-                    ret.Add(i.Name, i.Script)
-                End If
-            Next
+                     For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
+                         If i.Script <> "" Then
+                             ret.Add(i.Name, i.Script)
+                         End If
+                     Next
 
-            Return ret
-        End Function
+                     Return ret
+                 End Function
 
         filterPage.TipProvider.TipsFunc = fn
 

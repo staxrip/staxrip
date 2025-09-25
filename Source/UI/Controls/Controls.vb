@@ -3016,9 +3016,7 @@ Namespace UI
             End If
         End Sub
 
-        Overloads Sub Update()
-            MyBase.Update()
-
+        Sub UpdateValue()
             If ValueValue < Minimum Then
                 ValueValue = Minimum
                 UpdateText()

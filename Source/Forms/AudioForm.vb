@@ -692,8 +692,8 @@ Public Class AudioForm
 #End Region
 
     Private Profile, TempProfile As GUIAudioProfile
-
     Private CommandLineHighlightingMenuItem As MenuItemEx
+    Private BlockUpdate As Boolean = False
 
     Sub New()
         MyBase.New()
@@ -813,25 +813,25 @@ Public Class AudioForm
         If TempProfile IsNot Nothing Then
             TempProfile.Params.Quality = CSng(numQuality.Value)
             numBitrate.Value = TempProfile.GetBitrate
-            UpdateControls()
+            If Not BlockUpdate Then UpdateControls()
         End If
     End Sub
 
     Sub nudBitrate_ValueChanged(numEdit As NumEdit) Handles numBitrate.ValueChanged
         If TempProfile IsNot Nothing Then
             TempProfile.Bitrate = CSng(numBitrate.Value)
-            UpdateControls()
+            If Not BlockUpdate Then UpdateControls()
         End If
     End Sub
 
     Sub nudDelay_ValueChanged(numEdit As NumEdit) Handles numDelay.ValueChanged
         TempProfile.Delay = CInt(numDelay.Value)
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub numGain_ValueChanged(numEdit As NumEdit) Handles numGain.ValueChanged
         TempProfile.Gain = CSng(numGain.Value)
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub SimpleUIValueChanged()
@@ -1031,7 +1031,7 @@ Public Class AudioForm
             numBitrate.Maximum = 10_000
             numBitrate.Minimum = 1
         End If
-        numBitrate.Update()
+        numBitrate.UpdateValue()
 #End Region
 
         tbProfileName.SendMessageCue(TempProfile.Name, False)
@@ -1076,7 +1076,7 @@ Public Class AudioForm
         UpdateBitrate()
         TempProfile.GetCommandLine(False) 'set encoder
         LoadAdvanced()
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub SetQuality(value As Single)
@@ -1125,18 +1125,18 @@ Public Class AudioForm
     Sub mbSamplingRate_ValueChanged() Handles mbSamplingRate.ValueChangedUser
         TempProfile.Params.SamplingRate = mbSamplingRate.GetValue(Of Integer)()
         UpdateBitrate()
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
         mbLanguage.Text = TempProfile.Language.Name
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbProfileName.TextChanged
         TempProfile.Name = tbProfileName.Text
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub SaveProfile()
@@ -1159,6 +1159,8 @@ Public Class AudioForm
     End Sub
 
     Sub LoadProfile()
+        BlockUpdate = True
+
         If TempProfile.Name <> TempProfile.DefaultName Then
             tbProfileName.Text = TempProfile.Name
         End If
@@ -1188,6 +1190,8 @@ Public Class AudioForm
         numBitrate.Value = TempProfile.Bitrate
         numDelay.Value = TempProfile.Delay
         numGain.Value = TempProfile.Gain
+
+        BlockUpdate = False
 
         LoadAdvanced()
         UpdateControls()
@@ -1670,7 +1674,7 @@ Public Class AudioForm
 
     Sub tbCustom_TextChanged(sender As Object, e As EventArgs) Handles tbCustom.TextChanged
         TempProfile.Params.CustomSwitches = tbCustom.Text
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub cbDefaultTrack_CheckedChanged(sender As Object, e As EventArgs) Handles cbDefaultTrack.CheckedChanged
@@ -1706,12 +1710,12 @@ Public Class AudioForm
     Sub mbChannels_ValueChanged(value As Object) Handles mbChannels.ValueChangedUser
         TempProfile.Params.ChannelsMode = mbChannels.GetValue(Of ChannelsMode)()
         UpdateBitrate()
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub mbConvertMode_ValueChangedUser(value As Object) Handles mbDecoder.ValueChangedUser
         TempProfile.Decoder = mbDecoder.GetValue(Of AudioDecoderMode)()
-        UpdateControls()
+        If Not BlockUpdate Then UpdateControls()
     End Sub
 
     Sub bnAdvanced_Click(sender As Object, e As EventArgs) Handles bnAdvanced.Click
@@ -1837,12 +1841,10 @@ Public Class AudioForm
 
     Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
         TempProfile.Params.Normalize = cbNormalize.Checked
-        UpdateControls()
     End Sub
 
     Sub cbCenterOptimizedStereo_CheckedChanged(sender As Object, e As EventArgs) Handles cbCenterOptimizedStereo.CheckedChanged
         TempProfile.Params.CenterOptimizedStereo = cbCenterOptimizedStereo.Checked
-        UpdateControls()
     End Sub
 
     Sub AudioForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested

@@ -811,7 +811,6 @@ Public Class Language
                 l2.Sort()
                 l.AddRange(l2)
                 LanguagesValue = l
-                Dim xxxx = 1
             End If
 
             Return LanguagesValue
@@ -1042,7 +1041,7 @@ Public Class AudioTrack
     Public Property NameLabel As AudioNameButtonLabel
         Get
             Dim ret = If(_nameLabel, New AudioNameButtonLabel())
-            ret.Text = If(_audioProfile IsNot Nothing, _audioProfile.Name, ret.Text)
+            ret.Text = If(_audioProfile IsNot Nothing, g.ConvertPath(_audioProfile.Name), g.ConvertPath(ret.Text))
             Return ret
         End Get
         Set

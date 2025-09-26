@@ -183,7 +183,7 @@ Public NotInheritable Class ThemeManager
             Dim _controlForeHighlightColor As ColorHSL = _foreColor.AddLuminance(0.2)
             Dim _controlForeSelectedColor As ColorHSL = _foreColor.AddLuminance(0.2)
 
-            Dim _foreHighlightColor As ColorHSL = _accentColor.SetHue(_highlightHue).AddSaturation(0.5)
+            Dim _foreHighlightColor As ColorHSL = _accentColor.SetHue(_highlightHue).AddSaturation(0.5).AddLuminance(0.05)
             Dim _foreReadonlyColor As ColorHSL = _foreColor.AddLuminance(-0.2)
 
             Dim _borderColor As ColorHSL = _controlBackColor.AddLuminance(0.15)

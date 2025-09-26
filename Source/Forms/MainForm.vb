@@ -3756,62 +3756,12 @@ Partial Public Class MainForm
                 For Each i As ListViewItem In form.lv.Items
                     s.EventCommands.Add(DirectCast(i.Tag, EventCommand))
                 Next
+
+                g.SaveSettings()
+                g.SaveEvents()
             End If
         End Using
-
-        g.SaveSettings()
-        g.SaveEvents()
     End Sub
-
-    Function AddFilterPreferences(
-        ui As SimpleUI,
-        pagePath As String,
-        preferences As StringPairList,
-        profiles As List(Of FilterCategory)) As BindingSource
-
-        Dim filterPage = ui.CreateDataPage(pagePath)
-
-        Dim fn = Function() As StringPairList
-                     Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type or format. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
-
-                     For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
-                         If i.Script <> "" Then
-                             ret.Add(i.Name, i.Script)
-                         End If
-                     Next
-
-                     Return ret
-                 End Function
-
-        filterPage.TipProvider.TipsFunc = fn
-
-        Dim c1 = filterPage.AddTextBoxColumn()
-        c1.DataPropertyName = "Name"
-        c1.HeaderText = "Extension[:Format]"
-
-        Dim c2 = filterPage.AddComboBoxColumn
-        c2.DataPropertyName = "Value"
-        c2.HeaderText = "Source Filter"
-
-        Dim filterNames = profiles.Where(
-            Function(v) v.Name = "Source").First.Filters.Where(
-            Function(v) v.Name <> "Automatic" AndAlso
-            v.Name <> "Manual" AndAlso Not v.Name.EndsWith("...")).Select(
-            Function(v) v.Name).Sort.ToArray
-
-        c2.Items.AddRange(filterNames)
-
-        filterPage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
-
-        Dim ret2 As New BindingSource With {
-            .DataSource = ObjectHelp.GetCopy(
-            New StringPairList(preferences.Where(
-                               Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
-        }
-
-        filterPage.DataSource = ret2
-        Return ret2
-    End Function
 
     <Command("Saves the current project.")>
     Sub SaveProject()

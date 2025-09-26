@@ -1067,7 +1067,7 @@ Public Class x264Params
                     New NumParam With {.Switch = "--qpstep", .Text = "QP Step", .Init = 4},
                     New NumParam With {.Switch = "--ratetol", .Text = "Rate Tolerance", .Config = {0, 0, 0.1, 1}, .Init = 1},
                     New NumParam With {.Switch = "--chroma-qp-offset", .Text = "Chroma QP Offset"},
-                    New NumParam With {.Switch = "--cplxblur", .Text = "T. Blur Complexity.", .Config = {0, 0, 0.1, 1}, .Init = 20},
+                    New NumParam With {.Switch = "--cplxblur", .Text = "T. Blur Complexity", .Config = {0, 0, 0.1, 1}, .Init = 20},
                     New NumParam With {.Switch = "--qblur", .Text = "Temp. Blur Quants", .Config = {0, 0, 0.1, 1}, .Init = 0.5},
                     Mbtree,
                     New BoolParam With {.Switch = "--cqm4", .Text = "Set all 4x4 quant matrices"},

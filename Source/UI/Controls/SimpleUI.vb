@@ -993,7 +993,7 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Margin.Top <> MarginTop Then
+            If MarginTop = 0 AndAlso Margin.Top < MarginTop Then
                 Dim m = Margin
                 m.Top = MarginTop
                 Margin = m

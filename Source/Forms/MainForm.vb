@@ -5484,9 +5484,9 @@ Partial Public Class MainForm
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
                 UpdateTargetParameters(p)
-            Else
-                Assistant()
             End If
+
+            Assistant()
         End If
     End Sub
 

@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 
 Imports StaxRip.UI
@@ -164,7 +164,7 @@ Public Class FiltersListView
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index - 1, sel)
         Load()
-        g.MainForm.Assistant()
+        RaiseEvent Changed
     End Sub
 
     Sub MoveDown()
@@ -182,7 +182,7 @@ Public Class FiltersListView
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index + 1, sel)
         Load()
-        g.MainForm.Assistant()
+        RaiseEvent Changed
     End Sub
 
     Sub ShowCodeEditor()

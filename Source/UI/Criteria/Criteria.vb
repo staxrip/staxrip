@@ -22,7 +22,7 @@ Namespace UI
         Property PropertyIdentifier() As String
         ReadOnly Property PropertyIdentifierNeeded As Boolean
             Get
-                Return _macro.Contains(":")
+                Return (_macro IsNot Nothing) AndAlso _macro.Contains(":")
             End Get
         End Property
 

@@ -1,4 +1,5 @@
 ﻿
+Imports System.Runtime.ExceptionServices
 Imports System.Runtime.InteropServices
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -11,19 +12,29 @@ Public Class DirectFrameServer
     Private NativeServer As INativeFrameServer
 
     Sub New(path As String)
-        If path.Ext = "avs" Then
-            Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
-            NativeServer = CreateAviSynthServer()
-        Else
-            NativeServer = CreateVapourSynthServer()
-        End If
+        CreateAndOpen(path)
+    End Sub
 
-        NativeServer.OpenFile(path)
+    <HandleProcessCorruptedStateExceptions>
+    Sub CreateAndOpen(path As String)
+        Try
+            If path.Ext = "avs" Then
+                Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
+                NativeServer = CreateAviSynthServer()
+            Else
+                NativeServer = CreateVapourSynthServer()
+            End If
 
-        Dim infoPtr = NativeServer.GetInfo()
-        If infoPtr <> IntPtr.Zero Then
-            Info = Marshal.PtrToStructure(Of ServerInfo)(infoPtr)
-        End If
+            NativeServer.OpenFile(path)
+
+            Dim infoPtr = NativeServer.GetInfo()
+            If infoPtr <> IntPtr.Zero Then
+                Info = Marshal.PtrToStructure(Of ServerInfo)(infoPtr)
+            End If
+        Catch ex As Exception
+            g.ShowException(ex)
+            Throw New AbortException
+        End Try
     End Sub
 
     ReadOnly Property [Error] As String Implements IFrameServer.Error
@@ -186,13 +197,17 @@ Public Class FrameServerFactory
             Package.FFTW.Directory,
             IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC"))
 
-        If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
-           (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then
+        Try
+            If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
+               (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then
 
-            Return New VfwFrameServer(path)
-        Else
-            Return New DirectFrameServer(path)
-        End If
+                Return New VfwFrameServer(path)
+            Else
+                Return New DirectFrameServer(path)
+            End If
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 End Class
 

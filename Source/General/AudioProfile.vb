@@ -1443,7 +1443,11 @@ Public Class GUIAudioProfile
 
         If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
             If Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
-                sb.Append(" -af ""pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5""")
+                If SourceChannels = 8 Then
+                    sb.Append(" -af pan=stereo|c0=c2+0.30c0+0.30c4+0.30c6|c1=c2+0.30c1+0.30c5+0.30c7")
+                Else
+                    sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+                End If
             Else
                 sb.Append(" -ac " & Channels)
             End If
@@ -1641,7 +1645,11 @@ Public Class GUIAudioProfile
 
         If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
             If Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
-                sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+                If SourceChannels = 8 Then
+                    sb.Append(" -af pan=stereo|c0=c2+0.30c0+0.30c4+0.30c6|c1=c2+0.30c1+0.30c5+0.30c7")
+                Else
+                    sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+                End If
             Else
                 sb.Append(" -ac " & Channels)
             End If

@@ -371,7 +371,11 @@ Public Class Audio
         End If
 
         If gap.Params.CenterOptimizedStereo AndAlso ((gap?.Params.Codec <> AudioCodec.Opus AndAlso gap?.Params.ChannelsMode = ChannelsMode._2) OrElse (gap?.Params.Codec = AudioCodec.Opus AndAlso gap?.Params.OpusencDownmix = OpusDownmix.Stereo)) Then
-            args += " -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5"
+            If gap.SourceChannels = 8 Then
+                args += " -af pan=stereo|c0=c2+0.30c0+0.30c4+0.30c6|c1=c2+0.30c1+0.30c5+0.30c7"
+            Else
+                args += " -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5"
+            End If
             gap.Params.ChannelsMode = ChannelsMode.Original
             gap.Params.OpusencDownmix = OpusDownmix.Original
             cancel = False

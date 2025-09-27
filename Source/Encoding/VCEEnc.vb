@@ -608,7 +608,7 @@ Public Class VCEEnc
                                           Case Else
                                       End Select
                                   End Sub,
-            .VisibleFunc = Function() Codec.ValueText = "h265"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc"}
 
         Property DolbyVisionProfileAV1 As New OptionParam With {
             .Switch = "--dolby-vision-profile",
@@ -650,7 +650,7 @@ Public Class VCEEnc
             .Text = "Dolby Vision RPU",
             .Help = "Path to the RPU file or 'copy' to copy from source",
             .BrowseFile = True,
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"}
 
         Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}}
         Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}}
@@ -661,7 +661,7 @@ Public Class VCEEnc
         Property MaxCLL As New NumParam With {
             .Switch = "--max-cll",
             .Text = "Maximum CLL",
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1",
+            .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1",
             .Config = {0, Integer.MaxValue, 50},
             .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
             .ImportAction = Sub(param, arg)
@@ -678,7 +678,7 @@ Public Class VCEEnc
             .Switches = {"--max-cll"},
             .Text = "Maximum FALL",
             .Config = {0, Integer.MaxValue, 50},
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+            .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"}
 
 
         Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Init = 0, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
@@ -1042,14 +1042,14 @@ Public Class VCEEnc
                         Warpsharp, WarpsharpThreshold, WarpsharpBlur, WarpsharpType, WarpsharpDepth, WarpsharpChroma)
                     Add("VUI",
                         DhdrInfo, DolbyVisionProfileH265, DolbyVisionProfileAV1, DolbyVisionRpu,
-                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"},
+                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         ColorMatrix, ColorPrim, Transfer, ColorRange, AtcSei,
                         MaxCLL, MaxFALL,
                         New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL", .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
-                        New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame", .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
+                        New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL", .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "hevc"},
+                        New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame", .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"})
                     Add("Statistic",
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},

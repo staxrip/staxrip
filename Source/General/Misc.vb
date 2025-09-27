@@ -1503,7 +1503,7 @@ Public Class Subtitle
                     Return "sup"
                 Case "S_TEXT/ASS", "ASS"
                     Return "ass"
-                Case "S_TEXT/UTF8", "UTF-8", "Timed", "Timed Text"
+                Case "S_TEXT/UTF8", "UTF-8", "SubRip", "Timed", "Timed Text"
                     Return "srt"
                 Case "S_TEXT/SSA", "SSA"
                     Return "ssa"
@@ -1511,9 +1511,26 @@ Public Class Subtitle
                     Return "usf"
                 Case "S_DVBSUB", "DVB Subtitle"
                     Return "mks"
-                Case Else
-                    Return Path.Ext
             End Select
+
+            Select Case Format
+                Case "VobSub"
+                    Return "idx"
+                Case "S_HDMV/PGS", "PGS"
+                    Return "sup"
+                Case "S_TEXT/ASS", "ASS"
+                    Return "ass"
+                Case "S_TEXT/UTF8", "UTF-8", "SubRip", "Timed", "Timed Text"
+                    Return "srt"
+                Case "S_TEXT/SSA", "SSA"
+                    Return "ssa"
+                Case "S_TEXT/USF", "USF"
+                    Return "usf"
+                Case "S_DVBSUB", "DVB Subtitle"
+                    Return "mks"
+            End Select
+
+            Return Path.Ext()
         End Get
     End Property
 

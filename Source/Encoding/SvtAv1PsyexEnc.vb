@@ -1291,8 +1291,8 @@ Public Class SvtAv1PsyexEncParams
         .Text = "Noise Adaptive Filtering",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Default Tune Behavior", "1: Always-On Noise-Adaptive Filters", "2: Off (default)", "3: On (Noise-Adaptive CDEF Only)", "4: On (Noise-Adaptive Restoration Only)"},
-        .Init = 2}
+        .Options = {"0: Off (default)", "1: Always-On Noise-Adaptive Filters", "2: Default Tune Behavior", "3: On (Noise-Adaptive CDEF Only)", "4: On (Noise-Adaptive Restoration Only)"},
+        .Init = 0}
 
     Property Max32TxSize As New OptionParam With {
         .Switch = "--max-32-tx-size",

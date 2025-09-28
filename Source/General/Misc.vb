@@ -6,6 +6,7 @@ Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management
 Imports System.Runtime.InteropServices
+Imports System.Runtime.Serialization
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
@@ -557,6 +558,12 @@ End Structure
 <Serializable()>
 Public Class CustomCultureInfo
     Inherits CultureInfo
+    Implements IDeserializationCallback
+
+    Private _name As String
+    Private _displayName As String
+    Private _twoLetterCode As String
+    Private _threeLetterCode As String
 
     Protected Sub New(baseCultureName As String)
         MyBase.New(baseCultureName)
@@ -565,24 +572,37 @@ Public Class CustomCultureInfo
     Public Sub New(baseCultureName As String, name As String, displayName As String, twoLetterCode As String, threeLetterCode As String)
         MyBase.New(baseCultureName)
 
+        _name = name
+        _displayName = displayName
+        _twoLetterCode = _twoLetterCode
+        _threeLetterCode = threeLetterCode
+
+        PatchInternals()
+    End Sub
+
+    Public Sub OnDeserialization(sender As Object) Implements IDeserializationCallback.OnDeserialization
+        PatchInternals()
+    End Sub
+
+    Private Sub PatchInternals()
         Dim cultureField = GetType(CultureInfo).GetField("m_name", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
         If cultureField IsNot Nothing Then
-            cultureField.SetValue(Me, Name)
+            cultureField.SetValue(Me, _name)
         End If
 
         Dim displayNameField = GetType(CultureInfo).GetField("m_cultureData", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
         If displayNameField IsNot Nothing Then
             Dim cultureData = displayNameField.GetValue(Me)
             Dim displayNameProp = cultureData.GetType().GetField("sLocalizedDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, displayName)
+            displayNameProp?.SetValue(cultureData, _displayName)
             displayNameProp = cultureData.GetType().GetField("sEnglishDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, displayName)
+            displayNameProp?.SetValue(cultureData, _displayName)
             displayNameProp = cultureData.GetType().GetField("sISO639Language", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, twoLetterCode)
+            displayNameProp?.SetValue(cultureData, _twoLetterCode)
             displayNameProp = cultureData.GetType().GetField("sISO639Language2", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, threeLetterCode)
+            displayNameProp?.SetValue(cultureData, _threeLetterCode)
             displayNameProp = cultureData.GetType().GetField("sName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-            displayNameProp?.SetValue(cultureData, name)
+            displayNameProp?.SetValue(cultureData, _name)
         End If
     End Sub
 End Class

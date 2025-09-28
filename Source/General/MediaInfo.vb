@@ -9,6 +9,8 @@ Public Class MediaInfo
     Private ReadOnly Handle As IntPtr
     Private Shared Loaded As Boolean
 
+    Property Path As String = ""
+
     Sub New(path As String)
         If Not Loaded Then
             Native.LoadLibrary(Package.MediaInfo.Path)
@@ -17,6 +19,7 @@ Public Class MediaInfo
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
+        Me.Path = path
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)

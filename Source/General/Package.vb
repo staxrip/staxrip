@@ -101,10 +101,24 @@ Public Class Package
         .Description = "UnDot is a simple median filter plugin for removing dots, that is stray orphan pixels and mosquito noise.",
         .AvsFilterNames = {"UnDot"}})
 
+    Shared Property ffprobe As Package = Add(New Package With {
+        .Name = "ffprobe",
+        .Filename = "ffprobe.exe",
+        .Locations = {IO.Path.Combine("Encoders", "ffmpeg"), IO.Path.Combine("FrameServer", "AviSynth")},
+        .Siblings = {"ffmpeg"},
+        .SupportsAutoUpdate = False,
+        .AllowCustomPath = False,
+        .WebURL = "https://ffmpeg.org",
+        .HelpURL = "https://www.ffmpeg.org/documentation.html",
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/ffmpeg",
+        .HelpSwitch = "-h",
+        .Description = "Versatile and free audio video convertor console app."})
+
     Shared Property ffmpeg As Package = Add(New Package With {
         .Name = "ffmpeg",
         .Filename = "ffmpeg.exe",
         .Locations = {IO.Path.Combine("Encoders", "ffmpeg"), IO.Path.Combine("FrameServer", "AviSynth")},
+        .Siblings = {"ffprobe"},
         .SupportsAutoUpdate = False,
         .AllowCustomPath = False,
         .WebURL = "https://ffmpeg.org",

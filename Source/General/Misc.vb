@@ -1,4 +1,5 @@
 ﻿
+Imports System.Collections.Concurrent
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Imaging
@@ -4473,4 +4474,58 @@ Public Class TextEncoding
     Shared Function IsProcessUTF8() As Boolean
         Return CodePageOfProcess = UTF8CodePage
     End Function
+End Class
+
+Public Class Ffprobe
+
+    Property Output As String = ""
+    Property Path As String = ""
+    Property StreamInfos As List(Of FfprobeStreamInfo)
+
+    Shared ReadOnly Cache As New ConcurrentDictionary(Of String, Ffprobe)()
+
+    Sub New(path As String, output As String)
+        Me.Output = output
+        Me.Path = path
+        Me.StreamInfos = New List(Of FfprobeStreamInfo)
+
+        Const pattern = "(?<=\s+?)Stream #(?<stream>\d+):(?<id>\d+)\((?<lang>\w+)\):\s(?<type>\w+?):\s(?<data>.+)"
+        Dim matches = Regex.Matches(output, pattern)
+
+        For Each match As Match In matches
+            Dim si = New FfprobeStreamInfo() With {
+                .Stream = match.Groups("stream").Value.ToInt(),
+                .StreamId = match.Groups("id").Value.ToInt(),
+                .Language = match.Groups("lang").Value,
+                .Type = match.Groups("type").Value,
+                .Data = match.Groups("data").Value
+            }
+
+            StreamInfos.Add(si)
+        Next
+    End Sub
+
+    Public Shared Function GetInfo(path As String) As Ffprobe
+        If String.IsNullOrWhiteSpace(path) Then Return Nothing
+        If Not path.FileExists() Then Return Nothing
+
+        Dim key = path & File.GetLastWriteTime(path).Ticks
+        If Cache.ContainsKey(key) AndAlso Cache(key) IsNot Nothing Then Return Cache(key)
+
+        Dim output = ProcessHelp.GetConsoleOutput(Package.ffprobe.Path, $"-hide_banner -i ""{path}""", True)
+        If String.IsNullOrWhiteSpace(output) Then Return Nothing
+        If Not output.ContainsAny({"Input #0", "Stream #0:0"}) Then Return Nothing
+
+        Dim ret = New Ffprobe(path, output)
+        Cache(key) = ret
+        Return ret
+    End Function
+End Class
+
+Public Class FfprobeStreamInfo
+    Property Stream As Integer
+    Property StreamId As Integer
+    Property Language As String
+    Property Type As String
+    Property Data As String
 End Class

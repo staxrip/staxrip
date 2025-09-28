@@ -522,12 +522,14 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Sets the file path of the target file.")>
-    Sub SetTargetFile(<DispName("Target File Path")>
-                      <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-                      path As String)
+    Sub SetTargetFile(<DispName("Target File Path")> <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> path As String)
+        Dim preparedPath = Macro.Expand(path.TrimQuotes())
+
+        p.VideoEncoder.OverridesTargetFileName = False
+        g.MainForm.LastTbTargetFileText = preparedPath
 
         Dim oldEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
-        p.TargetFile = Macro.Expand(path.TrimQuotes())
+        p.TargetFile = preparedPath
         Dim newEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
 
         If File.Exists(oldEncodeFile) Then
@@ -966,7 +968,7 @@ Public Class GlobalCommands
                     <DispName("File Path"), Description("Full path of the subtitle file"), DefaultValue("")> filepath As String
                    )
         If Not filepath.FileExists() Then Return
-        
+
         Dim subtitles = Subtitle.Create(filepath.TrimQuotes())
 
         For Each subtitle In subtitles

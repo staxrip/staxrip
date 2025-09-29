@@ -4378,7 +4378,7 @@ Partial Public Class MainForm
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control, Symbol.Preview)
-        ret.Add("File|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
+        ret.Add("File|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool), Symbol.fa_sitemap)
         ret.Add("File|-")
         ret.Add("File|Video Comparison...", NameOf(ShowVideoComparison), Keys.F5, Symbol.VideoLegacy)
         ret.Add("File|-")
@@ -4388,8 +4388,8 @@ Partial Public Class MainForm
         ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("File|Close Project", NameOf(CloseProject), Keys.W Or Keys.Control, Symbol.fa_close)
         ret.Add("File|-")
-        ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
-        ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
+        ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.Library, {DynamicMenuItemID.TemplateProjects})
+        ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.History, {DynamicMenuItemID.RecentProjects})
         ret.Add("File|-")
         ret.Add("File|Launch New Instance", NameOf(StartNewInstance), Keys.N Or Keys.Control, Symbol.fa_clone)
         ret.Add("File|-")
@@ -4399,11 +4399,12 @@ Partial Public Class MainForm
         ret.Add("Preview", NameOf(ShowPreview), Keys.F4, Symbol.fa_eye)
 
         ret.Add("Project|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialogFromTempDir), Keys.Control Or Keys.H, Symbol.Subtitles)
-        ret.Add("Project|Script Info...", NameOf(ShowScriptInfo), Keys.F2)
-        ret.Add("Project|Advanced Script Info...", NameOf(ShowAdvancedScriptInfo), Keys.Control Or Keys.F2)
+        ret.Add("Project|Script Info...", NameOf(ShowScriptInfo), Keys.F2, Symbol.Info)
+        ret.Add("Project|Advanced Script Info...", NameOf(ShowAdvancedScriptInfo), Keys.Control Or Keys.F2, Symbol.AddTo)
         ret.Add("Project|-")
         ret.Add("Project|Log File", NameOf(g.DefaultCommands.ShowLogFile), Keys.F8, Symbol.Page)
         ret.Add("Project|-")
+        ret.Add("Project|Folders", Symbol.Library)
         ret.Add("Project|Folders|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
         ret.Add("Project|Folders|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
         ret.Add("Project|Folders|Temp", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%temp_dir%"""})
@@ -4412,7 +4413,7 @@ Partial Public Class MainForm
         ret.Add("Project|Options", NameOf(ShowOptionsDialog), Keys.F9, Symbol.Project)
 
         ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
-        ret.Add("Tools|Folders", Symbol.Folder)
+        ret.Add("Tools|Folders", Symbol.Library)
         ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {$"""%settings_dir%{IO.Path.DirectorySeparatorChar}Log Files"""})
         ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
         ret.Add("Tools|Folders|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%programs_dir%"""})
@@ -4441,7 +4442,7 @@ Partial Public Class MainForm
         ret.Add("Tools|Advanced|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
 
         ret.Add("Tools|-")
-        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
+        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor), Symbol.Settings)
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Keys.F10, Symbol.fa_cogs, {""})
 
         ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
@@ -4460,16 +4461,16 @@ Partial Public Class MainForm
         ret.Add("Apps|Other|MKVToolnix GUI", NameOf(g.DefaultCommands.StartTool), {"MKVToolnix GUI"})
         ret.Add("Apps|Other|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
         ret.Add("Apps|-")
-        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F11)
+        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F11, Symbol.AllApps)
 
         If g.IsDevelopmentPC Then
             ret.Add("Apps|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         End If
 
-        ret.Add("Help|Apps", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
+        ret.Add("Help|Apps", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.AllApps, {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
-        ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/tree/master/Docs/README.md"})
+        ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_github, {"https://github.com/staxrip/staxrip"})
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.fa_book, {"https://github.com/staxrip/staxrip/tree/master/Docs/README.md"})
         ret.Add("Help|Changelog", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Bookmarks, {"https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md"})
         ret.Add("Help|Support", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {"https://github.com/staxrip/staxrip?tab=readme-ov-file#contribution--support"})
         ret.Add("Help|-")

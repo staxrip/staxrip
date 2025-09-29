@@ -14,6 +14,40 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.50.3 (2025-09-30)
+====================
+
+- General: Better compatibility in case WMI service is not available ([#1817](/../../issues/1817))
+- General: Fix crash when processing files inside temp folder, that is the root folder
+- General: Optimize custom languages
+- General: Improve Override Target File Name in terms of extension awareness
+- General: Fix Target File Name setting if target already exists
+- General: Fix "SetTargetFile" command and disable Target File Name Override when using it
+- Audio: Add "pcm" to valid audio file types
+- Audio: Fix audio delay issue due when setting multiple files after each other on one audio track
+- Event: Fix possible crash when using old settings with old event criteria ([#1818](/../../issues/1818))
+- Subtitle: Enhance subtitle format recognition ([#1820](/../../issues/1820))
+- Subtitle: Identify unknown subtitle files as "srt"
+- UI: Fix opening of audio settings resets bitrate under some circumstances
+- UI: Fix and change (menu) symbols
+- SvtAv1EncApp-PSYEX: Update "--noise-adaptive-filtering" parameter
+    - "2: Off" and "0: Default Tune Behavior" switched positions
+- VCEEncC: Fix Dolby Vision RPU file field visibility and function ([#1819](/../../issues/1819))
+- VCEEncC: Fix multiple codec H265 related parameters are not visible
+- x264: Add levels "6", "6.1" and "6.2"
+- Update tools
+    - aomenc v3.13.1-57-g2a70ad7bee-x64-msvc1944
+    - DeeZy v1.3.5
+    - ffmpeg v8.1-dev-N-121257-x64-gcc15.2.0
+    - MP4Box v2.5-DEV-rev1823-g551273021-x64-msvc1944
+    - rav1e v0.8.0-(p20250624-1-gb7bf390)-x64-msvc1944
+    - SvtAv1EncApp v3.1.2-126+50-5e797ec9-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1]
+    - SvtAv1EncApp v3.1.0-18+18-c3ffb9b9-.Mod.by.Patman.-x64-clang21.1.1 [SVT-AV1-HDR]
+    - SvtAv1EncApp v3.0.2-B-4+19-a27a68a70-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-PSYEX]
+    - x264 v0.165.3215+11-6113017-.Mod-by-Patman.-x64-gcc14.2.0
+        - Revert to old build because of possible performance issues
+
+
 v2.50.2 (2025-09-24)
 ====================
 

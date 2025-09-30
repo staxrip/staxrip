@@ -5795,16 +5795,12 @@ Partial Public Class MainForm
         Dim ap = audioTrack.AudioProfile
         Dim te = audioTrack.TextEdit
         Dim exist = File.Exists(ap.File)
-        Dim convertName = Function(name As String)
-                              Return name.Replace(" | ", " - ")
-                          End Function
 
-        cms.Items.ClearAndDisplose
+        cms.Items.ClearAndDisplose()
 
         If ap.Streams IsNot Nothing AndAlso ap.Streams.Count > 0 Then
             For Each i In ap.Streams
                 Dim temp = i
-
                 Dim menuAction = Sub()
                                      If ap.File <> p.LastOriginalSourceFile Then
                                          te.Text = p.LastOriginalSourceFile
@@ -5818,9 +5814,9 @@ Partial Public Class MainForm
                                  End Sub
 
                 If ap.Streams.Count > 10 Then
-                    cms.Add("Streams | " + convertName(i.Name), menuAction)
+                    cms.Add("Streams | " + g.ConvertPath(i.Name), menuAction)
                 Else
-                    cms.Add(convertName(i.Name), menuAction)
+                    cms.Add(g.ConvertPath(i.Name), menuAction)
                 End If
             Next
 
@@ -5841,10 +5837,15 @@ Partial Public Class MainForm
                 For Each i In audioFiles
                     Dim temp = i
 
+                    Dim menuAction = Sub()
+                                        audioTrack.Remove()
+                                        te.Text = temp
+                                     End Sub
+
                     If audioFiles.Count > 10 Then
-                        cms.Add("Files | " + i.FileName, Sub() te.Text = temp)
+                        cms.Add("Files | " + i.FileName, menuAction)
                     Else
-                        cms.Add(i.FileName, Sub() te.Text = temp)
+                        cms.Add(i.FileName, menuAction)
                     End If
                 Next
 

@@ -1530,7 +1530,9 @@ Public Class Subtitle
                     Return "mks"
             End Select
 
-            Return Path.Ext()
+            Dim extension = Path.Ext()
+            If String.IsNullOrWhiteSpace(extension) Then extension = "srt"
+            Return extension
         End Get
     End Property
 

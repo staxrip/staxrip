@@ -880,10 +880,18 @@ Public Class GUIAudioProfile
         Select Case Params.Codec
             Case AudioCodec.FLAC
                 Dim bd = If(Params.ffmpegFlacBitDepth > 0, Params.ffmpegFlacBitDepth, SourceBitDepth)
-                Return CInt(((TargetSamplingRate * bd * Channels) / 1000) * 0.55)
+                If {TargetSamplingRate, bd, Channels}.Contains(0) Then
+                    Return CInt(((48000 * 16 * 6) / 1000) * 0.55)
+                Else
+                    Return CInt(((TargetSamplingRate * bd * Channels) / 1000) * 0.55)
+                End If
             Case AudioCodec.W64, AudioCodec.WAV
                 Dim bd = If(Params.ffmpegWaveBitDepth > 0, Params.ffmpegWaveBitDepth, SourceBitDepth)
-                Return CInt((TargetSamplingRate * bd * Channels) / 1000)
+                If {TargetSamplingRate, bd, Channels}.Contains(0) Then
+                    Return CInt((48000 * 16 * 6) / 1000)
+                Else
+                    Return CInt((TargetSamplingRate * bd * Channels) / 1000)
+                End If
         End Select
 
         Return CInt(Bitrate)

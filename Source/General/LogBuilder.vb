@@ -136,7 +136,8 @@ Public Class LogBuilder
             $"{audioConfig}" +
             $"+++++{BR}" +
             $"AviSynth/VapourSynth Mode: {s.AviSynthMode}/{s.VapourSynthMode}{BR}" +
-            $"Process Priority: {s.ProcessPriority}{BR}" +
+            $"Encoder Process Priority: {s.EncoderProcessPriority}{BR}" +
+            $"Tool Process Priority: {s.ToolProcessPriority}{BR}" +
             $"Delete Temp Files: {p.DeleteTempFilesMode}{BR}" + 
             $"Delete Temp Files Selection: {p.DeleteTempFilesSelectionMode}{BR}"
 

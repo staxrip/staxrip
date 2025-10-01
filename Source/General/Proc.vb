@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -21,7 +21,7 @@ Public Class Proc
     Property OutputFiles As IEnumerable(Of String)
     Property OutputReader As AsyncStreamReader
     Property Package As Package
-    Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
+    Property Priority As ProcessPriorityClass = s.ToolProcessPriority
     Property Process As New Process
     Property Skip As Boolean
     Property SkipString As String
@@ -54,7 +54,6 @@ Public Class Proc
                 Process.StartInfo.UseShellExecute = False
                 Process.StartInfo.RedirectStandardError = True
                 Process.StartInfo.RedirectStandardOutput = True
-                Priority = s.ProcessPriority
                 Wait = True
             End If
         End Set

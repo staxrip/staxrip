@@ -3465,7 +3465,7 @@ Partial Public Class MainForm
 
                     Try
                         Using proc As New Proc
-                            proc.Priority = ProcessPriorityClass.Normal
+                            proc.Priority = s.ToolProcessPriority
                             proc.Package = Package.HDR10PlusTool
                             proc.Project = If(proj, p)
                             proc.Header = "Extract HDR10+ metadata"
@@ -3550,7 +3550,7 @@ Partial Public Class MainForm
                                                   proc.Kill()
                                               End If
                                           End Sub
-                            proc.Priority = ProcessPriorityClass.Normal
+                            proc.Priority = s.ToolProcessPriority
                             proc.Package = Package.DoViTool
                             proc.Project = If(proj, p)
                             proc.Header = "Extract Dolby Vision metadata"

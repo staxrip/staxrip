@@ -41,6 +41,7 @@ Public Class ApplicationSettings
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean
+    Public EncoderProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ErrorMessageExtendedByErr As Boolean = False
     Public ErrorMessageTimeout As Integer = 120
     Public EventCommands As List(Of EventCommand)
@@ -74,7 +75,6 @@ Public Class ApplicationSettings
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle = FormBorderStyle.Sizable
     Public PreviewSize As Integer = 70
-    Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ProgressHighlighting As Boolean = True
     Public ProgressHighlightingColorName As String = ThemeManager.DefaultProgressHighlightingColorName
     Public ProgressReformatting As Boolean = True
@@ -102,6 +102,7 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public TargetImageSizeMenu As String
     Public ThemeName As String = ThemeManager.DefaultThemeName
+    Public ToolProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Normal
     Public UIScaleFactor As Single = 1.0F
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthMode As FrameServerMode

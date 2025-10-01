@@ -82,10 +82,10 @@ Public Class AOMEnc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Video encoding pass 1", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
+        Encode("Video encoding pass 1", GetArgs(1, 0, 0, Nothing, p.Script), s.EncoderProcessPriority)
 
         If Params.Passes.Value = 1 Then
-            Encode("Video encoding pass 2", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding pass 2", GetArgs(2, 0, 0, Nothing, p.Script), s.EncoderProcessPriority)
         End If
     End Sub
 
@@ -137,11 +137,11 @@ Public Class AOMEnc
 
             If Params.Passes.Value = 1 Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority)
+                            Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority)
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority))
             End If
         Next
 

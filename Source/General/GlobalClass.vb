@@ -1451,7 +1451,7 @@ Public Class GlobalClass
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
-                proc.Priority = ProcessPriorityClass.Normal
+                proc.Priority = s.ToolProcessPriority
                 proc.File = Path.Combine(Package.ffms2.Directory, "ffmsindex.exe")
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.LongPathPrefix.Escape + " " + cachePath.LongPathPrefix.Escape
                 proc.Start()

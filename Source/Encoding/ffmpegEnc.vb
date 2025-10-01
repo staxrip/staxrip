@@ -150,10 +150,10 @@ Public Class ffmpegEnc
         Params.RaiseValueChanged(Nothing)
 
         If Params.Mode.OptionText = "Two Pass" Then
-            Encode(Params.GetCommandLine(True, True, 1), s.ProcessPriority)
-            Encode(Params.GetCommandLine(True, True, 2), s.ProcessPriority)
+            Encode(Params.GetCommandLine(True, True, 1), s.EncoderProcessPriority)
+            Encode(Params.GetCommandLine(True, True, 2), s.EncoderProcessPriority)
         Else
-            Encode(Params.GetCommandLine(True, True), s.ProcessPriority)
+            Encode(Params.GetCommandLine(True, True), s.EncoderProcessPriority)
         End If
     End Sub
 

@@ -60,10 +60,10 @@ Public Class Rav1e
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Video encoding", GetArgs(1, p.Script), s.EncoderProcessPriority)
 
         If Params.Passes.Visible AndAlso Params.Passes.Value = 1 Then
-            Encode("Video encoding", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding", GetArgs(2, p.Script), s.EncoderProcessPriority)
         End If
     End Sub
 

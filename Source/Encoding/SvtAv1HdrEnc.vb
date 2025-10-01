@@ -132,13 +132,13 @@ Public Class SvtAv1HdrEnc
     End Function
 
     Overrides Sub Encode()
-        Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
+        Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.EncoderProcessPriority)
 
         If Params.Passes > 1 Then
-            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.EncoderProcessPriority)
         End If
         If Params.Passes > 2 Then
-            Encode("Video encoding second pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(3, 0, 0, Nothing, p.Script), s.EncoderProcessPriority)
         End If
     End Sub
 
@@ -301,16 +301,16 @@ Public Class SvtAv1HdrEnc
 
             If Params.Passes > 1 Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority)
                             If Params.Passes > 1 Then
-                                Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority)
                             End If
                             If Params.Passes > 2 Then
-                                Encode("Video encoding pass 3" + passName, GetArgs(3, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 3" + passName, GetArgs(3, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority)
                             End If
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.EncoderProcessPriority))
             End If
         Next
 
@@ -359,7 +359,7 @@ Public Class SvtAv1HdrEnc
         Dim commandLine = enc.Params.GetArgs(0, 0, 0, Nothing, script, Path.Combine(p.TempDir, p.TargetFile.Base + "_CompCheck." + OutputExt), True, True)
 
         Try
-            Encode("Compressibility Check", commandLine, ProcessPriorityClass.Normal)
+            Encode("Compressibility Check", commandLine, s.EncoderProcessPriority)
         Catch ex As AbortException
             Exit Sub
         Catch ex As Exception

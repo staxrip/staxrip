@@ -212,11 +212,17 @@ Partial Public Class MainForm
 #Region "System"
             Dim systemPage = ui.CreateFlowPage("System", True)
 
-            Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
-            procPriority.Text = "Process Priority"
-            procPriority.Help = "Process priority of the applications StaxRip launches."
-            procPriority.Expanded = True
-            procPriority.Field = NameOf(s.ProcessPriority)
+            Dim encProcPrio = ui.AddMenu(Of ProcessPriorityClass)
+            encProcPrio.Text = "Encoder Process Priority"
+            encProcPrio.Help = "Process priority of the encoders StaxRip launches."
+            encProcPrio.Expanded = True
+            encProcPrio.Field = NameOf(s.EncoderProcessPriority)
+
+            Dim toolProcPrio = ui.AddMenu(Of ProcessPriorityClass)
+            toolProcPrio.Text = "Tool Process Priority"
+            toolProcPrio.Help = "Process priority of the applications StaxRip launches."
+            toolProcPrio.Expanded = True
+            toolProcPrio.Field = NameOf(s.ToolProcessPriority)
 
             Dim cmdline = ui.AddMenu(Of CommandLinePreview)
             cmdline.Text = "Command Line Preview"

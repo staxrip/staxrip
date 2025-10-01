@@ -1929,7 +1929,7 @@ Namespace UI
             Dim labelBlocks = From block In Controls.OfType(Of SimpleUI.LabelBlock)() Where block.Label.Offset = 0
 
             If labelBlocks.Count > 0 Then
-                Dim hMax = Aggregate i In labelBlocks Into Max(TextRenderer.MeasureText(i.Label.Text, i.Label.Font).Width)
+                Dim hMax = Aggregate i In labelBlocks Into Max(TextRenderer.MeasureText(i.Text + " ", i.Font).Width)
 
                 For Each lb In labelBlocks
                     lb.Label.Offset = hMax / lb.Label.Font.Height

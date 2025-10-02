@@ -259,7 +259,7 @@ Public MustInherit Class Muxer
         Next
 
         For Each iDir In {p.TempDir, p.TempDir.Parent()}
-            If String.IsNullOrWhiteSpace(iDir) Then
+            If Not String.IsNullOrWhiteSpace(iDir) Then
                 For Each iExt In {"jpg", "jpeg", "png"}
                     Dim fp = Path.Combine(iDir, "cover." + iExt)
 

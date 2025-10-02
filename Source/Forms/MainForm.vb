@@ -4381,6 +4381,7 @@ Partial Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
         ret.Add("Tools|Advanced|-")
         ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Keys.Control Or Keys.E, Symbol.LightningBolt)
+        ret.Add("Tools|Advanced|Macros...", NameOf(g.DefaultCommands.ShowMacrosDialog), Keys.Control Or Keys.M, Symbol.CalculatorPercentage)
         ret.Add("Tools|Advanced|Reset Settings...", NameOf(g.DefaultCommands.ResetSettings))
         ret.Add("Tools|Advanced|-")
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_terminal, {"cmd.exe", False, False, False, "%working_dir%"})

@@ -173,9 +173,22 @@ UnSpec =
 [Noise]
 AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=-1, constant=False, opt=0)
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
-BM3DCUDA | BM3DCPU = clip = core.bm3dcpu.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=True, extractor_exp=0)
-BM3DCUDA | BM3DCUDA = clip = core.bm3dcuda.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=True, extractor_exp=0)
-BM3DCUDA | BM3DCUDA_RTC = clip = core.bm3dcuda_rtc.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=True, extractor_exp=0)
+
+BM3DCUDA | BM3DCPU =
+    clip = core.resize.Bicubic(clip, format=vs.YUV420PS)
+    clip = core.bm3dcpu.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=False, extractor_exp=0)
+    clip = core.resize.Bicubic(clip, format=vs.YUV420P10)
+
+BM3DCUDA | BM3DCUDA =
+    clip = core.resize.Bicubic(clip, format=vs.YUV420PS)
+    clip = core.bm3dcuda.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=False, extractor_exp=0)
+    clip = core.resize.Bicubic(clip, format=vs.YUV420P10)
+
+BM3DCUDA | BM3DCUDA_RTC =
+    clip = core.resize.Bicubic(clip, format=vs.YUV420PS)
+    clip = core.bm3dcuda_rtc.BM3D(clip, ref=None, sigma=3.0, block_step=8, bm_range=9, radius=0, ps_num=2, ps_range=4, chroma=False, device_id=0, fast=False, extractor_exp=0)
+    clip = core.resize.Bicubic(clip, format=vs.YUV420P10)
+
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
 DFTTest | DFTTest = clip = core.dfttest.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3, opt=3;Moderate|sigma=16, tbsize=5, opt=3;Strong|sigma=64, tbsize=1, opt=3$)
 DFTTest | DFTTest2 = clip = dfttest2.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$, backend=dfttest2.Backend.$select:msg:Select the Backend;NVRTC|NVRTC;cuFFT|cuFFT;CPU|CPU;GCC|GCC$)

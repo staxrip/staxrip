@@ -115,8 +115,6 @@ Public Class LogBuilder
         WriteLine(EnvironmentString.FormatColumn(":"))
     End Sub
 
-    Shared ConfigurationString As String 'cached due to bug report
-
     Sub WriteConfiguration()
         WriteHeader("Configuration")
 
@@ -128,7 +126,7 @@ Public Class LogBuilder
         Next
         Dim audioConfig = sb.ToString()
 
-        If ConfigurationString = "" Then ConfigurationString =
+        Dim configurationString =
             $"Template: {p.TemplateName}{BR}" +
             $"Video Encoder: {p.VideoEncoder.GetType().Name}{BR}" +
             $"Video Encoder Profile: {p.VideoEncoder.Name}{BR}" +
@@ -142,7 +140,7 @@ Public Class LogBuilder
             $"Delete Temp Files: {p.DeleteTempFilesMode}{BR}" + 
             $"Delete Temp Files Selection: {p.DeleteTempFilesSelectionMode}{BR}"
 
-        WriteLine(ConfigurationString.FormatColumn(":"))
+        WriteLine(configurationString.FormatColumn(":"))
     End Sub
 
     Sub WriteStats()

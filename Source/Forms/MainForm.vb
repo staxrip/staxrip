@@ -11,6 +11,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Microsoft.VisualBasic
+Imports StaxRip
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
@@ -1981,6 +1982,8 @@ Partial Public Class MainForm
         Dim addAudioStream = Sub(index As Integer)
                                  If index >= audioStreams.Count Then Exit Sub
                                  If audioStreams(index) Is Nothing Then Exit Sub
+                                 If p.DemuxAudio = DemuxMode.Dialog Then Exit Sub
+                                 If s.Demuxers.Any(Function (x) x.Active AndAlso TypeOf x Is eac3toDemuxer AndAlso x.InputExtensions.Contains(p.SourceFile.Ext())) Then Exit Sub
 
                                  If Not audioTracks?.Where(Function(x) x.Stream?.Name = audioStreams(index).Name)?.Any() Then
                                      audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))

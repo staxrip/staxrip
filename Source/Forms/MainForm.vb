@@ -1701,11 +1701,11 @@ Partial Public Class MainForm
         Return OpenProject(path, True)
     End Function
 
-    Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
+    Function OpenProject(path As String, saveCurrentFirst As Boolean) As Boolean
         Try
             SetLastModifiedTemplate()
 
-            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
+            If Not IsLoading AndAlso saveCurrentFirst AndAlso IsSaveCanceled() Then Return False
             If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
             Try
@@ -1722,7 +1722,7 @@ Partial Public Class MainForm
         End Try
     End Function
 
-    Function OpenProject(proj As Project, Optional path As String = "") As Boolean
+    Function OpenProject(proj As Project, Optional path As String = "", Optional markAsPChanged As Boolean = True) As Boolean
         Try
             SetLastModifiedTemplate()
 
@@ -1811,7 +1811,7 @@ Partial Public Class MainForm
             tbTargetWidth.Text = width.ToString
             tbTargetHeight.Text = height.ToString
 
-            SetSavedProject()
+            If markAsPChanged Then SetSavedProject()
 
             SkipAssistant = False
 
@@ -5205,7 +5205,7 @@ Partial Public Class MainForm
                         Exit Sub
                     End If
                 Else
-                    OpenProject(g.LastModifiedTemplate)
+                    OpenProject(g.LastModifiedTemplate, "", False)
 
                     For Each filepath In form.GetFiles
                         AddBatchJob(filepath)

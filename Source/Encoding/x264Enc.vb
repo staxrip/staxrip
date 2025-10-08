@@ -1286,15 +1286,14 @@ Public Class x264Params
 
             If pipeTool = "automatic" Then
                 If p.Script.IsAviSynth Then
-                    'pipeTool = If(Package.x264Type = x264Type.Vanilla, "avs2pipemod y4m", "none")
-                    pipeTool = "avs2pipemody4m"
+                    pipeTool = If(Package.x264Type = x264Type.Vanilla, "avs2pipemody4m", "none")
                 ElseIf p.Script.IsVapourSynth Then
-                    pipeTool = "vspipey4m"
+                    pipeTool = If(Package.x264Type = x264Type.Vanilla, "vspipey4m", "none")
                 End If
                 'If p.Script.IsAviSynth OrElse Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
                 '    pipeTool = "none"
                 'ElseIf p.Script.IsVapourSynth Then
-                '    pipeTool = "vspipe y4m"
+                '    pipeTool = "vspipey4m"
                 'End If
             End If
 

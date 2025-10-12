@@ -252,8 +252,8 @@ Public Class SvtAv1HdrEnc
             cl += $" {Params.DolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
         End If
 
-        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
-        Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
+        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").ToInt()
+        Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").ToInt()
 
         If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
             cl += $" --content-light ""{MaxCLL},{MaxFALL}"""

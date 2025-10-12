@@ -495,6 +495,13 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h265",
             .Options = {"Auto", "Main", "Main 10", "Main 444"}}
 
+        Property ProfileAV1 As New OptionParam With {
+            .Switch = "--profile",
+            .Text = "Profile",
+            .Name = "ProfileAV1",
+            .VisibleFunc = Function() Codec.ValueText = "av1",
+            .Options = {"Auto", "Main", "High"}}
+
         Property OutputDepth As New OptionParam With {
             .Switch = "--output-depth",
             .Text = "Output Depth",
@@ -1043,7 +1050,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "p1", "p2", "p3", "p4", "p5", "p6", "p7"}},
                         OutputDepth,
                         New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"YUV420 (Default)", "YUV422", "YUV444", "RGB", "YUVA420"}, .Values = {"yuv420", "yuv422", "yuv444", "rgb", "yuva420"}},
-                        ProfileH264, ProfileH265,
+                        ProfileH264, ProfileH265, ProfileAV1,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},

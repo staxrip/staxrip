@@ -16,7 +16,8 @@ Public NotInheritable Class ThemeManager
             Dim defaultColors = {
                 New Tuple(Of String, Integer, Integer)("Red", 358, 50),
                 New Tuple(Of String, Integer, Integer)("Orange", 25, 355),
-                New Tuple(Of String, Integer, Integer)("Yellow", 48, 355),
+                New Tuple(Of String, Integer, Integer)("MoonYellow", 48, 355),
+                New Tuple(Of String, Integer, Integer)("Yellow", 60, 355),
                 New Tuple(Of String, Integer, Integer)("YellowGreen", 80, 355),
                 New Tuple(Of String, Integer, Integer)("Green", 100, 355),
                 New Tuple(Of String, Integer, Integer)("Lime", 120, 355),
@@ -31,7 +32,9 @@ Public NotInheritable Class ThemeManager
                 New Tuple(Of String, Integer, Integer)("Violet", 271, 355),
                 New Tuple(Of String, Integer, Integer)("Purple", 281, 355),
                 New Tuple(Of String, Integer, Integer)("Magenta", 292, 355),
-                New Tuple(Of String, Integer, Integer)("Pink", 313, 10),
+                New Tuple(Of String, Integer, Integer)("Fuchsia", 305, 10),
+                New Tuple(Of String, Integer, Integer)("Pink", 320, 10),
+                New Tuple(Of String, Integer, Integer)("Orchid", 330, 10),
                 New Tuple(Of String, Integer, Integer)("Rose", 340, 40)
             }
 

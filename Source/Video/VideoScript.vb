@@ -444,7 +444,7 @@ clipname.set_output()" + BR
                 End If
             Next
         Else
-            Return File.Exists(IO.Path.Combine(Folder.Plugins, filename))
+            Return IO.Path.Combine(Folder.Plugins, filename).FileExists()
         End If
     End Function
 
@@ -461,7 +461,7 @@ clipname.set_output()" + BR
                 End If
             Next
         Else
-            Return (Folder.Plugins + filename).FileExists
+            Return IO.Path.Combine(Folder.Plugins, filename).FileExists()
         End If
     End Function
 

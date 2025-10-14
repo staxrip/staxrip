@@ -76,7 +76,7 @@ Public MustInherit Class Demuxer
                 .InputExtensions = {"m2ts", "ts"},
                 .OutputExtensions = {"mkv"},
                 .InputFormats = {"hevc", "avc"},
-                .Command = "%app:ffmpeg%",
+                .Command = "%app_path:ffmpeg%",
                 .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -map 0 -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
             },
             New ffmpegDemuxer,
@@ -87,7 +87,7 @@ Public MustInherit Class Demuxer
                 .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
                 .OutputExtensions = {"d2v"},
                 .InputFormats = {"mpeg2"},
-                .Command = "%app:DGIndex%",
+                .Command = "%app_path:DGIndex%",
                 .Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit",
                 .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
             },
@@ -97,7 +97,7 @@ Public MustInherit Class Demuxer
                 .OutputExtensions = {"d2v"},
                 .InputFormats = {"mpeg2"},
                 .Command = "cmd.exe",
-                .Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%""",
+                .Arguments = "/S /C """"%app_path:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%""",
                 .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"},
                 .Active = False
             }

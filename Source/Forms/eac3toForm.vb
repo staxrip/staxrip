@@ -882,7 +882,7 @@ Public Class eac3toForm
                             Case "DTS Hi-Res"
                                 ms.OutputType = "dtshr"
                             Case "RAW/PCM"
-                                ms.OutputType = "pcm"
+                                ms.OutputType = "flac"
                             Case "AAC"
                                 ms.OutputType = "m4a"
                             Case "Subtitle (ASS)"
@@ -1082,11 +1082,11 @@ Public Class eac3toForm
 
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options
-            ElseIf {"dtsma", "dtshr"}.Contains(ms.OutputType) AndAlso ms.Options.Contains("-core") Then
+            ElseIf {"dtsma", "dtshr"}.Contains(ms.OutputType) AndAlso ms.Options?.Contains("-core") Then
                 ms.Options = ms.Options.Replace(" -core ", "").Replace(" -core", "").Replace("-core ", "").Replace("-core", "")
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options
-            ElseIf ms.OutputType <> "dts" AndAlso ms.Options.Contains("-core") Then
+            ElseIf ms.OutputType <> "dts" AndAlso ms.Options?.Contains("-core") Then
                 ms.Options = ms.Options.Replace(" -core ", "").Replace(" -core", "").Replace("-core ", "").Replace("-core", "")
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options

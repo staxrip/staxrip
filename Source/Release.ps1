@@ -10,12 +10,13 @@ $targetDirectory         = $destinationDirectory + '\StaxRip'   # is extended af
 $includeProjectFiles    = @('*.config', '*.cpp', '*.h', '*.md', '*.ps1', '*.rc', '*.resx', '*.sln', '*.vb', '*.vbproj')
 $excludeBinPatterns = @(
     '^\\[^\\]*Settings'
-    '\\log\d+\.txt$',
     '.*recovery\.srip$',
     '.*\.log$',
     '.*(?<!eac3to)\.ini$',
     '.*help\.txt$',
-    '.*\\eac3to\\log\.txt$',
+    '.*\\eac3to\\bugreport\.txt$',
+    '.*\\log\d+\.txt$',
+    '.*\\eac3to\\log\d*\.txt$',
     '.*\\qaac\\QTfiles.*',
     '.*\\FrameServer\.exp$',
     '.*\\FrameServer\.ilk$',

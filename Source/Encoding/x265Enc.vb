@@ -1370,7 +1370,7 @@ Public Class x265Params
                     DolbyVisionProfile, DolbyVisionRpu,
                     New StringParam With {.Switch = "--nalu-file", .Text = "Nalu File", .BrowseFile = True},
                     Seek, Frames,
-                    New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
+                    New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Unset", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
                     New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"},

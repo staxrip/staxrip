@@ -677,7 +677,7 @@ Public Class x264Params
         .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
-        .Options = {"Fullpel only (not recommended)", "SAD mode decision, one qpel iteration", "SATD mode decision", "Progressively more qpel", "Progressively more qpel", "Progressively more qpel", "RD mode decision for I/P-frames", "RD mode decision for all frames", "RD refinement for I/P-frames", "RD refinement for all frames", "QP-RD - requires trellis=2, aq-mode>0", "Full RD disable all early terminations"}}
+        .Options = {"0: Fullpel only (not recommended)", "1: SAD mode decision, one qpel iteration", "2: SATD mode decision", "3: Progressively more qpel", "4: Progressively more qpel", "5: Progressively more qpel", "6: RD mode decision for I/P-frames", "7: RD mode decision for all frames", "8: RD refinement for I/P-frames", "9: RD refinement for all frames", "10: QP-RD - requires trellis=2, aq-mode>0", "11: Full RD disable all early terminations"}}
 
     Property Me_ As New OptionParam With {
         .Switch = "--me",

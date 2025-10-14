@@ -11,8 +11,9 @@ Public Class StaxRipUpdate
     Shared HttpClient As New HttpClient
 
     Shared Sub SetFirstRunOnCurrentVersion()
-        If s.FirstRunOnVersion.Key <> g.DefaultCommands.GetApplicationDetails() Then
-            s.FirstRunOnVersion = New KeyValuePair(Of String, Date)(g.DefaultCommands.GetApplicationDetails(), DateTime.Now)
+        Dim key = g.DefaultCommands.GetApplicationDetails()
+        If s.FirstRunOnVersion.Key <> key Then
+            s.FirstRunOnVersion = New KeyValuePair(Of String, Date)(key, Date.Now)
         End If
     End Sub
 

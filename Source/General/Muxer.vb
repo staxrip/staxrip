@@ -540,7 +540,7 @@ Public Class BatchMuxer
     Inherits Muxer
 
     Property OutputTypeValue As String = "mp4"
-    Property CommandLines As String = """%app:MP4Box%"" -nodrop -add ""%encoder_out_file%#video"" -add ""%audio_file1%"" -new ""%target_file%"""
+    Property CommandLines As String = """%app_path:MP4Box%"" -nodrop -add ""%encoder_out_file%#video"" -add ""%audio_file1%"" -new ""%target_file%"""
 
     Sub New(name As String)
         MyBase.New(name)

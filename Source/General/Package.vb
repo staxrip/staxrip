@@ -50,7 +50,7 @@ Public Class Package
         .WebURL = "https://rationalqm.us/dgmpgdec/dgmpgdec.html",
         .Location = IO.Path.Combine("Support", "DgMpgDec"),
         .SupportsAutoUpdate = False,
-        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
+        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app_name:DGIndex%")})
 
     Shared Property DGDecode As Package = Add(New PluginPackage With {
         .Name = "DGDecode",
@@ -70,7 +70,7 @@ Public Class Package
         .DownloadURL = "https://github.com/dubhater/D2VWitch/releases",
         .Location = IO.Path.Combine("Support", "D2V Witch"),
         .IsIncluded = False,
-        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%"),
+        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app_name:D2V Witch%"),
         .LaunchAction = Sub()
                             g.AddToPath(Package.d2vsourceVS.Directory)
                             g.Execute(D2VWitch.Path)
@@ -2824,6 +2824,8 @@ Public Class Package
     End Sub
 
     Sub SetVersionInternal(versionName As String)
+        If Not Path.FileExists() Then Return
+
         Version = versionName
         VersionDate = File.GetLastWriteTimeUtc(Path)
         SaveConf()

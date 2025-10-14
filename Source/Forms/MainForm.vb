@@ -6195,9 +6195,11 @@ Partial Public Class MainForm
 
                         td.AddButton("OK")
 
-                        Dim answer = td.Show
+                        Dim answer = td.Show()
 
                         s.ShowChangelog = appDetails
+
+                        If Not force Then g.SaveSettings()
                     End Using
                 End If
             End Using

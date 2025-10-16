@@ -498,7 +498,6 @@ Public Class CommandLineForm
         GoToComboBoxCts = New CancellationTokenSource()
         Dim token = GoToComboBoxCts.Token
         Dim queue = New ConcurrentQueue(Of String)
-        Dim array As String()
 
         Try
             Task.Run(Sub()
@@ -532,14 +531,18 @@ Public Class CommandLineForm
                                                                    queue.Enqueue(item.HelpSwitch)
                                                                End If
                                                            End Sub)
-                         array = queue.OrderBy(Function(x) x).ToArray()
-                     End Sub, token)
+                         Dim array = queue.OrderBy(Function(x) x).ToArray()
 
-            If array IsNot Nothing Then
-                cbGoTo.Items.Clear()
-                cbGoTo.Items.AddRange(array)
-            End If
+                         If array IsNot Nothing Then
+                             cbGoTo.BeginUpdate()
+                             cbGoTo.Items.Clear()
+                             cbGoTo.Items.AddRange(array)
+                             cbGoTo.EndUpdate()
+                         End If
+                     End Sub, token)
         Catch ex As Exception
+        Finally
+            cbGoTo.EndUpdate()
         End Try
     End Sub
 

@@ -471,7 +471,7 @@ Partial Public Class MainForm
                 Next
             End If
 
-            If refreshScript AndAlso Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
+            If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
                 Dim err = p.Script.Error
 
                 If err <> "" AndAlso ProcessTip(err) Then

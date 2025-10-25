@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions, Discussions, Ideas
+    url: https://github.com/staxrip/staxrip/discussions/new
+    about: Please ask and answer questions here.
+  - name: StaxRip Community Support on Discord
+    url: https://discord.gg/uz8pVR79Bd
+    about: Please ask and answer questions here.
+  - name: StaxRip Documentation (in development!)
+    url: https://github.com/staxrip/staxrip/blob/master/Docs/README.md
+    about: Documentation with many explanations, workflows and guides.

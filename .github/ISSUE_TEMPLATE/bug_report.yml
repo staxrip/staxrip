@@ -1,0 +1,55 @@
+name: 🐞 Report a bug
+description: Create a report to point on an issue
+body:
+  - type: textarea
+    id: whathappened
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce
+      description: Steps to reproduce the behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: whatisexpected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+  - type: input
+    id: version
+    attributes:
+      label: StaxRip version
+      description: Let us know which version you have tested. Please make sure to test latest stable version available. 
+      placeholder: e.g. 2.50.4
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      multiple: true
+      options:
+        - Windows 11
+        - Windows 10
+        - Windows 8(.1)
+        - Windows 7
+  - type: dropdown
+    id: frameserver
+    attributes:
+      label: Frame Server
+      multiple: true
+      options:
+        - AviSynth+
+        - VapourSynth
+  - type: textarea
+    id: moreinfo
+    attributes:
+      label: Additional information
+      description: |
+        Add any other context about the problem here.
+        If applicable, add screenshots to help explain your problem and/or provide a log file. The log file is located in the temp folder and the temp folder is located in the same directory as the source file. The log file ends with _staxrip.log.

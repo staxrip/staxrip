@@ -1,0 +1,10 @@
+name: ❓ Ask a question
+description: Ask a question about StaxRip
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Ask your question
+      description: A clear and concise question, that provides enough information to answer it.
+    validations:
+      required: true

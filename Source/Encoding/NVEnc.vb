@@ -480,6 +480,30 @@ Public Class NVEnc
             .Values = {"h264", "h265", "av1"},
             .ImportAction = Sub(param, arg) Codec.Value = If(arg.EqualsAny("h264", "avc"), 0, If(arg.EqualsAny("h265", "hevc"), 1, 2))}
 
+        Property Preset As New OptionParam With {
+            .Switch = "--preset",
+            .HelpSwitch = "-u",
+            .Text = "Preset",
+            .Init = 6,
+            .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"},
+            .Values = {"default", "quality", "performance", "p1", "p2", "p3", "p4", "p5", "p6", "p7"}}
+
+        Property Tune As New OptionParam With {
+            .Switch = "--tune",
+            .Text = "Tune",
+            .Init = 0,
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1",
+            .Options = {"Undefined (Default)", "HQ", "UHQ", "Low Latency", "Ultra Low Latency", "Lossless"},
+            .Values = {"", "hq", "uhq", "lowlatency", "ultralowlatency", "lossless"}}
+
+        Property TuneH264 As New OptionParam With {
+            .Switch = "--tune",
+            .Text = "Tune",
+            .Init = 0,
+            .VisibleFunc = Function() Codec.ValueText = "h264",
+            .Options = {"Undefined (Default)", "HQ", "Low Latency", "Ultra Low Latency", "Lossless"},
+            .Values = {"", "hq", "lowlatency", "ultralowlatency", "lossless"}}
+
         Property ProfileH264 As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile",
@@ -1046,9 +1070,7 @@ Public Class NVEnc
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Basic",
-                        Mode, Codec,
-                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "p1", "p2", "p3", "p4", "p5", "p6", "p7"}},
-                        OutputDepth,
+                        Mode, Codec, Preset, TuneH264, Tune, OutputDepth,
                         New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"YUV420 (Default)", "YUV422", "YUV444", "RGB", "YUVA420"}, .Values = {"yuv420", "yuv422", "yuv444", "rgb", "yuva420"}},
                         ProfileH264, ProfileH265, ProfileAV1,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},

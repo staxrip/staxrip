@@ -14,6 +14,74 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.50.5 (2025-12-26)
+====================
+
+- General: Save settings after showing Changelog at startup
+    - Prevents Changelogs popping up when starting multiple instances after updating
+- General: Optimize Long Path Prefix check and usage with quotes
+- General: Add some more custom languages
+- Macro: Extend encoder macros with some modifiers:
+    - `%parameter%`: Normal value without spaces
+        - Example: `%--preset%` -> `VeryFast`
+    - `%parameter_D%`: `True` if the default value is set, otherwise `False`
+        - Example: `%--preset_D%` -> `True`
+    - `%parameter_L%`: Value in lower-case without spaces
+        - Example: `%--preset_L%` -> `veryfast`
+    - `%parameter_T%`: Value in Title-case (First letter only in uppercase) without spaces
+        - Example: `%--preset_T%` -> `Veryfast`
+    - `%parameter_U%`: Value in UPPER-case without spaces
+        - Example: `%--preset_U%` -> `VERYFAST`
+    - `%parameter_V%`: Returns the numeric value
+        - Only available for checkboxes and option lists
+        - Example: 
+            - `%--preset%` -> `VeryFast`
+            - `%--preset_V%` -> `2`
+        - Example: 
+            - `%--open-gop%` -> `True`
+            - `%--open-gop_V%` -> `1`
+    - `%parameter_Z%`: Returns a `1` in case it is active/visible, otherwise `0`
+        - Example: `%--preset_Z%` -> `1`
+    - Documentation: https://github.com/staxrip/staxrip/blob/master/Docs/Usage/Macros.md#encoder-macros
+- UI: Add "Macros" to "Tools » Advanced" in main menu
+- UI: Improve Template Selection by marking the current and startup template differently
+- MP4Box: Quote MP4Box "-itags" parameter value
+- SvtAv1EncApp-HDR: Add "--noise-adaptive-filtering" parameter
+- SvtAv1EncApp-HDR: Add "--max-tx-size" parameter
+- SvtAv1EncApp-HDR: Remove "--progress 3" parameter value
+- SvtAv1EncApp-HDR: Rename "--spy-rd" to "--tx-bias"
+- SvtAv1EncApp-HDR: Swap "--tune 3" and "--tune 4"
+- AviSynth: Add QTGMC+ filter profile
+- AviSynth: Add libplacebo Resize filter profile (thanks to @ame0011 ([#1863](/../../pull/1863)))
+- VapourSynth: Add libplacebo Resize filter profile (thanks to @ame0011 ([#1863](/../../pull/1863)))
+- VapourSynth: Alter BM3DCUDA filter profile
+- VapourSynth: Alter plugin dependency order
+- Update tools
+    - aomenc v3.13.1-171-g36d919cd32-x64-msvc1944
+    - chapterEditor v1.45
+    - DeeZy v1.3.13
+    - eac3to v3.54
+    - MediaInfo v25.10
+    - MKVToolNix v96.0
+    - MP4Box v2.5-DEV-rev2094-g8bdc218e3-x64-msvc1944
+    - NVEncC v9.08
+    - Python v3.13.9
+    - QSVEncC v8.03
+    - rav1e v0.8.0-(p20250624-3-g564ae3b)-x64-msvc1944
+    - SvtAv1EncApp v3.1.2-291+59-a93fb1f4-[Mod-by-Patman]-x64-clang21.1.7 [SVT-AV1]
+    - SvtAv1EncApp v3.1.3-5+26-98670dc79-[Mod by Patman]-x64-clang21.1.7 [SVT-AV1-HDR]
+    - VapourSynth R73
+    - VCEEncC v9.02
+    - x264 v0.165.3223+18-2d8d2cc-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+212+35-87f5a69a8-[Mod-by-Patman]-x64-avx-clang2117
+- Add AviSynth+ plugins
+    - QTGMC+ v4.6
+- Update AviSynth+ plugins
+    - QTGMC v3.387s
+- Update Dual plugins
+    - BestSource R15
+
+
 v2.50.4 (2025-11-01)
 ====================
 

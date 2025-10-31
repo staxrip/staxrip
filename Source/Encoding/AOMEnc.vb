@@ -716,7 +716,8 @@ Public Class AV1Params
                     End If
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape)
+                    Dim pix_fmt = If(p.SourceVideoBitDepth = 10 OrElse p.Script.Info.BitDepth >= 10, "yuv420p10le", "yuv420p")
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape)
                     If isSingleChunk Then
                         If Skip.Value > 0 Then
                             sb.Append($" --skip={Skip.Value}")
@@ -731,7 +732,7 @@ Public Class AV1Params
                     End If
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    Dim pix_fmt = If(p.SourceVideoBitDepth = 10, "yuv420p10le", "yuv420p")
+                    Dim pix_fmt = If(p.SourceVideoBitDepth = 10 OrElse script.Info.BitDepth >= 10, "yuv420p10le", "yuv420p")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape +
                               " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop +
                               " -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape)

@@ -758,6 +758,12 @@ Public Class SvtAv1EncParams
         .Config = {0, 3, 1, 0},
         .Init = 0}
 
+    Property AcBias As New NumParam With {
+        .Switch = "--ac-bias",
+        .Text = "AC Bias in Rate Distortion",
+        .Config = {0, 8, 0.01, 2},
+        .Init = 0.0}
+
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
@@ -1256,7 +1262,7 @@ Public Class SvtAv1EncParams
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
-                    AqMode, QpScaleCompressStrength, RecodeLoop,
+                    AqMode, QpScaleCompressStrength, AcBias, RecodeLoop,
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",

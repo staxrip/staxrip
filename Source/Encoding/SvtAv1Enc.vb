@@ -687,7 +687,7 @@ Public Class SvtAv1EncParams
        .Text = "Constant Rate Factor",
        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
-       .Config = {1, 63, 0.25, 2},
+       .Config = {1, 70, 0.25, 2},
        .Init = 35}
 
     Property TargetBitrate As New NumParam With {

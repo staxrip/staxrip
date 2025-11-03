@@ -782,9 +782,11 @@ Public Class Language
 
                 If OSVersion.VersionInfo.dwMajorVersion > 7 Then
                     l.AddRange({
+                                   New Language(New CustomCultureInfo("cmn-Hans-CN", "cmn-Hans-CN", "Chinese (Mandarin, Simplified, China)", "zh", "cmn"), False, False),
+                                   New Language(New CustomCultureInfo("cmn-Hant-CN", "cmn-Hant-CN", "Chinese (Mandarin, Traditional, China)", "zh", "cmn"), False, False),
                                    New Language(New CustomCultureInfo("no-NO", "no-NO", "Norwegian", "no", "nor"), False, False),
-                                   New Language(New CustomCultureInfo("yue-Hans-CN", "yue-Hans-CN", "Cantonese (Simplified, China)", "zh", "yue"), False, True),
-                                   New Language(New CustomCultureInfo("yue-Hant-CN", "yue-Hant-CN", "Cantonese (Traditional, China)", "zh", "yue"), False, True),
+                                   New Language(New CustomCultureInfo("yue-Hans-CN", "yue-Hans-CN", "Chinese (Cantonese, Simplified, China)", "zh", "yue"), False, False),
+                                   New Language(New CustomCultureInfo("yue-Hant-CN", "yue-Hant-CN", "Chinese (Cantonese, Traditional, China)", "zh", "yue"), False, False),
                                    New Language(New CustomCultureInfo("zh-Hans-CN", "zh-Hans-CN", "Chinese (Simplified, China)", "zh", "chi"), False, False),
                                    New Language(New CustomCultureInfo("zh-Hans-HK", "zh-Hans-HK", "Chinese (Simplified, Hong Kong SAR)", "zh", "chi"), False, False),
                                    New Language(New CustomCultureInfo("zh-Hans-SG", "zh-Hans-SG", "Chinese (Simplified, Singapore)", "zh", "chi"), False, False),
@@ -796,8 +798,8 @@ Public Class Language
                                })
                     l.AddRange({
                                    New Language(New CustomCultureInfo("zxx", "zxx", "No Linguistic Content", "xx", "zxx"), False, True),
-                                   New Language(New CustomCultureInfo("yue", "yue", "Cantonese", "zh", "yue"), False, True),
-                                   New Language(New CustomCultureInfo("cmn", "cmn", "Mandarin", "zh", "cmn"), False, True)
+                                   New Language(New CustomCultureInfo("yue", "yue", "Chinese (Cantonese)", "zh", "yue"), False, False),
+                                   New Language(New CustomCultureInfo("cmn", "cmn", "Chinese (Mandarin)", "zh", "cmn"), False, False)
                                })
                 End If
 

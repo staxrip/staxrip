@@ -410,7 +410,7 @@ Public Class MP4Muxer
         End If
 
         If tagList.Count > 0 Then
-            args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
+            args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)).Escape)
         End If
 
         args.Append(" -new " + p.TargetFile.Escape)

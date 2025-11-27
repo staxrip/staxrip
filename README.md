@@ -78,6 +78,8 @@ This is the way to go if you have questions regarding settings, usage, etc.
     - MKVToolNix
         - Latest working version is reported to be `v64.0`. Last (complete) working StaxRip version is *StaxRip v2.10.0 (2021-10-06)* including *MKVToolNix v61.0*
         - Nevertheless `mkvtoolnix-64-bit-68.0.0-revision-001-g6a55c58d2` is reported to work, you can download it here: https://mkvtoolnix.download/windows/continuous/64-bit/68.0.0/
+    - VapourSynth
+        - Latest working version is `R73`. For most use-cases you should be fine downgrading to `R73` and use the plugins as usual.
     - Python
         - Needed for VapourSynth. Last **Windows 7** compatible version was used in *StaxRip v2.25.0 (2023-08-02)*. As of now using VapourSynth R63 it could be possible to downgrade Python to `v3.8.*`that is **Windows 7** compatible, but requires experienced users.
              

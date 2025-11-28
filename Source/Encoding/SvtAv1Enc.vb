@@ -656,11 +656,13 @@ Public Class SvtAv1EncParams
         .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
         .Init = 1}
 
-    Property MaxTxSize As New NumParam With {
+    Property MaxTxSize As New OptionParam With {
         .Switch = "--max-tx-size",
         .Text = "Max TX Size",
-        .Config = {32, 64, 1, 0},
-        .Init = 64}
+        .Expanded = True,
+        .Options = {"32", "64 (default)"},
+        .Values = {"32", "64"},
+        .Init = 1}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------

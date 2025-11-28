@@ -543,10 +543,10 @@ Public Class SvtAv1HdrEncParams
         .Switch = "--progress",
         .Text = "Progress",
         .Expanded = True,
-        .Options = {"0: No Output", "1: Normal (default)", "2: AOMEnc Style Output", "3: Patman86 Style Output"},
-        .Values = {"0", "1", "2", "3"},
+        .Options = {"0: No Output", "1: Normal (default)", "2: AOMEnc Style Output"},
+        .Values = {"0", "1", "2"},
         .DefaultValue = 1,
-        .Value = 3}
+        .Value = 2}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -670,7 +670,40 @@ Public Class SvtAv1HdrEncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Film Grain", "4: Still Picture"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality", "4: Film Grain"},
+        .Init = 1}
+
+    Property AdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
+        .Init = 1}
+
+    Property MaxTxSize As New OptionParam With {
+        .Switch = "--max-tx-size",
+        .Text = "Max TX Size",
+        .Expanded = True,
+        .Options = {"32", "64 (default)"},
+        .Values = {"32", "64"},
+        .Init = 1}
+
+    Property AltSsimTuning As New OptionParam With {
+        .Switch = "--alt-ssim-tuning",
+        .Text = "Alternative SSIM Calculation Pathway",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0 (default)", "1"},
+        .VisibleFunc = Function() {2}.Contains(Tune.Value),
+        .Init = 0}
+
+    Property NoiseNormStrength As New OptionParam With {
+        .Switch = "--noise-norm-strength",
+        .Text = "Noise Norm Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
         .Init = 1}
 
     '   --------------------------------------------------------
@@ -1322,12 +1355,12 @@ Public Class SvtAv1HdrEncParams
         .Config = {0, 8, 0.01, 2},
         .Init = 1.0}
 
-    Property SpyRd As New OptionParam With {
-        .Switch = "--spy-rd",
-        .Text = "Alternate Psychovisual Rate Distortion Pathways",
+    Property TxBias As New OptionParam With {
+        .Switch = "--tx-bias",
+        .Text = "Transform size/type bias mode",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off (default)", "1: Full (Intra + Interpolation Sharpness)", "2: Partial (Interpolation Only)"},
+        .Options = {"0: Off (default)", "1: Full", "2: Partial (Transform Size Only)", "3: Partial (Interpolation Filter Only)"},
         .Init = 0}
 
     Property SharpTx As New OptionParam With {
@@ -1346,6 +1379,14 @@ Public Class SvtAv1HdrEncParams
         .Options = {"0: Off (default)", "1: Forces 10-bit+ (HBD)", "2: 8/10-bit Hybrid"},
         .Init = 0}
 
+    Property NoiseAdaptiveFiltering As New OptionParam With {
+        .Switch = "--noise-adaptive-filtering",
+        .Text = "Noise Adaptive Filtering",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: CDEF and Restoration Noise-Adaptive Filtering", "2: Default Tune Behavior (default)", "3: Noise-Adaptive CDEF Only", "4: Noise-Adaptive Restoration Only"},
+        .Init = 2}
+
     Property ComplexHvs As New OptionParam With {
         .Switch = "--complex-hvs",
         .Text = "Complexity HVS Model",
@@ -1353,32 +1394,6 @@ Public Class SvtAv1HdrEncParams
         .IntegerValue = True,
         .Options = {"0: Default Behavior (default)", "1: Highest Complexity HVS Model"},
         .Init = 0}
-
-    Property AltSsimTuning As New OptionParam With {
-        .Switch = "--alt-ssim-tuning",
-        .Text = "Alternative SSIM Calculation Pathway",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0 (default)", "1"},
-        .VisibleFunc = Function() {2, 4}.Contains(Tune.Value),
-        .Init = 0}
-
-    Property NoiseNormStrength As New OptionParam With {
-        .Switch = "--noise-norm-strength",
-        .Text = "Noise Norm Strength",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0", "1 (default)", "2", "3", "4"},
-        .Init = 1}
-
-    Property AdaptiveFilmGrain As New OptionParam With {
-        .Switch = "--adaptive-film-grain",
-        .Text = "Adaptive Film Grain",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0: Default Blocksize Behavior", "1: Adaptive Blocksize Behavior (default)"},
-        .Init = 1}
-
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -1428,10 +1443,10 @@ Public Class SvtAv1HdrEncParams
                 Add("HDR Specific 1",
                     Hdr10PlusJson, DolbyVisionRpu, DolbyVisionRpuMode,
                     QpScaleCompressStrength, Max32TxSize,
-                    AltSsimTuning, NoiseNormStrength, AdaptiveFilmGrain, KeyframeTemporalFilteringStrength, AltLambdaFactors
+                    AltSsimTuning, NoiseNormStrength, AdaptiveFilmGrain, MaxTxSize, KeyframeTemporalFilteringStrength, AltLambdaFactors
                 )
                 Add("HDR Specific 2",
-                    MinChromaQmLevel, MaxChromaQmLevel, AcBias, SpyRd, SharpTx, HbdMds, ComplexHvs
+                    MinChromaQmLevel, MaxChromaQmLevel, AcBias, TxBias, SharpTx, HbdMds, NoiseAdaptiveFiltering, ComplexHvs
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

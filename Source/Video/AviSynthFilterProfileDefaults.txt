@@ -245,6 +245,7 @@ Advanced | Dither_Resize16 In Linear Light =
 
 Advanced | Hardware Encoder = # hardware encoder resizes
 Advanced | NNEDI3_rpow2 = nnedi3_rpow2(rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, cshift="$select:msg:Center Shift Correction Algorithm?;BicubicResize;BilinearResize;BlackmanResize;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$", fwidth=%target_width%, fheight=%target_height%)
+Advanced | Placebo = libplacebo_Resample(%target_width%, %target_height%, "$select:spline16;spline36;spline64;nearest;bilinear;gaussian;sinc;lanczos;ginseng;ewa_jinc;ewa_lanczos;ewa_lanczossharp;ewa_lanczos4sharpest;ewa_ginseng;ewa_hann;ewa_hanning;bicubic;hermite;catmull_rom;mitchell;mitchell_clamp;robidoux;robidouxsharp;ewa_robidoux;ewa_robidouxsharp$")
 Advanced | ResizeMT = $select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;LanczosResizeMT;Lanczos4ResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)
 Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How many Passes do you wish to perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)
 Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;DPID;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)

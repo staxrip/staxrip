@@ -783,7 +783,7 @@ Public Class GUIAudioProfile
         Params.Quality = quality
 
         Select Case codec
-            Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
+            Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.AC4, AudioCodec.EAC3
                 Params.RateMode = AudioRateMode.CBR
             Case Else
                 Params.RateMode = AudioRateMode.VBR
@@ -1050,7 +1050,7 @@ Public Class GUIAudioProfile
     Function GetEncoder(gae As GuiAudioEncoder) As GuiAudioEncoder
         Select Case gae
             Case GuiAudioEncoder.deezy
-                If {AudioCodec.AC3, AudioCodec.EAC3}.Contains(Params.Codec) Then
+                If {AudioCodec.AC3, AudioCodec.AC4, AudioCodec.EAC3}.Contains(Params.Codec) Then
                     Return GuiAudioEncoder.deezy
                 End If
             Case GuiAudioEncoder.eac3to
@@ -1072,6 +1072,8 @@ Public Class GUIAudioProfile
             Case GuiAudioEncoder.Automatic
                 If Params.Codec = AudioCodec.AAC Then
                     Return GuiAudioEncoder.qaac
+                ElseIf Params.Codec = AudioCodec.AC4 Then
+                    Return GuiAudioEncoder.deezy
                 ElseIf Params.Codec = AudioCodec.Opus Then
                     Return GuiAudioEncoder.opusenc
                 End If
@@ -1111,6 +1113,8 @@ Public Class GUIAudioProfile
         Select Case Params.Codec
             Case AudioCodec.AC3
                 sb.Append(" encode dd")
+            Case AudioCodec.AC4
+                sb.Append(" encode ac4")
             Case AudioCodec.EAC3
                 Select Case Params.DeezyDdpMode
                     Case DeezyDdpMode.Ddp
@@ -1136,7 +1140,7 @@ Public Class GUIAudioProfile
         If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Atmos AndAlso Params.DeezyChannelsAtmos = DeezyChannelsAtmos._6 Then sb.Append($" --atmos-mode streaming")
         If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Atmos AndAlso Params.DeezyChannelsAtmos = DeezyChannelsAtmos._8 Then sb.Append($" --atmos-mode bluray")
         If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Auto Then sb.Append($" --stereo-down-mix={Params.DeezyStereodownmix.ToString().ToLower()}")
-        If Params.DeezyDynamicrangecompression <> DeezyDrcLineMode.Music_Light Then sb.Append($" --drc-line-mode={Params.DeezyDynamicrangecompression.ToString().ToLower()}")
+        If Params.Codec <> AudioCodec.AC4 AndAlso Params.DeezyDynamicrangecompression <> DeezyDrcLineMode.Music_Light Then sb.Append($" --drc-line-mode={Params.DeezyDynamicrangecompression.ToString().ToLower()}")
         If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
         If includePaths Then sb.Append($" --overwrite --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
 
@@ -1815,6 +1819,7 @@ Public Class GUIAudioProfile
 
         Property DeezyKeeptemp As Boolean = False
         Property DeezyChannelsAtmos As DeezyChannelsAtmos = DeezyChannelsAtmos._6
+        Property DeezyChannelsAc4 As DeezyChannelsAc4 = DeezyChannelsAc4._2
         Property DeezyChannelsDd As DeezyChannelsDd = DeezyChannelsDd.Auto
         Property DeezyChannelsDdp As DeezyChannelsDdp = DeezyChannelsDdp.Auto
         Property DeezyChannelsDdpBluray As DeezyChannelsDdpBluray = DeezyChannelsDdpBluray._8
@@ -1957,6 +1962,7 @@ End Class
 Public Enum AudioCodec
     AAC
     AC3
+    AC4
     EAC3
     DTS
     FLAC
@@ -1972,6 +1978,10 @@ Public Enum AudioRateMode
     CBR
     ABR
     VBR
+End Enum
+
+Public Enum DeezyChannelsAc4
+    <DispName("Stereo (default)")> _2
 End Enum
 
 Public Enum DeezyChannelsDd

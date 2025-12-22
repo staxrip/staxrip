@@ -855,6 +855,8 @@ Public Class AudioForm
                 list.Add(GuiAudioEncoder.deezy)
                 list.Add(GuiAudioEncoder.eac3to)
                 list.Add(GuiAudioEncoder.ffmpeg)
+            Case AudioCodec.AC4
+                list.Add(GuiAudioEncoder.deezy)
             Case AudioCodec.DTS
                 list.Add(GuiAudioEncoder.eac3to)
             Case AudioCodec.EAC3
@@ -967,6 +969,14 @@ Public Class AudioForm
                 numBitrate.Maximum = 1664
                 numBitrate.Minimum = 32
             End If
+        ElseIf TempProfile.Params.Codec = AudioCodec.AC4 Then
+            numBitrate.Increment = 8
+            setIncrement(72, 40)
+            setIncrement(112, 32)
+            setIncrement(144, 112)
+            setIncrement(256, 64)
+            numBitrate.Maximum = 320
+            numBitrate.Minimum = 64
         ElseIf TempProfile.Params.Codec = AudioCodec.EAC3 Then
             If enc = GuiAudioEncoder.deezy Then
                 If TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp Then
@@ -1060,6 +1070,9 @@ Public Class AudioForm
                 TempProfile.Params.RateMode = AudioRateMode.VBR
             Case AudioCodec.AC3, AudioCodec.EAC3
                 numBitrate.Value = If(TempProfile.Channels = 6, 448, 224)
+                TempProfile.Params.RateMode = AudioRateMode.CBR
+            Case AudioCodec.AC4
+                numBitrate.Value = 256
                 TempProfile.Params.RateMode = AudioRateMode.CBR
             Case AudioCodec.FLAC
                 numBitrate.Value = TempProfile.GetBitrate
@@ -1228,6 +1241,8 @@ Public Class AudioForm
                 Dim mbChannelsDdpBluray As SimpleUI.MenuBlock(Of DeezyChannelsDdpBluray)
                 Dim mbChannelsAtmos As SimpleUI.MenuBlock(Of DeezyChannelsAtmos)
                 Dim mbStereodownmix As SimpleUI.MenuBlock(Of DeezyStereodownmix)
+                Dim mbDrc As SimpleUI.MenuBlock(Of DeezyDrcLineMode)
+
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.AC3
                         Dim mbChannelsDd = ui.AddMenu(Of DeezyChannelsDd)(page)
@@ -1239,6 +1254,15 @@ Public Class AudioForm
                                                              mbStereodownmix.Enabled = value = DeezyChannelsDd._2
                                                              'TempProfile.Params.ChannelsMode = If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._1, ChannelsMode._1, If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2, ChannelsMode._2, If(TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._6, ChannelsMode._6, ChannelsMode.Original)))
                                                          End Sub
+                    Case AudioCodec.AC4
+                        Dim mbChannelsAc4 = ui.AddMenu(Of DeezyChannelsAc4)(page)
+                        mbChannelsAc4.Label.Text = "Channels:"
+                        mbChannelsAc4.Button.Expand = True
+                        mbChannelsAc4.Button.Value = TempProfile.Params.DeezyChannelsAc4
+                        mbChannelsAc4.Button.SaveAction = Sub(value)
+                                                              TempProfile.Params.DeezyChannelsAc4 = value
+                                                              mbStereodownmix.Enabled = value = DeezyChannelsAc4._2
+                                                          End Sub
                     Case AudioCodec.EAC3
                         mbDdpMode = ui.AddMenu(Of DeezyDdpMode)(page)
                         mbDdpMode.Label.Text = "Mode:"
@@ -1286,18 +1310,20 @@ Public Class AudioForm
                         Throw New NotImplementedException("LoadAdvanced")
                 End Select
 
-                mbStereodownmix = ui.AddMenu(Of DeezyStereodownmix)(page)
-                mbStereodownmix.Enabled = TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2 OrElse (TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2)
-                mbStereodownmix.Label.Text = "Stereo Downmix:"
-                mbStereodownmix.Button.Expand = True
-                mbStereodownmix.Button.Value = TempProfile.Params.DeezyStereodownmix
-                mbStereodownmix.Button.SaveAction = Sub(value) TempProfile.Params.DeezyStereodownmix = value
+                If TempProfile.Params.Codec <> AudioCodec.AC4 Then
+                    mbStereodownmix = ui.AddMenu(Of DeezyStereodownmix)(page)
+                    mbStereodownmix.Enabled = (TempProfile.Params.Codec = AudioCodec.AC4 AndAlso TempProfile.Params.DeezyChannelsAc4 = DeezyChannelsAc4._2) OrElse (TempProfile.Params.Codec = AudioCodec.AC3 AndAlso TempProfile.Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (TempProfile.Params.DeezyDdpMode = DeezyDdpMode.Ddp AndAlso TempProfile.Params.DeezyChannelsDdp = DeezyChannelsDdp._2)
+                    mbStereodownmix.Label.Text = "Stereo Downmix:"
+                    mbStereodownmix.Button.Expand = True
+                    mbStereodownmix.Button.Value = TempProfile.Params.DeezyStereodownmix
+                    mbStereodownmix.Button.SaveAction = Sub(value) TempProfile.Params.DeezyStereodownmix = value
 
-                Dim mbDrc = ui.AddMenu(Of DeezyDrcLineMode)(page)
-                mbDrc.Label.Text = "Dynamic Range Comp.:"
-                mbDrc.Button.Expand = True
-                mbDrc.Button.Value = TempProfile.Params.DeezyDynamicrangecompression
-                mbDrc.Button.SaveAction = Sub(value) TempProfile.Params.DeezyDynamicrangecompression = value
+                    mbDrc = ui.AddMenu(Of DeezyDrcLineMode)(page)
+                    mbDrc.Label.Text = "Dynamic Range Comp.:"
+                    mbDrc.Button.Expand = True
+                    mbDrc.Button.Value = TempProfile.Params.DeezyDynamicrangecompression
+                    mbDrc.Button.SaveAction = Sub(value) TempProfile.Params.DeezyDynamicrangecompression = value
+                End If
 
                 Dim bKeeptemp = ui.AddBool(page)
                 bKeeptemp.Text = "Keep Temp Files"

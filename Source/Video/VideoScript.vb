@@ -425,7 +425,7 @@ clipname.set_output()" + BR
                     code += "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "# "
                 End If
 
-                code += line + BR
+                code = line + BR + code
             End If
         End If
     End Sub

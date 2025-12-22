@@ -960,10 +960,20 @@ Public Class Package
     Shared Property QTGMC As Package = Add(New PluginPackage With {
         .Name = "QTGMC",
         .Filename = "QTGMC.avsi",
+        .Location = IO.Path.Combine("Plugins", "AVS", "QTGMC"),
         .WebURL = "http://avisynth.nl/index.php/QTGMC",
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/QTGMC.avsi",
         .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
         .AvsFilterNames = {"QTGMC"}})
+
+    Shared Property QTGMCplus As Package = Add(New PluginPackage With {
+        .Name = "QTGMC+",
+        .Filename = "QTGMC+.avsi",
+        .Location = IO.Path.Combine("Plugins", "AVS", "QTGMC"),
+        .WebURL = "http://avisynth.nl/index.php/QTGMC",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/QTGMC%2B.avsi",
+        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
+        .AvsFilterNames = {"QTGMCp"}})
 
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
         .Name = "SMDegrain",

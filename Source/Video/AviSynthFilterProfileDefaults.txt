@@ -80,6 +80,7 @@ Deinterlace | QTGMC | QTGMC with Repair =
     QTGMC2 = QTGMC(preset="Slower", inputType=3, prevGlobals="Reuse")
     $select:msg:Select Repair Mode to use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Dither_Repair16(QTGMC1, QTGMC2, 1)$
 
+Deinterlace | QTGMC | QTGMC+... = QTGMCp(thSAD1=640, thSAD2=256, Preset="$select:msg:Select a Preset;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", SourceMatch=0, MatchPreset="$select:msg:Select a Preset;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", MatchPreset2="$select:msg:Select a Preset;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", MatchEnhance=0.5, Lossless=0, EZDenoise=0.0, EZKeepGrain=1.0, NoisePreset="$select:msg:Select a NoisePreset;Faster;Fast;Medium;Slow;Slower", FPSDivisor=1, threads=$select:msg:Select the number of threads;2;4;6;8;10;12;14;16$, show=false)
 Deinterlace | TDeint = TDeint($select:msg:Select Mode;Progressive DoubleHeight ELA|mode=-2;Progressive DoubleHeight ELA2|mode=-1;Same Rate (Default)|mode=0;Double Rate Bobbing|mode=1;Smart Bobbed Field Matching|mode=2$)
 Deinterlace | yadifmod2 = yadifmod2($select:msg:Select Mode;Same Rate (Default)|mode=0;Double Rate|mode=1;Same Rate No Spatial Check|mode=2;Double Rate No Spatial Check|mode=3$)
 IVTC | AnimeIVTC = AnimeIVTC(mode=$select:msg:Choose Mode;Hard telecined|1;Field blended|2;Double hard telecine|3;Hybrid|4$, omode=$select:msg:Output Framerate?;CFR|1;VFR (intended for MKV files)|2$)

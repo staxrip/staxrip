@@ -403,16 +403,13 @@ clipname.set_output()" + BR
         If plugin.Filename.Ext = "py" Then
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" + plugin.Name + "', r""" + plugin.Path + """).load_module()"
 
-            If code.Contains(line) Then
-                If Not script.ContainsEx(filterName) Then
-                    code = code.Replace(line + BR, "")
-                    code = line + BR + code
-                End If
-            Else
+            If Not code.Contains(line) Then
                 If Not script.Contains(line) Then
-                    code = line + BR + code
+                    code += line + BR
                     Dim scriptCode = plugin.Path.ReadAllText
                     ModifyVSScript(scriptCode, code)
+                    code = code.Replace(line + BR, "")
+                    code += line + BR
                 End If
             End If
         Else
@@ -492,7 +489,7 @@ clipname.set_output()" + BR
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function (pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
+                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
                                         Dim fp2 = dep?.Path
 
                                         If fp2.Ext = "dll" Then
@@ -533,7 +530,7 @@ clipname.set_output()" + BR
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function (pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
+                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
                                         Dim fp2 = dep?.Path
 
                                         If fp2.Ext = "dll" Then

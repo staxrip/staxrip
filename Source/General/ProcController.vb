@@ -166,14 +166,14 @@ Public Class ProcController
 
             If Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool Then
                 If Proc.FrameCount <= 0 Then
-                    Dim match = Regex.Match(value, "NUMBER_OF_FRAMES\s*:\s+(\d+)", RegexOptions.IgnoreCase)
+                    Dim match = Regex.Match(value, "NUMBER_OF_FRAMES(?:-\w+)?\s*:\s+(\d+)", RegexOptions.IgnoreCase)
                     If match.Success Then
                         Proc.FrameCount = match.Groups(1).Value.ToInt()
                     End If
                 End If
 
                 If _ffmpegDuration = TimeSpan.Zero Then
-                    Dim match = Regex.Match(value, "DURATION\s*:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
+                    Dim match = Regex.Match(value, "DURATION(?:-\w+)?\s*:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
                     If match.Success Then
                         Dim t As TimeSpan
                         If TimeSpan.TryParse(match.Groups(1).Value, t) Then

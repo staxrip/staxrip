@@ -2262,7 +2262,7 @@ Public Class Package
             .Description = "A ported AA-script from Avisynth.",
             .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/vsTAAmbk",
-            .VsFilterNames = {"taa.TAAmbk", "taa.vsTAAmbk"}})
+            .VsFilterNames = {"vsTAAmbk.TAAmbk", "vsTAAmbk.vsTAAmbk"}})
 
         Add(New PluginPackage With {
             .Name = "mvsfunc",

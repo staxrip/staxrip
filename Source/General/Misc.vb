@@ -4443,6 +4443,18 @@ Public Enum ApplicationExitMode
     ForceProjectSaving
 End Enum
 
+<StructLayout(LayoutKind.Sequential)>
+Public Structure VkInstanceCreateInfo
+    Public sType As Integer
+    Public pNext As IntPtr
+    Public flags As Integer
+    Public pApplicationInfo As IntPtr
+    Public enabledLayerCount As Integer
+    Public ppEnabledLayerNames As IntPtr
+    Public enabledExtensionCount As Integer
+    Public ppEnabledExtensionNames As IntPtr
+End Structure
+
 Public Enum VkResult
     Success = 0
     NotReady = 1

@@ -369,14 +369,6 @@ Public Class Package
         .IsIncluded = False,
         .HelpSwitch = "-h"})
 
-    Shared Property Vulkan As Package = Add(New Package With {
-        .Name = "Vulkan Runtime Library",
-        .Filename = "vulkan-1.dll",
-        .Location = IO.Path.Combine("Support", "Vulkan"),
-        .Description = "Vulkan Runtime Library.",
-        .VersionAllowAny = True,
-        .TreePath = "Runtimes"})
-
     Shared Property VisualCpp2010 As Package = Add(New Package With {
         .Name = "Visual C++ 2010",
         .Filename = "msvcp100.dll",

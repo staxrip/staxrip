@@ -1508,29 +1508,47 @@ Public Class Cuda
 End Class
 
 Public Class Vulkan
-    Private Shared _pApiVersion As UInteger
     Private Shared _result As VkResult = Nothing
 
-    <DllImport("vulkan-1.dll")>
-    Public Shared Function vkEnumerateInstanceVersion(ByRef pApiVersion As UInteger) As VkResult
+    <UnmanagedFunctionPointer(CallingConvention.Cdecl)>
+    Public Delegate Function vkCreateInstanceDelegate(ByRef createInfo As VkInstanceCreateInfo, allocator As IntPtr, ByRef instance As IntPtr) As VkResult
+
+    <UnmanagedFunctionPointer(CallingConvention.Cdecl)>
+    Public Delegate Function vkEnumeratePhysicalDevicesDelegate(instance As IntPtr, ByRef deviceCount As Integer, devices As IntPtr) As VkResult
+
+    <DllImport("vulkan-1.dll", CallingConvention:=CallingConvention.Cdecl)>
+    Public Shared Function vkGetInstanceProcAddr(instance As IntPtr, name As String) As IntPtr
     End Function
+
 
     Public Shared ReadOnly Property IsSupported As Boolean
         Get
             Try
                 If _result = Nothing Then
-                    _result = vkEnumerateInstanceVersion(_pApiVersion)
+                    Dim createInstancePtr = vkGetInstanceProcAddr(IntPtr.Zero, "vkCreateInstance")
+                    If createInstancePtr = IntPtr.Zero Then Throw New Exception()
+
+                    Dim vkCreateInstance = CType(Marshal.GetDelegateForFunctionPointer(createInstancePtr, GetType(vkCreateInstanceDelegate)), vkCreateInstanceDelegate)
+                    Dim ci As New VkInstanceCreateInfo With {
+                            .sType = 1 ' VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO
+                            }
+                    Dim instance As IntPtr = IntPtr.Zero
+                    If vkCreateInstance.Invoke(ci, IntPtr.Zero, instance) <> VkResult.Success Then Throw New Exception()
+
+                    Dim enumDevicesPtr = vkGetInstanceProcAddr(instance, "vkEnumeratePhysicalDevices")
+                    If enumDevicesPtr = IntPtr.Zero Then Throw New Exception()
+
+                    Dim vkEnumeratePhysicalDevices = CType(Marshal.GetDelegateForFunctionPointer(enumDevicesPtr, GetType(vkEnumeratePhysicalDevicesDelegate)), vkEnumeratePhysicalDevicesDelegate)
+                    Dim deviceCount = 0
+                    vkEnumeratePhysicalDevices.Invoke(instance, deviceCount, IntPtr.Zero)
+                    If deviceCount < 1 Then Throw New Exception()
+
+                    _result = VkResult.Success
                 End If
             Catch ex As Exception
                 _result = VkResult.ErrorInitializationFailed
             End Try
             Return _result = VkResult.Success
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property Version As String
-        Get
-            Return If(IsSupported, $"{_pApiVersion >> 22}.{(_pApiVersion >> 12) And &H3FF}.{_pApiVersion And &HFFF}", "")
         End Get
     End Property
 End Class

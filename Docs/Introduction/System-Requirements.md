@@ -52,7 +52,7 @@ As StaxRip is as GUI application, that executes different tools and plugins, the
     Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details
     about the right dependency. So if StaxRip doesn't start or you get error messages due to missing runtime files or
     dependencies, we recommend to download and install the `Microsoft Visual C++ Redistributable Runtimes` from:
-    - https://github.com/abbodi1406/vcredist/releases or
+    - https://gitlab.com/stdout12/vcredist/-/releases or
     - https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one
 
 When it comes to hardware encoding with your GPU, you should make sure, that your drivers are up to date as

@@ -69,7 +69,7 @@ This is the way to go if you have questions regarding settings, usage, etc.
 # Prerequirements
 
 - Many tools and filters need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if StaxRip doesn't start or you get error messages due to missing runtime files or dependencies, we recommend to download and install the Microsoft Visual C++ Redistributable Runtimes from:
-    - https://github.com/abbodi1406/vcredist/releases or
+    - https://gitlab.com/stdout12/vcredist/-/releases or
     - https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one
 
 - OS limitations: **Windows 7** users can use StaxRip only partly. The following tools are included and don't have official **Windows 7** support anymore. You in case you don't want to upgrade your system, you can replace these tools with an older, compatible, version, which should work, but of course with some limited usability:

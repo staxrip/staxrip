@@ -14,6 +14,24 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.50.7 (2026-02-06)
+====================
+
+- General: Fix wrong setting of DAR for AV1 encodes
+- AutoCrop: Fix AutoCrop not able to run on some systems
+- MP4Box: Improve muxing of AV1 encodes with Dolby Vision metadata ([#1874](/../../issues/1874))
+- NVEncC: Improve supported codec check before encoding
+- QSVEncC: Improve supported codec check before encoding
+- VCEEncC: Improve supported codec check before encoding
+- Update tools
+    - DeeZy v1.3.14
+    - vvencFFapp v1.14.0 r557-169a86c
+    - x264 v0.165.3223+20-c2cf1b6-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+223+40-2684addb1-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update VapourSynth plugins
+    - VS-DFTTest2 v10
+
+
 v2.50.6 (2026-01-22)
 ====================
 
@@ -54,7 +72,7 @@ v2.50.6 (2026-01-22)
 - Update AviSynth+ plugins
     - avs_libplacebo v1.6.0
 - Update Dual plugins
-    - BestRource R16
+    - BestSource R16
 
 
 v2.50.5 (2025-12-26)

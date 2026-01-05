@@ -904,6 +904,8 @@ Public Class AudioForm
         UpdateEncoderMenu()
 
 #Region "SamplingRate"
+        Dim oldSamplingRateValue = mbSamplingRate.Value
+
         If TempProfile.AudioCodec = AudioCodec.Opus Then
             mbSamplingRate.Clear()
             mbSamplingRate.Add("Original", 0)
@@ -912,6 +914,7 @@ Public Class AudioForm
             mbSamplingRate.Add("16000 Hz", 16000)
             mbSamplingRate.Add("24000 Hz", 24000)
             mbSamplingRate.Add("48000 Hz", 48000)
+            mbSamplingRate.Value = oldSamplingRateValue
 
             If Not mbSamplingRate.Items.Cast(Of Integer).Contains(CInt(mbSamplingRate.Value)) Then
                 mbSamplingRate.Value = 0
@@ -926,6 +929,7 @@ Public Class AudioForm
             mbSamplingRate.Add("48000 Hz", 48000)
             mbSamplingRate.Add("88200 Hz", 88200)
             mbSamplingRate.Add("96000 Hz", 96000)
+            mbSamplingRate.Value = oldSamplingRateValue
 
             If Not mbSamplingRate.Items.Cast(Of Integer).Contains(CInt(mbSamplingRate.Value)) Then
                 mbSamplingRate.Value = 0

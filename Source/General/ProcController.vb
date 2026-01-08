@@ -469,7 +469,6 @@ Public Class ProcController
                         End If
                     End If
                 ElseIf {Package.SvtAv1EncApp, Package.SvtAv1EncAppEssential, Package.SvtAv1EncAppHdr, Package.SvtAv1EncAppPsyex}.Contains(Proc.Package) Then
-                    'Mod by Patman
                     pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\s(fp[s|m])\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
@@ -489,13 +488,39 @@ Public Class ProcController
                         End If
 
                         If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
-                            Dim speed = fps / ProjectScriptFrameRate
+                            Dim speed = fps / ProjectScriptFrameRate / If(match.Groups(4).Value = "fps", 1, 60)
                             speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                         End If
 
                         value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} {match.Groups(4).Value}{speedString}{_progressSeparator}{match.Groups(5).Value,4} kb/s{_progressSeparator}{match.Groups(8).Value,5} {match.Groups(9).Value} ({match.Groups(10).Value} {match.Groups(11).Value}){_progressSeparator}{match.Groups(6).Value} ({match.Groups(7).Value})"
                     Else
-                        _progressReformattingFailCounter += 1
+                        pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\s(fp[s|m])\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]"
+                        match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+
+                        If match.Success Then
+                            Dim frame = 0.0F
+                            Dim frameParse = Single.TryParse($"{match.Groups(1).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, frame)
+                            Dim frames = 0.0F
+                            Dim framesParse = Single.TryParse($"{match.Groups(2).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, frames)
+                            Dim percentString = "Encoding:"
+                            Dim fps = 0.0F
+                            Dim fpsParse = Single.TryParse($"{match.Groups(3).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, fps)
+                            Dim speedString = ""
+
+                            If frameParse AndAlso framesParse Then
+                                Dim percent = frame / frames * 100
+                                percentString = $"[{percent.ToString("0.0"),4}%]"
+                            End If
+
+                            If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
+                                Dim speed = fps / ProjectScriptFrameRate / If(match.Groups(4).Value = "fps", 1, 60)
+                                speedString = $" ({speed.ToString("0.00")}x)"
+                            End If
+
+                            value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} {match.Groups(4).Value}{speedString}{_progressSeparator}{match.Groups(5).Value,4} kb/s{_progressSeparator}{match.Groups(6).Value,5} {match.Groups(7).Value} ({match.Groups(8).Value} {match.Groups(9).Value}){_progressSeparator}{match.Groups(10).Value} ({match.Groups(11).Value})"
+                        Else
+                            _progressReformattingFailCounter += 1
+                        End If
                     End If
                 ElseIf Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool Then
                     pattern = "^frame=\s*(\d+)\s+fps=\s*(\d+)\s+.*size=\s*(\d+)(\w{3})\s+time=\s*(\d+:\d+:\d+(?:\.\d+)?)\s+bitrate=\s*(\d+(?:\.\d+))kbits/s\s+speed=\s*(\d+(?:\.\d+)?)x"

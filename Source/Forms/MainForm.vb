@@ -3432,16 +3432,18 @@ Partial Public Class MainForm
         Dim sourcePaths = {proj.SourceFile, proj.FirstOriginalSourceFile, proj.LastOriginalSourceFile}
 
         For Each sourcePath As String In sourcePaths
-            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+            Dim mi = New MediaInfo(sourcePath)
 
-            If fileHdrFormat?.ContainsAny("HDR10+") Then
-                Dim jsonPath = sourcePath.ChangeExt("json")
-                If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                    jsonPath = If(sourcePath.Contains(proj.TempDir) AndAlso Not proj.TempDir.EndsWithEx("_temp"), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDR10PlusMetadata.json"})}", jsonPath))
-                End If
+            If Not mi.GetVideo("HDR_Format_Commercial")?.ContainsAny("HDR10+") Then Continue For
+            If mi.GetVideo("Format") <> "HEVC" Then Continue For
 
-                If Not jsonPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
+            Dim jsonPath = sourcePath.ChangeExt("json")
+            If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                jsonPath = If(sourcePath.Contains(proj.TempDir) AndAlso Not proj.TempDir.EndsWithEx("_temp"), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDR10PlusMetadata.json"})}", jsonPath))
+            End If
+
+            If Not jsonPath.FileExists() Then
+                Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
 
                     Try
                         Using proc As New Proc
@@ -3458,30 +3460,29 @@ Partial Public Class MainForm
                             proc.Start()
                         End Using
 
-                        If jsonPath?.FileExists() Then
-                            Try
-                                Dim fi = New FileInfo(jsonPath)
-                                If fi.Length < 100 Then
-                                    File.Delete(jsonPath)
-                                End If
-                            Catch ex As Exception
-                                jsonPath = ""
-                            End Try
-                        End If
-                    Catch ex As AbortException
-                        Throw ex
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                        Throw New AbortException
-                    Finally
-                        Log.Save()
-                    End Try
-                End If
+                    If jsonPath?.FileExists() Then
+                        Try
+                            Dim fi = New FileInfo(jsonPath)
+                            If fi.Length < 100 Then
+                                File.Delete(jsonPath)
+                            End If
+                        Catch ex As Exception
+                            jsonPath = ""
+                        End Try
+                    End If
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                Finally
+                    Log.Save()
+                End Try
+            End If
 
-                If jsonPath.FileExists() Then
-                    proj.Hdr10PlusMetadataFile = jsonPath
-                    Exit For
-                End If
+            If jsonPath.FileExists() Then
+                proj.Hdr10PlusMetadataFile = jsonPath
+                Exit For
             End If
         Next
     End Sub
@@ -3504,7 +3505,7 @@ Partial Public Class MainForm
             End If
 
             Dim format = MediaInfo.GetVideoFormat(sourcePath)
-            If format <> "HEVC" Then Return
+            If format <> "HEVC" Then Continue For
 
             Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
             If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then

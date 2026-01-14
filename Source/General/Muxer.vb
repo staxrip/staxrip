@@ -741,7 +741,24 @@ Public Class MkvMuxer
             dar = Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If
 
-        If String.IsNullOrWhiteSpace(dar) AndAlso p.VideoEncoder.Codec.ToLowerInvariant() = "av1" Then dar = MediaInfo.GetVideo(p.VideoEncoder.OutputPath, "DisplayAspectRatio/String")
+        If String.IsNullOrWhiteSpace(dar) AndAlso p.VideoEncoder.Codec.ToLowerInvariant() = "av1" Then
+            dar = MediaInfo.GetVideo(p.VideoEncoder.OutputPath, "DisplayAspectRatio/String")
+            Dim sar = MediaInfo.GetVideo(p.SourceFile, "PixelAspectRatio")
+            Dim sarValue = 1.0
+            Dim darValue = 1.0
+
+            If Double.TryParse(sar, sarValue) Then
+                Dim match = Regex.Match(dar, "((?:\d+\.)?\d+):((?:\d+\.)?\d+)")
+                If match.Success Then
+                    darValue = match.Groups(1).Value.ToDouble() / match.Groups(2).Value.ToDouble()
+                    dar = $"{darValue * sarValue:F9}"
+                Else
+                    If Double.TryParse(dar, darValue) Then
+                        dar = $"{darValue * sarValue:F9}"
+                    End If
+                End If
+            End If
+        End If
 
         If dar <> "" Then
             args += " --aspect-ratio " & id & ":" + dar.TrimEx.Replace(",", ".").Replace(":", "/")

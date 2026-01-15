@@ -386,6 +386,7 @@ Public Class ProcessingForm
     End Sub
 
     Sub UpdateControls()
+        Text = $"Processing: {JobManager.JobPath.Base()}"
         laWhenfinisheddo.Enabled = g.IsJobProcessing
         mbShutdown.Enabled = g.IsJobProcessing
         bnJobs.Enabled = g.IsJobProcessing

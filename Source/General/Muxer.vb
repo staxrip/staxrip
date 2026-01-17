@@ -402,7 +402,7 @@ Public Class MP4Muxer
         Dim tagList As New List(Of String)
 
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
-            tagList.Add("cover=" + CoverFile.Escape)
+            tagList.Add("cover=" + CoverFile)
         End If
 
         If Tags.Count > 0 Then

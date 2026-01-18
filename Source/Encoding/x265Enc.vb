@@ -1376,7 +1376,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"},
                     ProgressReadframes)
                 Add("Output",
-                    New OptionParam With {.Switch = "--log-level", .Text = "Logging Level", .Init = 5, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Values = {"-1", "0", "1", "2", "3", "4"}},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Logging Level", .Init = 3, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Values = {"-1", "0", "1", "2", "3", "4"}},
                     New StringParam With {.Switch = "--log-file", .Text = "Log File", .BrowseFile = True},
                     New OptionParam With {.Switch = "--log-file-level", .Text = "Log File Logging Level", .Init = 3, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Values = {"-1", "0", "1", "2", "3", "4"}},
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},

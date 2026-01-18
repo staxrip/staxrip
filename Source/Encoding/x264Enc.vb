@@ -1112,8 +1112,8 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--open-gop", .Text = "Open GOP"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--log-file", .Text = "Log File", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-file-level", .Text = "Log File Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}, .Init = 3},
-                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}},
+                    New OptionParam With {.Switch = "--log-file-level", .Text = "Log File Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}, .Values = {"-1", "0", "1", "2", "3"}, .Init = 3},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}, .Values = {"-1", "0", "1", "2", "3"}, .Init = 3},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                 Add("VUI",

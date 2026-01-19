@@ -120,7 +120,7 @@ Public Class ffmpegEnc
             Select Case Params.Codec.OptionText
                 Case "Xvid", "MPEG-4", "FFV1"
                     Return "avi"
-                Case "ProRes", "R210", "V210"
+                Case "ProRes", "ProRes-KS", "R210", "V210"
                     Return "mov"
                 Case "Theora"
                     Return "ogg"
@@ -214,13 +214,13 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "AOM-AV1", "XviD", "MPEG-4", "Theora", "ProRes",
+            .Options = {"x264", "x265", "AOM-AV1", "XviD", "MPEG-4", "Theora", "ProRes", "ProRes-KS",
                         "R210", "V210", "UT Video", "GoPro CineForm HD", "FFV1",
                         "AMD | AMD AMF H.264", "AMD | AMD AMF H.265", "AMD | AMD AMF AV1",
                         "Intel | Intel H.264", "Intel | Intel H.265", "Intel | Intel AV1",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265", "Nvidia | Nvidia AV1",
                         "VP | VP8", "VP | VP9"},
-            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
+            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores", "prores_ks",
                        "r210", "v210", "utvideo", "cfhd", "ffv1",
                        "h264_amf", "hevc_amf", "av1_amf",
                        "h264_qsv", "hevc_qsv", "av1_qsv",
@@ -230,7 +230,7 @@ Public Class ffmpegEnc
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
-            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo", "cfhd", "ffv1"),
+            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "prores_ks", "utvideo", "cfhd", "ffv1"),
             .Options = {"Quality", "One Pass", "Two Pass"}}
 
         Property Decoder As New OptionParam With {
@@ -271,7 +271,7 @@ Public Class ffmpegEnc
                         Decoder, PipingToolAVS, PipingToolVS, Codec, Mode,
                         New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset", .Switch = "-preset", .Init = 5, .Options = {"Ultrafast", "Superfast", "Veryfast", "Faster", "Fast", "Medium", "Slow", "Slower", "Veryslow", "Placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune", .Switch = "-tune", .Options = {"None", "Film", "Animation", "Grain", "Stillimage", "Psnr", "Ssim", "Fastdecode", "Zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
-                        New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes", .Init = 2, .IntegerValue = True, .Options = {"Proxy", "LT", "Standard", "HQ"}},
+                        New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes" OrElse Codec.OptionText = "ProRes-KS", .Init = 2, .IntegerValue = True, .Options = {"Proxy", "LT", "Standard", "HQ"}},
                         New OptionParam With {.Switch = "-speed", .Text = "Speed", .AlwaysOn = True, .VisibleFunc = Function() Codec.OptionText.EqualsAny("VP8", "VP9"), .Options = {"6 - Fastest", "5 - Faster", "4 - Fast", "3 - Medium", "2 - Slow", "1 - Slower", "0 - Slowest"}, .Values = {"6", "5", "4", "3", "2", "1", "0"}, .Value = 5},
                         New OptionParam With {.Switch = "-cpu-used", .Text = "CPU Used", .Init = 1, .VisibleFunc = Function() Codec.OptionText = "AV1", .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}},
                         New OptionParam With {.Switch = "-aq-mode", .Text = "AQ Mode", .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"Disabled", "0", "1", "2", "3"}, .Values = {"Disabled", "0", "1", "2", "3"}},
@@ -281,7 +281,7 @@ Public Class ffmpegEnc
                         h264_nvenc_rc,
                         New OptionParam With {.Name = "utVideoPred", .Switch = "-pred", .Text = "Prediction", .Init = 3, .Options = {"None", "Left", "Gradient", "Median"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New OptionParam With {.Name = "utVideoPixFmt", .Switch = "-pix_fmt", .Text = "Pixel Format", .Options = {"YUV420P", "YUV422P", "YUV444P", "RGB24", "RGBA"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
-                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "cfhd", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63, 0.5, 1}},
+                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "prores_ks", "utvideo", "cfhd", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63, 0.5, 1}},
                         New NumParam With {.Switch = "-threads", .Text = "Threads", .Config = {0, 64}},
                         New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
                         New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},

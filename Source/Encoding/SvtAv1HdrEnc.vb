@@ -824,7 +824,7 @@ Public Class SvtAv1HdrEncParams
         .Text = "Min quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Value,
-        .Init = 5}
+        .Init = 6}
 
     Property QmMax As New NumParam With {
         .Switch = "--qm-max",
@@ -1004,6 +1004,12 @@ Public Class SvtAv1HdrEncParams
         .Text = "Constrained Directional Enhancement Filter",
         .IntegerValue = True,
         .Init = True}
+
+    Property CDEFScaling As New NumParam With {
+        .Switch = "--cdef-scaling",
+        .Text = "Scaling of the CDEF Strength Computation",
+        .Config = {1, 30, 1},
+        .Init = 15}
 
     Property EnableRestoration As New BoolParam With {
         .Switch = "--enable-restoration",
@@ -1431,7 +1437,7 @@ Public Class SvtAv1HdrEncParams
                 )
                 Add("AV1 Specific 1",
                     TileRow, TileCol, LoopFilterEnable,
-                    CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode,
+                    CDEFLevel, CDEFScaling, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode,
                     FilmGrain, FilmGrainDenoise, FGSTable
                 )
                 Add("AV1 Specific 2",

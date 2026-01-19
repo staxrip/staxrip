@@ -645,7 +645,7 @@ Public Class SvtAv1EncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality", "4: MS-SSIM/SSIMULACRA2"},
         .Init = 1}
 
     Property AdaptiveFilmGrain As New OptionParam With {

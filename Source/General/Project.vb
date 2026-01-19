@@ -34,7 +34,7 @@ Public Class Project
     Public AutoCropFixedFramesFrameSelection As Integer = 200
     Public AutoCropFrameIntervalFrameSelection As Integer = 400
     Public AutoCropTimeIntervalFrameSelection As Integer = 15
-    Public AutoCropLuminanceThreshold As Single = 10.0
+    Public AutoCropLuminanceThreshold As Single = 14.0
     Public AutoCropSideMode As AutoCropSideMode = AutoCropSideMode.All
     Public AudioIntermediateWaveBitDepth As IntermediateWaveBitDepth = IntermediateWaveBitDepth.f32
     Public AutoResizeImage As Integer

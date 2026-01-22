@@ -747,13 +747,13 @@ Public Class MkvMuxer
             Dim sarValue = 1.0
             Dim darValue = 1.0
 
-            If Double.TryParse(sar, sarValue) Then
+            If Double.TryParse(sar, NumberStyles.Float, CultureInfo.InvariantCulture, sarValue) Then
                 Dim match = Regex.Match(dar, "((?:\d+\.)?\d+):((?:\d+\.)?\d+)")
                 If match.Success Then
                     darValue = match.Groups(1).Value.ToDouble() / match.Groups(2).Value.ToDouble()
                     dar = $"{darValue * sarValue:F9}"
                 Else
-                    If Double.TryParse(dar, darValue) Then
+                    If Double.TryParse(dar, NumberStyles.Float, CultureInfo.InvariantCulture, darValue) Then
                         dar = $"{darValue * sarValue:F9}"
                     End If
                 End If

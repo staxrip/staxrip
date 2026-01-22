@@ -322,12 +322,13 @@ Public Class MP4Muxer
 
     Function GetArgs() As String
         Dim args As New StringBuilder
+        Dim dolbyVisionAddition = If(p.VideoEncoder.IsDolbyVisionSet AndAlso p.VideoEncoder.Codec.ToLower() = "av1", ":dvp=f10.hdr10:hdr=none:stype=av01", "")
+        Dim videoParams = ""
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
             args.Append(" -fps " + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         End If
 
-        Dim videoParams = ""
 
         If PAR <> "" Then
             Dim par = Me.PAR.TrimEx
@@ -353,9 +354,9 @@ Public Class MP4Muxer
         videoParams += AdditionalVideoSwitches
 
         If p.VideoEncoder.GetChunks() = 1 Then
-            args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
+            args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + dolbyVisionAddition + videoParams).Escape)
         Else
-            args.Append(" -add " + (p.VideoEncoder.OutputPath.DirAndBase + "_chunk1" + p.VideoEncoder.OutputExtFull + "#video" + videoParams).Escape)
+            args.Append(" -add " + (p.VideoEncoder.OutputPath.DirAndBase + "_chunk1" + p.VideoEncoder.OutputExtFull + "#video" + dolbyVisionAddition + videoParams).Escape)
 
             For x = 2 To p.VideoEncoder.GetChunks()
                 Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull

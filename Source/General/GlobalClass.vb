@@ -159,8 +159,12 @@ Public Class GlobalClass
         Try
             Dim formatter As New BinaryFormatter
 
-            Using stream As New FileStream(AudioProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
-                formatter.Serialize(stream, s.AudioProfiles)
+            Using mutex As New Mutex(False, "staxrip audio profiles file")
+                mutex.WaitOne()
+                Using stream As New FileStream(AudioProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                    formatter.Serialize(stream, s.AudioProfiles)
+                End Using
+                mutex.ReleaseMutex()
             End Using
         Catch ex As Exception
             g.ShowException(ex)
@@ -175,8 +179,12 @@ Public Class GlobalClass
             Dim formatter As New BinaryFormatter
             Dim audioProfiles As List(Of AudioProfile)
 
-            Using stream As New FileStream(AudioProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
-                audioProfiles = DirectCast(formatter.Deserialize(stream), List(Of AudioProfile))
+            Using mutex As New Mutex(False, "staxrip audio profiles file")
+                mutex.WaitOne()
+                Using stream As New FileStream(AudioProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                    audioProfiles = DirectCast(formatter.Deserialize(stream), List(Of AudioProfile))
+                End Using
+                mutex.ReleaseMutex()
             End Using
 
             s.AudioProfiles = audioProfiles
@@ -206,8 +214,12 @@ Public Class GlobalClass
         Try
             Dim formatter As New BinaryFormatter
 
-            Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
-                formatter.Serialize(stream, s.VideoEncoderProfiles)
+            Using mutex As New Mutex(False, "staxrip video encoder profiles file")
+                mutex.WaitOne()
+                Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                    formatter.Serialize(stream, s.VideoEncoderProfiles)
+                End Using
+                mutex.ReleaseMutex()
             End Using
         Catch ex As Exception
             g.ShowException(ex)
@@ -222,8 +234,12 @@ Public Class GlobalClass
             Dim formatter As New BinaryFormatter
             Dim videoEncoderProfiles As List(Of VideoEncoder)
 
-            Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
-                videoEncoderProfiles = DirectCast(formatter.Deserialize(stream), List(Of VideoEncoder))
+            Using mutex As New Mutex(False, "staxrip video encoder profiles file")
+                mutex.WaitOne()
+                Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                    videoEncoderProfiles = DirectCast(formatter.Deserialize(stream), List(Of VideoEncoder))
+                End Using
+                mutex.ReleaseMutex()
             End Using
 
             s.VideoEncoderProfiles = videoEncoderProfiles
@@ -253,8 +269,12 @@ Public Class GlobalClass
         Try
             Dim formatter As New BinaryFormatter
 
-            Using stream As New FileStream(EventsFile, FileMode.Create, FileAccess.Write, FileShare.None)
-                formatter.Serialize(stream, s.EventCommands)
+            Using mutex As New Mutex(False, "staxrip events file")
+                mutex.WaitOne()
+                Using stream As New FileStream(EventsFile, FileMode.Create, FileAccess.Write, FileShare.None)
+                    formatter.Serialize(stream, s.EventCommands)
+                End Using
+                mutex.ReleaseMutex()
             End Using
         Catch ex As Exception
             g.ShowException(ex)
@@ -269,8 +289,12 @@ Public Class GlobalClass
             Dim formatter As New BinaryFormatter
             Dim events As List(Of EventCommand)
 
-            Using stream As New FileStream(EventsFile, FileMode.Open, FileAccess.Read, FileShare.None)
-                events = DirectCast(formatter.Deserialize(stream), List(Of EventCommand))
+            Using mutex As New Mutex(False, "staxrip events file")
+                mutex.WaitOne()
+                Using stream As New FileStream(EventsFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                    events = DirectCast(formatter.Deserialize(stream), List(Of EventCommand))
+                End Using
+                mutex.ReleaseMutex()
             End Using
 
             s.EventCommands = events

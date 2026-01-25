@@ -3082,6 +3082,14 @@ Partial Public Class MainForm
                 End If
 
                 Try
+                    g.AddToPath(
+                        Package.Python.Directory,
+                        Package.VapourSynth.Directory,
+                        Package.vspipe.Directory,
+                        Package.AviSynth.Directory,
+                        Package.FFTW.Directory,
+                        Path.Combine(Folder.Startup, "Apps", "Support", "VC"))
+
                     Using proc As New Proc
                         proc.Header = "Auto Crop"
                         proc.SkipString = "%"

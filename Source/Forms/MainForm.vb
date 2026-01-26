@@ -236,7 +236,8 @@ Partial Public Class MainForm
         '
         'tlpAudio
         '
-        Me.tlpAudio.ColumnCount = 4
+        Me.tlpAudio.ColumnCount = 5
+        Me.tlpAudio.ColumnStyles.Add(New ColumnStyle())
         Me.tlpAudio.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0!))
         Me.tlpAudio.ColumnStyles.Add(New ColumnStyle())
         Me.tlpAudio.ColumnStyles.Add(New ColumnStyle())
@@ -1932,10 +1933,11 @@ Partial Public Class MainForm
             Next
 
             For index = 0 To proj.AudioTracks.Count - 1
-                tlpAudio.Controls.Add(proj.AudioTracks(index).TextEdit, 0, index)
-                tlpAudio.Controls.Add(proj.AudioTracks(index).LanguageLabel, 1, index)
-                tlpAudio.Controls.Add(proj.AudioTracks(index).NameLabel, 2, index)
-                tlpAudio.Controls.Add(proj.AudioTracks(index).EditLabel, 3, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).RowLabel, 0, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).TextEdit, 1, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).LanguageLabel, 2, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).NameLabel, 3, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).EditLabel, 4, index)
             Next
 
         Catch ex As Exception

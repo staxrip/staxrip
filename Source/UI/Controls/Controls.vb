@@ -3838,6 +3838,27 @@ Namespace UI
     End Class
 
     <Serializable()>
+    Public Class AudioRowLabel
+        Inherits Label
+
+        Private _row As Integer = 0
+
+        Public Sub New(row As Integer)
+            MyBase.New()
+            _row = row
+            AutoSize = True
+            Anchor = AnchorStyles.Left Or AnchorStyles.Top
+            BorderStyle = BorderStyle.None
+            Location = New Point(0, 0)
+            Margin = New Padding(FontHeight \ 13, FontHeight \ 3, 0, FontHeight \ 10)
+            TabStop = False
+            Text = (row + 1) & "."
+            TextAlign = Drawing.ContentAlignment.BottomRight
+            Visible = p.AudioTracksAvailable > 5
+        End Sub
+    End Class
+
+    <Serializable()>
     Public Class AudioLanguageLabel
         Inherits Label
 

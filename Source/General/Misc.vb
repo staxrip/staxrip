@@ -1002,6 +1002,8 @@ Public Class AudioTrack
     <NonSerialized>
     Private _nameLabel As AudioNameButtonLabel
     <NonSerialized>
+    Private _rowLabel As AudioRowLabel
+    <NonSerialized>
     Private _textEdit As AudioTextEdit
 
     Public Property AudioProfile As AudioProfile
@@ -1055,6 +1057,16 @@ Public Class AudioTrack
         End Get
         Set
             _nameLabel = Value
+        End Set
+    End Property
+
+    Public Property RowLabel As AudioRowLabel
+        Get
+            Dim ret = If(_rowLabel, New AudioRowLabel(_index))
+            Return ret
+        End Get
+        Set
+            _rowLabel = Value
         End Set
     End Property
 

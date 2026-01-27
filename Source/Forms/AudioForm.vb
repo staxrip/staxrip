@@ -1337,8 +1337,15 @@ Public Class AudioForm
                 End If
             Case GuiAudioEncoder.ffmpeg
                 Select Case TempProfile.Params.Codec
-                    Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
-                    Case AudioCodec.AAC
+                    Case AudioCodec.AAC, AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.DTS
+                        If TempProfile.Params.Codec = AudioCodec.EAC3 Then
+                        Dim mbSpf = ui.AddMenu(Of SamplesPerFrame)
+                            mbSpf.Text = "Samples Per Frame:"
+                            mbSpf.Expanded = True
+                            mbSpf.Button.Value = TempProfile.Params.ffmpegSamplesPerFrame
+                            mbSpf.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegSamplesPerFrame = value
+                        End If
+
                         Dim mbRateMode = ui.AddMenu(Of SimpleAudioRateMode)
                         mbRateMode.Text = "Rate Mode:"
                         mbRateMode.Expanded = True

@@ -1517,7 +1517,17 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a eac3")
                 End If
 
-                sb.Append(" -b:a " & If(Bitrate > 960, CInt(Bitrate) + 0.1, CInt(Bitrate)).ToInvariantString() & "k")
+                Dim br = Bitrate
+                Select Params.ffmpegSamplesPerFrame
+                    Case SamplesPerFrame.Auto
+                        br = If(Bitrate > 960, CInt(Bitrate) + 0.1, CInt(Bitrate))
+                    Case SamplesPerFrame._768
+                        br = CInt(Bitrate) + 0.1
+                    Case SamplesPerFrame._1536
+                        br = CInt(Bitrate)
+                End Select
+
+                sb.Append(" -b:a " & br.ToInvariantString() & "k")
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
                     sb.Append(" -bsf:a dca_core -c:a copy")
@@ -1865,6 +1875,8 @@ Public Class GUIAudioProfile
         Property ffmpegOpusPacket As Integer
         Property ffmpegOpusRateMode As OpusRateMode = OpusRateMode.VBR
         Property ffmpegOpusMigrate As Integer = 1
+        
+        Property ffmpegSamplesPerFrame As SamplesPerFrame = SamplesPerFrame.Auto
 
         Property SimpleRateMode As SimpleAudioRateMode
             Get
@@ -2023,6 +2035,12 @@ Public Enum OpusDownmix
     <DispName("Original (default)")> Original
     <DispName("Mono")> Mono
     <DispName("Stereo")> Stereo
+End Enum
+
+Public Enum SamplesPerFrame
+    <DispName("Automatic (default)")> Auto
+    <DispName("768")> _768
+    <DispName("1536")> _1536
 End Enum
 
 Public Enum OpusFramesize

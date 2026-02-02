@@ -339,38 +339,10 @@ Partial Public Class MainForm
                 End If
             End If
 
-            If p.Script.IsFilterActive("Crop") AndAlso p.VideoEncoder?.IsDolbyVisionSet AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed Then
+            If p.Script.IsFilterActive("Crop") AndAlso p.VideoEncoder?.IsDolbyVisionSet Then
                 If p.HdrDolbyVisionMetadataFile Is Nothing Then
                     If ProcessTip($"You have set a Dolby Vision metadata file, that is unknown to StaxRip, while cropping the video. Please make sure it is extracted with the source file.") Then
                         Return Block("Unknown RPU File", AddressOf p.VideoEncoder.ShowConfigDialog)
-                    End If
-                End If
-
-                Dim side = ""
-                Dim by = 0
-                Dim c = p.HdrDolbyVisionMetadataFile.Crop
-                Dim leftOvercropping = p.CropLeft - c.Left
-                Dim topOvercropping = p.CropTop - c.Top
-                Dim rightOvercropping = p.CropRight - c.Right
-                Dim bottomOvercropping = p.CropBottom - c.Bottom
-
-                If leftOvercropping > 0 Then
-                    side = "left"
-                    by = leftOvercropping
-                ElseIf p.CropTop > c.Top Then
-                    side = "top"
-                    by = topOvercropping
-                ElseIf p.CropRight > c.Right Then
-                    side = "right"
-                    by = rightOvercropping
-                ElseIf p.CropBottom > c.Bottom Then
-                    side = "bottom"
-                    by = bottomOvercropping
-                End If
-
-                If by > 0 Then
-                    If ProcessTip($"You have cropped the {side} side by {by}px too much.{BR}Decrease the crop to continue and ensure a valid result.") Then
-                        Return Block("Overcropping", AddressOf ShowCropDialog)
                     End If
                 End If
             End If

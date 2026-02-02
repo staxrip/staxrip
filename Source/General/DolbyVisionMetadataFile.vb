@@ -33,6 +33,7 @@ End Class
 Public Class DolbyVisionMetadataFile
     <NonSerialized> Private Shared ReadOnly _autoCropThresholdBegin As Integer = 1000
     <NonSerialized> Private Shared ReadOnly _autoCropThresholdEnd As Integer = 1000
+    Private _crop As Padding? = Nothing
     Private _lastWriteTime As DateTime = Nothing
     Private _lastWriteTimeL5 As DateTime = Nothing
     Private _trimRanges As List(Of Range) = Nothing
@@ -109,14 +110,18 @@ Public Class DolbyVisionMetadataFile
 
     Public ReadOnly Property Crop As Padding
         Get
-            Select Case p.AutoCropDolbyVisionMode
-                Case AutoCropDolbyVisionMode.Automatic
-                    Return GetAutoCrop(_autoCropThresholdBegin, _autoCropThresholdEnd)
-                Case AutoCropDolbyVisionMode.ManualThreshold
-                    Return GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
-                Case Else
-                    Throw New NotImplementedException(NameOf(AutoCropDolbyVisionMode))
-            End Select
+            If _crop Is Nothing Then
+                Select Case p.AutoCropDolbyVisionMode
+                    Case AutoCropDolbyVisionMode.Automatic
+                        _crop = GetCrop(_autoCropThresholdBegin, _autoCropThresholdEnd)
+                    Case AutoCropDolbyVisionMode.ManualThreshold
+                        _crop = GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
+                    Case Else
+                        Throw New NotImplementedException(NameOf(AutoCropDolbyVisionMode))
+                End Select
+            End If
+
+            Return _crop.Value
         End Get
     End Property
 
@@ -132,68 +137,29 @@ Public Class DolbyVisionMetadataFile
         ReadLevel5Export()
     End Sub
 
-    Public Function GetAutoCrop() As Padding
-        Return GetAutoCrop(_autoCropThresholdBegin, _autoCropThresholdEnd)
-    End Function
+    Private Function GetCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
+        Dim newCrop As New Padding(0)
 
-    Public Function GetAutoCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
-        If Not Edits?.Any() Then Return New Padding(0)
-        If Not Presets?.Any() Then Return New Padding(0)
+        If Not Edits?.Any() Then Return newCrop
+        If Not Presets?.Any() Then Return newCrop
 
-        thresholdBegin = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdBegin)
+        Dim max = Edits.Max(Function(x) x.EndFrame)
+        thresholdBegin = Math.Min(max, thresholdBegin)
         thresholdBegin = Math.Max(0, thresholdBegin)
-        thresholdEnd = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdEnd)
+        thresholdEnd = Math.Min(max, thresholdEnd)
         thresholdEnd = Math.Max(0, thresholdEnd)
 
-        Dim newCrop As New Padding(Integer.MaxValue)
-        Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, edit.Id, preset.Offset}).OrderBy(Function(x) x.StartFrame)
+        Dim entries = Edits.Where(Function(x) x.StartFrame < (max - thresholdEnd) AndAlso x.EndFrame > thresholdBegin) _
+                            .Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, edit.Id, preset.Offset}) _
+                            .Where(Function(x) x.Offset <> Padding.Empty) _
+                            .OrderBy(Function(x) x.StartFrame).ToList()
 
-        For i = 0 To entries.Count() - 1
-            Dim entry = entries.ElementAt(i)
-            Dim same = entries.Where(Function(x) x.Id = entry.Id)
-            Dim sameCount = same.Count()
-            Dim take = True
+        If entries.Count < 1 Then Return newCrop
 
-            take = If(take AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin AndAlso (sameCount = 1 OrElse (sameCount = 2 AndAlso same(1).EndFrame = Edits.Last().EndFrame)), False, take)
-            take = If(take AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd AndAlso (sameCount = 1 OrElse (sameCount = 2 AndAlso same(0).StartFrame = Edits.First().StartFrame)), False, take)
-            take = If(take AndAlso entry.Offset = Padding.Empty AndAlso Not same.Where(Function(x) (x.EndFrame - x.StartFrame) > 8).Any(), False, take)
-
-            If take Then
-                newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)
-                newCrop.Top = Math.Min(newCrop.Top, entry.Offset.Top)
-                newCrop.Right = Math.Min(newCrop.Right, entry.Offset.Right)
-                newCrop.Bottom = Math.Min(newCrop.Bottom, entry.Offset.Bottom)
-            End If
-        Next
-
-        Return newCrop
-    End Function
-
-    Public Function GetCrop() As Padding
-        Return GetCrop(0, 0)
-    End Function
-
-    Public Function GetCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
-        If Not Edits?.Any() Then Return New Padding(0)
-        If Not Presets?.Any() Then Return New Padding(0)
-
-        thresholdBegin = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdBegin)
-        thresholdBegin = Math.Max(0, thresholdBegin)
-        thresholdEnd = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdEnd)
-        thresholdEnd = Math.Max(0, thresholdEnd)
-
-        Dim newCrop As New Padding(Integer.MaxValue)
-        Dim frames = Edits.OrderByDescending(Function(x) x.EndFrame).First().EndFrame
-        Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, preset.Offset})
-
-        For Each entry In entries
-            If entry.EndFrame >= thresholdBegin AndAlso entry.StartFrame <= (frames - thresholdEnd) Then
-                newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)
-                newCrop.Top = Math.Min(newCrop.Top, entry.Offset.Top)
-                newCrop.Right = Math.Min(newCrop.Right, entry.Offset.Right)
-                newCrop.Bottom = Math.Min(newCrop.Bottom, entry.Offset.Bottom)
-            End If
-        Next
+        newCrop.Left = entries.Min(Function(x) x.Offset.Left)
+        newCrop.Top = entries.Min(Function(x) x.Offset.Top)
+        newCrop.Right = entries.Min(Function(x) x.Offset.Right)
+        newCrop.Bottom = entries.Min(Function(x) x.Offset.Bottom)
 
         Return newCrop
     End Function
@@ -417,7 +383,7 @@ Public Class DolbyVisionMetadataFile
         Finally
             Log.Save()
         End Try
-   
+
         Return TrimmedRpuFilePath
     End Function
 End Class

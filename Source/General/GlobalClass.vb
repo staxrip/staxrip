@@ -1812,7 +1812,7 @@ Public Class GlobalClass
         ElseIf sides = AutoCropSideMode.Vertical Then
             cl = 0
             cr = 0
-        End If        
+        End If
 
         p.CropLeft = cl
         p.CropTop = ct
@@ -1837,7 +1837,7 @@ Public Class GlobalClass
             Dim sm = If(p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.NoOverride, p.AutoCropSideMode, AutoCropSideMode.All)
             If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Horizontal Then sm = AutoCropSideMode.Horizontal
             If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Vertical Then sm = AutoCropSideMode.Vertical
-            SetCrop(c.Left, c.Top, c.Right, c.Bottom, sm, ForceOutputModDirection.Decrease, True)
+            SetCrop(c.Left, c.Top, c.Right, c.Bottom, sm, p.ForcedOutputModDirection, True)
         Else
             Using server = FrameServerFactory.Create(p.SourceScript.Path)
                 Dim info = server.Info

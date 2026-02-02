@@ -555,7 +555,7 @@ Public Class CropForm
         Dim ret As New CustomMenuItem("Root")
         Dim minusKey = If(Not KeysHelp.IsNumPadInstalled, Keys.Subtract, Keys.OemMinus)
         Dim plusKey = If(Not KeysHelp.IsNumPadInstalled, Keys.Add, Keys.Oemplus)
-        
+
         ret.Add("No Crop", NameOf(SetCropValues), Keys.N, {0, 0, 0, 0})
         ret.Add("Auto Crop", NameOf(RunAutoCrop), Keys.A)
         ret.Add("Smart Crop", NameOf(RunSmartCrop), Keys.S)
@@ -636,20 +636,27 @@ Public Class CropForm
 
     <Command("Detects the crop values automatically.")>
     Sub RunAutoCrop()
-        p.CropLeft = 0
-        p.CropTop = 0
-        p.CropRight = 0
-        p.CropBottom = 0
-        UpdateAll()
+        Dim isDV = p.HdrDolbyVisionMetadataFile IsNot Nothing AndAlso p.VideoEncoder.IsDolbyVisionSet
+
+        If Not isDV Then
+            p.CropLeft = 0
+            p.CropTop = 0
+            p.CropRight = 0
+            p.CropBottom = 0
+            UpdateAll()
+        End If
 
         g.RunAutoCrop(Sub(progress As Double)
                           tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
                           TrackLength_Scroll()
                           Application.DoEvents()
                       End Sub)
+        UpdateAll()
 
-        tbPosition.Value = 0
-        TrackLength_Scroll()
+        If Not isDV Then
+            tbPosition.Value = 0
+            TrackLength_Scroll()
+        End If
     End Sub
 
     <Command("Crops until the proper aspect ratio is found.")>

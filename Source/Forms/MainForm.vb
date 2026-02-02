@@ -3069,7 +3069,7 @@ Partial Public Class MainForm
                 Dim sm = If(p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.NoOverride, p.AutoCropSideMode, AutoCropSideMode.All)
                 If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Horizontal Then sm = AutoCropSideMode.Horizontal
                 If p.AutoCropDolbyVisionSideMode = AutoCropDolbyVisionSideMode.Vertical Then sm = AutoCropSideMode.Vertical
-                g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, sm, ForceOutputModDirection.Decrease, True)
+                g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, sm, p.ForcedOutputModDirection, True)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
                 Dim info = p.SourceScript.Info
                 Dim selectionMode = Convert.ToInt32(p.AutoCropFrameSelectionMode)

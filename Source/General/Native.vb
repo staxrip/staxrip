@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Runtime.InteropServices
 Imports System.Text
 
@@ -10,6 +10,8 @@ Public Class Native
     Public Const SC_CLOSE As Integer = &HF060
     Public Const SC_MINIMIZE As Integer = &HF020
     Public Const SPI_GETWHEELSCROLLLINES As Integer = 104
+
+    Public Const WM_SETREDRAW As Integer = &HB
 
     <DllImport("dwmapi.dll")>
     Shared Function DwmSetWindowAttribute(
@@ -108,6 +110,14 @@ Public Class Native
         Msg As Int32,
         wParam As Integer,
         lParam As String) As IntPtr
+    End Function
+
+    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
+    Shared Function SendMessage(
+        hWnd As IntPtr,
+        Msg As Int32,
+        wParam As Boolean,
+        lParam As Integer) As IntPtr
     End Function
 
     <DllImport("user32.dll", CharSet:=CharSet.Unicode)>

@@ -555,6 +555,61 @@ Public Structure VideoFormat
     Public SamplingRate As Double
 End Structure
 
+Public Class RtfBuilder
+    Private ReadOnly _colors As New Dictionary(Of Color, Integer)
+    Private ReadOnly _colorTable As New List(Of Color)
+    Private ReadOnly _sb As New StringBuilder(2048)
+
+    Public Sub New()
+    End Sub
+
+    Public Function AddColor(c As Color) As Integer
+        If Not _colors.ContainsKey(c) Then
+            _colors(c) = _colorTable.Count + 1
+            _colorTable.Add(c)
+        End If
+
+        Return _colors(c)
+    End Function
+
+    Public Sub AppendText(text As String, colorIndex As Integer, Optional bold As Boolean = False)
+        If bold Then _sb.Append("\b")
+        _sb.Append("\cf").Append(colorIndex).Append(" ")
+        _sb.Append(Escape(text))
+        If bold Then _sb.Append("\b0")
+    End Sub
+
+    Public Function Build(font As Font) As String
+        Dim rtf As New StringBuilder(4096)
+
+        rtf.Append("{\rtf1\ansi\deff0")
+        rtf.Append("{\fonttbl{\f0\fnil ").Append(font.Name).Append(";}}")
+
+        rtf.Append("{\colortbl;")
+        For Each c In _colorTable
+            rtf.Append("\red").Append(c.R)
+            rtf.Append("\green").Append(c.G)
+            rtf.Append("\blue").Append(c.B).Append(";")
+        Next
+        rtf.Append("}")
+
+        rtf.Append("\f0\fs").Append(CInt(font.SizeInPoints * 2)).Append(" ")
+        rtf.Append(_sb)
+        rtf.Append("}")
+
+        Return rtf.ToString()
+    End Function
+
+    Private Shared Function Escape(text As String) As String
+        Return text _
+            .Replace("\", "\\") _
+            .Replace("{", "\{") _
+            .Replace("}", "\}") _
+            .Replace(Microsoft.VisualBasic.vbCrLf, "\line ") _
+            .Replace(Microsoft.VisualBasic.vbLf, "\line ")
+    End Function
+End Class
+
 <Serializable()>
 Public Class CustomCultureInfo
     Inherits CultureInfo

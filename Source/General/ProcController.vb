@@ -27,6 +27,7 @@ Public Class ProcController
     Private _ffmpegDuration As TimeSpan = TimeSpan.Zero
     Private Shared _blockActivation As Boolean = False
     Private Shared _lastActivation As Date = Date.UtcNow
+    Private Shared _progressInterval As Integer = 200
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -357,13 +358,19 @@ Public Class ProcController
         value = value.Trim()
 
         If _lastProgressText = value Then Exit Sub
-        If _lastProgressSet >= Date.Now.AddMilliseconds(-200) Then Exit Sub
+        If _lastProgressSet >= Date.Now.AddMilliseconds(-_progressInterval) Then Exit Sub
 
         _lastProgressText = value
         _lastProgressSet = Date.Now
 
+        Dim sw = Stopwatch.StartNew()
+
         SetProgressText(value, ThemeManager.CurrentTheme)
         SetProgress(value)
+
+        sw.Stop()
+
+        If _progressInterval < sw.ElapsedMilliseconds Then _progressInterval += 25
     End Sub
 
     Sub SetProgressText(value As String, theme As Theme)
@@ -558,82 +565,66 @@ Public Class ProcController
 
         If s.ProgressHighlighting Then
             ProgressBar.Text = ""
-            ProgressBar.Rtb.SuspendLayout()
-            ProgressBar.Rtb.Text = value
 
             If _progressHighlightingFailCounter < 64 Then
-                Dim baseHue = ThemeManager.ColorCategories.FirstOrDefault(Function(x) x.Item1 = s.ProgressHighlightingColorName).Item2
-                Dim format = Sub(index As Integer, length As Integer, hue As Integer, fontStyles() As FontStyle)
-                                 ProgressBar.Rtb.Select(index, length)
-                                 ProgressBar.Rtb.SelectionColor = New ColorHSL(hue, 0.55, 0.6)
+                Native.SendMessage(ProgressBar.Rtb.Handle, Native.WM_SETREDRAW, False, 0)
+                Dim noMatch = True
 
-                                 If fontStyles?.Length > 0 Then
-                                     ProgressBar.Rtb.SelectionFont = New Font(ProgressBar.Rtb.Font, fontStyles.Aggregate(ProgressBar.Rtb.Font.Style, Function(a, n) a Or n))
-                                 End If
-                             End Sub
-                Dim gr As Capture
-                Dim match As Match
-                Dim matches As MatchCollection
-                Dim noMatch As Boolean = True
+                Try
+                    Dim baseHue = ThemeManager.ColorCategories.FirstOrDefault(Function(x) x.Item1 = s.ProgressHighlightingColorName).Item2
+                    Dim rtf = New RtfBuilder()
+                    Dim defaultColorIndex = rtf.AddColor(ProgressBar.Rtb.ForeColor)
+                    Dim tokens As New List(Of (Start As Integer, Length As Integer, Hue As Integer, Bold As Boolean))
+                    Dim pos = 0
 
-                match = Regex.Match(value, "(\d+(?:\.\d+)?%)", RegexOptions.IgnoreCase)
-                If match.Success Then
-                    noMatch = False
-                    gr = match.Groups(1)
-                    format(gr.Index, gr.Length, baseHue + 30, Nothing)
-                End If
+                    Dim AddMatch = Sub(pattern As String, group As Integer, hueOffset As Integer, bold As Boolean, lastOnly As Boolean)
+                                       Dim matches = Regex.Matches(value, pattern, RegexOptions.IgnoreCase)
+                                       Dim selectedMatches = matches.Cast(Of Match).Where(Function(x) x.Success)
+                                       If lastOnly Then selectedMatches = selectedMatches.Reverse().Take(1)
 
-                match = Regex.Match(value, "(\d+/\d+\s*frames)", RegexOptions.IgnoreCase)
-                If match.Success Then
-                    noMatch = False
-                    gr = match.Groups(1)
-                    format(gr.Index, gr.Length, baseHue + 15, Nothing)
-                End If
+                                       For Each match As Match In selectedMatches
+                                           noMatch = False
+                                           Dim mg = match.Groups(group)
+                                           tokens.Add((mg.Index, mg.Length, baseHue + hueOffset, bold))
+                                       Next
+                                   End Sub
 
-                match = Regex.Match(value, "@\s*(\d+(?:\.\d+)?\s*fps)", RegexOptions.IgnoreCase)
-                If match.Success Then
-                    noMatch = False
-                    gr = match.Groups(1)
-                    format(gr.Index, gr.Length, baseHue - 5, Nothing)
-                End If
+                    AddMatch("(\d+(?:\.\d+)?%)", 1, 30, False, True)
+                    AddMatch("(\d+/\d+\s*frames)", 1, 15, False, True)
+                    AddMatch("@\s*(\d+(?:\.\d+)?\s*fps)", 1, -5, False, True)
+                    AddMatch("(\d+(?:\.\d+)?\s*(kb/s|kbits/s|kbps|mb/s|mbits/s|mbps))", 1, -15, False, True)
+                    AddMatch("(\d+(?:\.\d+)?\s*(kb|mb))(?:[^a-z/0-9]|$)", 1, 15, False, True)
+                    AddMatch("(-?\d+:\d+:\d+)", 1, 0, False, True)
+                    AddMatch(_progressSeparatorPattern, 0, 45, True, False)
 
-                match = Regex.Match(value, "(\d+(?:\.\d+)?\s*(kb/s|kbits/s|kbps|mb/s|mbits/s|mbps))", RegexOptions.IgnoreCase)
-                If match.Success Then
-                    noMatch = False
-                    gr = match.Groups(1)
-                    format(gr.Index, gr.Length, baseHue - 15, Nothing)
-                End If
+                    tokens = tokens.OrderBy(Function(t) t.Start).ToList()
 
-                matches = Regex.Matches(value, "(\d+(?:\.\d+)?\s*(kb|mb))(?:[^a-z/0-9]|$)", RegexOptions.IgnoreCase)
-                If matches.Count > 0 Then
-                    noMatch = False
-                    Dim m = matches(matches.Count - 1)
-                    gr = m.Groups(1)
-                    format(gr.Index, gr.Length, baseHue + 15, Nothing)
-                End If
+                    For Each t In tokens
+                        If t.Start > pos Then
+                            rtf.AppendText(value.Substring(pos, t.Start - pos), defaultColorIndex)
+                        End If
 
-                'match = Regex.Match(value, "[^-](\d+:\d+:\d+)", RegexOptions.IgnoreCase)
-                matches = Regex.Matches(value, "(-?\d+:\d+:\d+)", RegexOptions.IgnoreCase)
-                If matches.Count > 0 Then
-                    noMatch = False
-                    Dim m = matches(matches.Count - 1)
-                    gr = m.Groups(1)
-                    format(gr.Index, gr.Length, baseHue + 0, Nothing)
-                End If
+                        Dim c = New ColorHSL(t.Hue, 0.55, 0.6)
+                        Dim ci = rtf.AddColor(c)
 
-                matches = Regex.Matches(value, _progressSeparatorPattern, RegexOptions.IgnoreCase)
-                If matches.Count > 0 Then
-                    noMatch = False
-                    For Each mat As Match In matches
-                        gr = mat.Groups(0)
-                        format(gr.Index, gr.Length, baseHue + 45, {FontStyle.Bold})
+                        rtf.AppendText(value.Substring(t.Start, t.Length), ci, t.Bold)
+
+                        pos = t.Start + t.Length
                     Next
-                End If
 
-                If noMatch Then _progressHighlightingFailCounter += 1
+                    If pos < value.Length Then
+                        rtf.AppendText(value.Substring(pos), defaultColorIndex)
+                    End If
+
+                    ProgressBar.Rtb.Rtf = rtf.Build(ProgressBar.Rtb.Font)
+                Catch ex As Exception
+                Finally
+                    If noMatch Then _progressHighlightingFailCounter += 1
+
+                    Native.SendMessage(ProgressBar.Rtb.Handle, Native.WM_SETREDRAW, True, 0)
+                    ProgressBar.Rtb.Invalidate()
+                End Try
             End If
-
-            ProgressBar.Rtb.ResumeLayout()
         Else
             _progressHighlightingFailCounter = 0
             ProgressBar.Rtb.Text = ""
@@ -933,6 +924,7 @@ Public Class ProcController
 
                 thread.SetApartmentState(ApartmentState.STA)
                 thread.Start()
+                _progressInterval = 200
 
                 While Not ProcessingForm.WasHandleCreated
                     Thread.Sleep(50)

@@ -14,6 +14,29 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.50.8 (2026-02-16)
+====================
+
+- General: Improve Dolby Vision treatment
+    - Adjust Assistant warnings
+    - Loosen Crop restrictions
+- General: Update Target File Name when bitrate is changed on Main window
+- General: Improve integration of custom encoder parameters
+- Audio: Add SPF setting for ffmpeg with eac3 codec
+- UI: Add "Target Name Override" control to encoder controls on main window
+- SvtAv1EncApp-HDR: Set "--preset 4" as default
+- SvtAv1EncApp-HDR: Add new "--tune 4" parameter while move the existing one to "--tune 5"
+- Update tools
+    - MediaInfo v26.01
+    - Subtitle Edit v4.0.15
+    - SvtAv1EncApp v4.0.1-56+67-6b9334ab-[Mod-by-Patman]-x64-clang21.1.8 [SVT-AV1]
+    - SvtAv1EncApp v4.0.1-3+52-7d1495d5e-[Mod by Patman]-x64-clang21.1.8 [SVT-AV1-HDR]
+    - x264 v0.165.3223+25-2d47345-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+223+43-5b546048f-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update Dual plugins
+    - L-SMASH-Works v1278
+
+
 v2.50.7 (2026-02-06)
 ====================
 

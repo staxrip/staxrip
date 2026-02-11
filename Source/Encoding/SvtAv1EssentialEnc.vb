@@ -1566,13 +1566,19 @@ Public Class SvtAv1EssentialEncParams
             End If
         End If
 
-        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
+        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.GetSwitches())
 
         If q.Count > 0 Then
             sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
+    End Function
+
+    Function IsCustom(pass As Integer, switches As String()) As Boolean
+        If switches Is Nothing Then Return False
+
+        Return switches.Any(Function(switch) IsCustom(pass, switch))
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean

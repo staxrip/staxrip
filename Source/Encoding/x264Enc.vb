@@ -1356,7 +1356,7 @@ Public Class x264Params
             End If
         End If
 
-        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
+        Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.GetSwitches())
 
         If q.Count > 0 Then
             sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
@@ -1451,10 +1451,14 @@ Public Class x264Params
         Return ""
     End Function
 
+    Function IsCustom(pass As Integer, switches As String()) As Boolean
+        If switches Is Nothing Then Return False
+
+        Return switches.Any(Function(switch) IsCustom(pass, switch))
+    End Function
+
     Function IsCustom(pass As Integer, switch As String) As Boolean
-        If switch = "" Then
-            Return False
-        End If
+        If switch = "" Then Return False
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
             If pass = 1 Then

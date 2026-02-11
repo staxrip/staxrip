@@ -2228,7 +2228,7 @@ Public Class NVEnc
                     End If
             End Select
 
-            Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
+            Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.GetSwitches())
 
             If q.Count > 0 Then
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
@@ -2266,6 +2266,12 @@ Public Class NVEnc
             End If
 
             Return ret.Trim
+        End Function
+
+        Function IsCustom(switches As String()) As Boolean
+            If switches Is Nothing Then Return False
+
+            Return switches.Any(Function(switch) IsCustom(switch))
         End Function
 
         Function IsCustom(switch As String) As Boolean

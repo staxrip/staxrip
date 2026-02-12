@@ -553,7 +553,7 @@ Public Class SvtAv1HdrEncParams
         .Switch = "--preset",
         .Text = "Preset",
         .Expanded = True,
-        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster (default)", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
+        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower (default)", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .ValueChangedAction = Sub(v)
                                   Dim hlv = If(v <= 13, 3, 2)
@@ -565,7 +565,7 @@ Public Class SvtAv1HdrEncParams
                                       HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
                                   End If
                               End Sub,
-        .Init = 9}
+        .Init = 5}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
@@ -671,7 +671,7 @@ Public Class SvtAv1HdrEncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality", "4: Film Grain"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality", "4: MS-SSIM/SSIMULACRA2", "5: Film Grain"},
         .Init = 1}
 
     Property AdaptiveFilmGrain As New OptionParam With {

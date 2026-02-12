@@ -1975,7 +1975,8 @@ Partial Public Class MainForm
         Dim groupedAudioFiles = orderedAudioFiles.GroupBy(Function(x) g.ExtractLanguageFromPath(x)).ToList()
 
         Dim setLanguages = p.AudioTracks.Select(Function(x) x.AudioProfile.Language).Where(Function(x) x.IsDetermined).Select(Function(x) x.ThreeLetterCode)
-        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Union(setLanguages).Distinct()
+        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant().SplitNoEmptyAndWhiteSpace(",", ";", " ")
+        Dim selectedAudios = preferredAudios.Concat(setLanguages.Distinct().Except(preferredAudios))
 
         Dim audioTracks As New List(Of (FilePath As String, Language As Language, Title As String, Stream As AudioStream))
 
@@ -1990,9 +1991,7 @@ Partial Public Class MainForm
                                 Dim titleMatch = Regex.Match(baseName, "\{(.+)\}", RegexOptions.IgnoreCase)
                                 Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
 
-                                If Not audioTracks.Any(Function (x) x.FilePath = filePath) Then
-                                    audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, title, Nothing))
-                                End If
+                                audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, title, Nothing))
                             End Sub
 
         Dim audioStreams = New MediaInfo(p.SourceFile)?.AudioStreams
@@ -2002,17 +2001,15 @@ Partial Public Class MainForm
                                  If p.DemuxAudio = DemuxMode.Dialog Then Exit Sub
                                  If s.Demuxers.Any(Function (x) x.Active AndAlso TypeOf x Is eac3toDemuxer AndAlso x.InputExtensions.Contains(p.SourceFile.Ext())) Then Exit Sub
 
-                                 If Not audioTracks.Any(Function (x) x.Stream?.Name = audioStreams(index).Name) Then
-                                     audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))
-                                 End If
+                                 audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))
                              End Sub
 
 
-        For i = 0 To preferredAudios.Count() - 1
-            Dim preferredAudio = preferredAudios(i)
+        For i = 0 To selectedAudios.Count() - 1
+            Dim selectedAudio = selectedAudios(i)
 
-            Dim idMatch = Regex.Match(preferredAudio, "^(\d+)([^,; ]*)$", RegexOptions.IgnoreCase)
-            Dim languageMatch = Regex.Match(preferredAudio, "^([a-z]{2,}|[a-z]{2,4}(?:-[a-z]{2,})-[a-z]{2,5})([^,; ]*)$", RegexOptions.IgnoreCase)
+            Dim idMatch = Regex.Match(selectedAudio, "^(\d+)([^,; ]*)$", RegexOptions.IgnoreCase)
+            Dim languageMatch = Regex.Match(selectedAudio, "^([a-z]{2,}|[a-z]{2,4}(?:-[a-z]{2,})-[a-z]{2,5})([^,; ]*)$", RegexOptions.IgnoreCase)
 
             If idMatch.Success Then
                 Dim id = idMatch.Groups(1).Value
@@ -2045,7 +2042,10 @@ Partial Public Class MainForm
                     If item IsNot Nothing Then
                         If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Key.ThreeLetterCode AndAlso prefLang.Name <> item.Key.Name Then Continue For
 
-                        For k = 0 To item.Count()
+                        For k = 0 To item.Count() - 1
+                            Dim index = k
+                            If prefLangString.ToLower() = "all" AndAlso audioTracks?.Any(Function(x) x.FilePath = item(index)) Then Continue For
+
                             addAudioTrack(j, k)
                         Next
                     End If

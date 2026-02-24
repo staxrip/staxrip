@@ -136,7 +136,7 @@ Public Class GlobalCommands
         Using proc As New Proc(showProcessWindow)
             proc.Header = "Execute Command Line"
             proc.CommandLine = Macro.Expand(commandLine)
-            proc.Wait = waitForExit
+            proc.Wait = showProcessWindow OrElse waitForExit
             proc.WorkingDirectory = Macro.Expand(workingDirectory)
 
             If Not useShellExecute Then

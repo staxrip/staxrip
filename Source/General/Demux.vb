@@ -361,6 +361,7 @@ Public Class ffmpegDemuxer
             args += " -c:a copy"
         ElseIf stream.FormatString.ToLowerEx() = "pcm" Then
             Dim bd = stream.BitDepth
+            If bd < 16 Then bd = 16
             If bd = 20 Then bd = 24
 
             If outPath.Ext.ToLowerEx() = "pcm" Then args += $" -f s{bd}le"

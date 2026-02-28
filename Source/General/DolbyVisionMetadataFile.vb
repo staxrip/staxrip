@@ -151,7 +151,6 @@ Public Class DolbyVisionMetadataFile
 
         Dim entries = Edits.Where(Function(x) x.StartFrame < (max - thresholdEnd) AndAlso x.EndFrame > thresholdBegin) _
                             .Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, edit.Id, preset.Offset}) _
-                            .Where(Function(x) x.Offset <> Padding.Empty) _
                             .OrderBy(Function(x) x.StartFrame).ToList()
 
         If entries.Count < 1 Then Return newCrop

@@ -2414,9 +2414,11 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
+            .Location = IO.Path.Combine("Plugins", "Dual", "fmtconv"),
             .WebURL = "https://github.com/EleonoreMizo/fmtconv",
             .HelpFilename = IO.Path.Combine("doc", "fmtconv.html"),
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
+            .AvsFilterNames = {"fmtc_bitdepth", "fmtc_convert", "fmtc_matrix", "fmtc_resample", "fmtc_transfer", "fmtc_primaries", "fmtc_matrix2020cl", "fmtc_nativetostack16", "fmtc_stack16tonative"},
             .VsFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", "fmtc.matrix2020cl", "fmtc.nativetostack16", "fmtc.stack16tonative"}})
 
         Add(New PluginPackage With {

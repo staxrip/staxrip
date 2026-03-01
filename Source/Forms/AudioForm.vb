@@ -1261,7 +1261,6 @@ Public Class AudioForm
                         mbChannelsAc4.Button.Value = TempProfile.Params.DeezyChannelsAc4
                         mbChannelsAc4.Button.SaveAction = Sub(value)
                                                               TempProfile.Params.DeezyChannelsAc4 = value
-                                                              mbStereodownmix.Enabled = value = DeezyChannelsAc4._2
                                                           End Sub
                     Case AudioCodec.EAC3
                         mbDdpMode = ui.AddMenu(Of DeezyDdpMode)(page)

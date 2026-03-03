@@ -832,7 +832,7 @@ Public Class eac3toForm
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
 
-                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES",
+                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS-HD Master Audio", "DTS", "DTS-ES",
                         "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone",
                         "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3",
                         "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
@@ -860,7 +860,7 @@ Public Class eac3toForm
 
                     If ms.IsAudio OrElse ms.IsSubtitle Then
                         For Each lng In Language.Languages
-                            If ms.Text.Contains(", " + lng.CultureInfo.EnglishName) Then
+                            If ms.Text.Contains(", [" + lng.CultureInfo.ThreeLetterISOLanguageName) Then
                                 ms.Language = lng
                                 Exit For
                             End If
@@ -877,7 +877,7 @@ Public Class eac3toForm
                                 ms.OutputType = "thd"
                             Case "DTS-ES", "DTS Express"
                                 ms.OutputType = "dts"
-                            Case "DTS Master Audio"
+                            Case "DTS Master Audio", "DTS-HD Master Audio"
                                 ms.OutputType = "dtsma"
                             Case "DTS Hi-Res"
                                 ms.OutputType = "dtshr"

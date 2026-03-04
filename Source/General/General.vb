@@ -333,7 +333,7 @@ Public Class SafeSerialization
             Dim list As List(Of Object)
             Dim bf As New BinaryFormatter
 
-            Using fs As New FileStream(path, FileMode.Open)
+            Using fs As New FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)
                 list = DirectCast(bf.Deserialize(fs), List(Of Object))
             End Using
 

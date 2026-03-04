@@ -5488,6 +5488,7 @@ Partial Public Class MainForm
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
                 UpdateTargetParameters(p)
+                p.VideoEncoder?.UpdateTargetFile()
             End If
 
             Assistant()

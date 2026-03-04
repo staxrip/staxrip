@@ -181,7 +181,7 @@ Public Class GlobalClass
 
             Using mutex As New Mutex(False, "staxrip audio profiles file")
                 mutex.WaitOne()
-                Using stream As New FileStream(AudioProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                Using stream As New FileStream(AudioProfilesFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                     audioProfiles = DirectCast(formatter.Deserialize(stream), List(Of AudioProfile))
                 End Using
                 mutex.ReleaseMutex()
@@ -236,7 +236,7 @@ Public Class GlobalClass
 
             Using mutex As New Mutex(False, "staxrip video encoder profiles file")
                 mutex.WaitOne()
-                Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                Using stream As New FileStream(VideoEncoderProfilesFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                     videoEncoderProfiles = DirectCast(formatter.Deserialize(stream), List(Of VideoEncoder))
                 End Using
                 mutex.ReleaseMutex()
@@ -291,7 +291,7 @@ Public Class GlobalClass
 
             Using mutex As New Mutex(False, "staxrip events file")
                 mutex.WaitOne()
-                Using stream As New FileStream(EventsFile, FileMode.Open, FileAccess.Read, FileShare.None)
+                Using stream As New FileStream(EventsFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                     events = DirectCast(formatter.Deserialize(stream), List(Of EventCommand))
                 End Using
                 mutex.ReleaseMutex()

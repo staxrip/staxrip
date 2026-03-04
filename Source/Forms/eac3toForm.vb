@@ -830,13 +830,29 @@ Public Class eac3toForm
                     If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
                     If ms.Codec.StartsWith("*") Then ms.Codec = ms.Codec.Right("*")
 
+                    Dim audioNamesAndExtensions = New Dictionary(Of String, String) From {
+                        {"AC3", "ac3"},
+                        {"AC3 EX", "ac3"},
+                        {"AC3 Surround", "ac3"},
+                        {"AC3 Headphone", "ac3"},
+                        {"E-AC3", "eac3"},
+                        {"E-AC3 EX", "eac3"},
+                        {"TrueHD/AC3 (Atmos)", "thd"},
+                        {"TrueHD/AC3", "thd"},
+                        {"TrueHD (Atmos)", "thd"},
+                        {"DTS-ES", "dts"},
+                        {"DTS Express", "dts"},
+                        {"DTS Master Audio", "dtsma"},
+                        {"DTS-HD Master Audio", "dtsma"},
+                        {"DTS-HD High Resolution", "dtshr"},
+                        {"DTS Hi-Res", "dtshr"},
+                        {"RAW/PCM", "flac"},
+                        {"AAC", "m4a"},
+                        {"Subtitle (ASS)", "ass"}
+                    }
+
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
-
-                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS-HD Master Audio", "DTS", "DTS-ES",
-                        "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone",
-                        "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3",
-                        "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
-
+                    ms.IsAudio = ms.Codec.EqualsAny(audioNamesAndExtensions.Keys.ToArray())
                     ms.IsSubtitle = ms.Codec.StartsWith("Subtitle")
                     ms.IsChapters = ms.Codec.StartsWith("Chapters")
 
@@ -866,30 +882,23 @@ Public Class eac3toForm
                             End If
                         Next
 
-                        Select Case ms.Codec
-                            Case "AC3", "AC3 EX", "AC3 Surround", "AC3 Headphone"
-                                ms.OutputType = "ac3"
-                            Case "E-AC3", "E-AC3 EX"
-                                ms.OutputType = "eac3"
-                            Case "TrueHD/AC3 (Atmos)", "TrueHD/AC3"
-                                ms.OutputType = "thd"
-                            Case "TrueHD (Atmos)"
-                                ms.OutputType = "thd"
-                            Case "DTS-ES", "DTS Express"
-                                ms.OutputType = "dts"
-                            Case "DTS Master Audio", "DTS-HD Master Audio"
-                                ms.OutputType = "dtsma"
-                            Case "DTS Hi-Res"
-                                ms.OutputType = "dtshr"
-                            Case "RAW/PCM"
-                                ms.OutputType = "flac"
-                            Case "AAC"
-                                ms.OutputType = "m4a"
-                            Case "Subtitle (ASS)"
-                                ms.OutputType = "ass"
-                            Case Else
-                                ms.OutputType = ms.Codec.ToLowerInvariant.Replace("-", "")
-                        End Select
+                        If ms.IsAudio Then
+                            Dim ot As String
+                            If audioNamesAndExtensions.TryGetValue(ms.Codec, ot)
+                                ms.OutputType = ot
+                            Else
+                                ms.OutputType = ms.Codec.ToLower.Replace("-", "")
+                            End If
+                        End If
+
+                        If  ms.IsSubtitle Then
+                            Select Case ms.Codec
+                                Case "Subtitle (ASS)"
+                                    ms.OutputType = "ass"
+                                Case Else
+                                    ms.OutputType = ms.Codec.ToLower.Replace("-", "")
+                            End Select
+                        End If
                     End If
 
                     For Each pro In s.eac3toProfiles

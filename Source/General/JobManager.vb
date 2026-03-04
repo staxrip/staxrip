@@ -113,7 +113,7 @@ Public Class JobManager
         If File.Exists(jobsPath) Then
             While True
                 Try
-                    Using stream As New FileStream(jobsPath, FileMode.Open, FileAccess.Read, FileShare.None)
+                    Using stream As New FileStream(jobsPath, FileMode.Open, FileAccess.Read, FileShare.Read)
                         Try
                             Return DirectCast(formatter.Deserialize(stream), List(Of Job))
                         Catch ex As Exception

@@ -641,9 +641,7 @@ Public Class CustomCultureInfo
 
     Private Sub PatchInternals()
         Dim cultureField = GetType(CultureInfo).GetField("m_name", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
-        If cultureField IsNot Nothing Then
-            cultureField.SetValue(Me, _name)
-        End If
+        cultureField?.SetValue(Me, _name)
 
         Dim displayNameField = GetType(CultureInfo).GetField("m_cultureData", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
         If displayNameField IsNot Nothing Then
@@ -892,14 +890,14 @@ Public Class Language
         Return $"{EnglishName} [{Name}]"
     End Function
 
-    Function CompareTo(other As Language) As Integer Implements System.IComparable(Of Language).CompareTo
-        Return Name.CompareTo(other.Name)
+    Function CompareTo(other As Language) As Integer Implements IComparable(Of Language).CompareTo
+        Return String.Compare(Name, other.Name, StringComparison.Ordinal)
     End Function
 
     Overrides Function Equals(o As Object) As Boolean
-        If TypeOf o Is Language Then
-            Return CultureInfo.Equals(DirectCast(o, Language).CultureInfo)
-        End If
+        Dim lang  = TryCast(o, Language)
+
+        If lang IsNot Nothing Then Return CultureInfo.Equals(lang.CultureInfo)
     End Function
 End Class
 

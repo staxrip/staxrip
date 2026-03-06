@@ -189,6 +189,9 @@
     <Compile Include="Controls\SvtAv1EncAppPsyexControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\SvtAv1EncAppTritiumControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\VvencffappControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -203,6 +206,7 @@
     <Compile Include="Encoding\SvtAv1EssentialEnc.vb" />
     <Compile Include="Encoding\SvtAv1HdrEnc.vb" />
     <Compile Include="Encoding\SvtAv1PsyexEnc.vb" />
+    <Compile Include="Encoding\SvtAv1TritiumEnc.vb" />
     <Compile Include="Encoding\VCEEnc.vb" />
     <Compile Include="Encoding\ffmpegEnc.vb" />
     <Compile Include="Encoding\QSVEnc.vb" />

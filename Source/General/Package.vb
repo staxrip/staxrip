@@ -657,6 +657,17 @@ Public Class Package
         .HelpSwitch = "--help",
         .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
 
+    Shared Property SvtAv1EncAppTritium As Package = Add(New Package With {
+        .Name = "SvtAv1EncApp (SVT-AV1-Tritium)",
+        .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp-Tritium"),
+        .Filename = "SvtAv1EncApp.exe",
+        .WebURL = "https://github.com/Uranite/svt-av1-tritium",
+        .HelpURL = "https://github.com/Uranite/svt-av1-tritiumblob/master/Docs/Parameters.md",
+        .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1TritiumEnc,
+        .HelpSwitch = "--help",
+        .Description = "The Scalable Video Technology for AV1 with perceptual enhancements for psychovisually optimal AV1 encoding."})
+
     Shared Property Rav1e As Package = Add(New Package With {
         .Name = "rav1e",
         .Filename = "rav1e.exe",

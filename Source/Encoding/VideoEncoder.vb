@@ -417,6 +417,7 @@ Public MustInherit Class VideoEncoder
             New SvtAv1EssentialEnc(),
             New SvtAv1HdrEnc(),
             New SvtAv1PsyexEnc(),
+            New SvtAv1TritiumEnc(),
             New AOMEnc(),
             New Rav1e()
         }

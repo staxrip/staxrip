@@ -806,14 +806,6 @@ Public Class SvtAv1HdrEncParams
         .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency (default)"},
         .Init = 2}
 
-    Property AutoTiling As New OptionParam With {
-        .Switch = "--auto-tiling",
-        .Text = "Auto Tiling",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0: Off", "1: On (default)"},
-        .Init = 1}
-
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
@@ -943,9 +935,9 @@ Public Class SvtAv1HdrEncParams
         .Switch = "--scd",
         .Text = "Scene Change Detection Control",
         .Expanded = True,
-        .Options = {"0: Off", "1: On (default)"},
+        .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
-        .Init = 1}
+        .Init = 0}
 
     Property Lookahead As New NumParam With {
         .Switch = "--lookahead",
@@ -1004,8 +996,8 @@ Public Class SvtAv1HdrEncParams
         .Switch = "--enable-dlf",
         .Text = "Deblocking Loop Filter",
         .Expanded = True,
-        .Options = {"0: Off", "1: On (default)", "2: Slower, more accurate filtering", "3: Maximum accuracy"},
-        .Values = {"0", "1", "2", "3"},
+        .Options = {"0: Off", "1: On (default)", "2: Slower, more accurate filtering"},
+        .Values = {"0", "1", "2"},
         .Init = 1}
 
     Property CDEFLevel As New BoolParam With {
@@ -1438,7 +1430,7 @@ Public Class SvtAv1HdrEncParams
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
-                    AqMode, AutoTiling, RecodeLoop,
+                    AqMode, RecodeLoop,
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",

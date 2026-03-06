@@ -1976,7 +1976,7 @@ Partial Public Class MainForm
 
         Dim setLanguages = p.AudioTracks.Select(Function(x) x.AudioProfile.Language).Where(Function(x) x.IsDetermined).Select(Function(x) x.ThreeLetterCode)
         Dim preferredAudios = p.PreferredAudio.ToLowerInvariant().SplitNoEmptyAndWhiteSpace(",", ";", " ")
-        Dim selectedAudios = preferredAudios.Concat(setLanguages.Distinct().Except(preferredAudios))
+        Dim selectedAudios = preferredAudios.Concat(setLanguages.Distinct().Except(preferredAudios)).ToList()
 
         Dim audioTracks As New List(Of (FilePath As String, Language As Language, Title As String, Stream As AudioStream))
 
@@ -2041,10 +2041,11 @@ Partial Public Class MainForm
 
                     If item IsNot Nothing Then
                         If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Key.ThreeLetterCode AndAlso prefLang.Name <> item.Key.Name Then Continue For
+                        If prefLangString.ToLowerInvariant() = "all" AndAlso selectedAudios.Contains(item.Key.ThreeLetterCode, StringComparer.OrdinalIgnoreCase) Then Continue For
 
                         For k = 0 To item.Count() - 1
                             Dim index = k
-                            If prefLangString.ToLower() = "all" AndAlso audioTracks?.Any(Function(x) x.FilePath = item(index)) Then Continue For
+                            If prefLangString.ToLowerInvariant() = "all" AndAlso audioTracks?.Any(Function(x) x.FilePath = item(index)) Then Continue For
 
                             addAudioTrack(j, k)
                         Next
@@ -2056,6 +2057,7 @@ Partial Public Class MainForm
 
                     If item IsNot Nothing Then
                         If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Language.ThreeLetterCode AndAlso prefLang.Name <> item.Language.Name Then Continue For
+                        If prefLangString.ToLowerInvariant() = "all" AndAlso selectedAudios.Contains(item.Language.ThreeLetterCode, StringComparer.OrdinalIgnoreCase) Then Continue For
                         If audioTracks?.Any(Function(x) x.FilePath.ContainsEx("ID" + (item.Index + 1).ToString()) AndAlso x.Language.ThreeLetterCode = item.Language.ThreeLetterCode) Then Continue For
 
                         addAudioStream(j)

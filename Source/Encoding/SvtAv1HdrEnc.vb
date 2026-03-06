@@ -1072,6 +1072,20 @@ Public Class SvtAv1HdrEncParams
         .Text = "FGS Table",
         .BrowseFile = True}
 
+    Property PhotonNoise As New NumParam With {
+        .Switch = "--photon-noise",
+        .Text = "Photon Noise",
+        .Config = {0, 100000, 1},
+        .Init = 0}
+
+    Property PhotonNoiseChroma As New OptionParam With {
+        .Switch = "--photon-noise-chroma",
+        .Text = "Photon Noise Chroma",
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .Values = {"0", "1"},
+        .Init = 0}
+
     Property SuperresMode As New OptionParam With {
         .Switch = "--superres-mode",
         .Text = "Super-Resolution Mode",
@@ -1453,7 +1467,8 @@ Public Class SvtAv1HdrEncParams
                     AltSsimTuning, NoiseNormStrength, AdaptiveFilmGrain, MaxTxSize, KeyframeTemporalFilteringStrength, AltLambdaFactors
                 )
                 Add("HDR Specific 2",
-                    MinChromaQmLevel, MaxChromaQmLevel, AcBias, TxBias, SharpTx, HbdMds, NoiseAdaptiveFiltering, ComplexHvs
+                    MinChromaQmLevel, MaxChromaQmLevel, AcBias, TxBias, SharpTx, HbdMds, NoiseAdaptiveFiltering, ComplexHvs,
+                    PhotonNoise, PhotonNoiseChroma
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

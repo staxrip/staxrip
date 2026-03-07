@@ -429,7 +429,7 @@ Public Class MP4Muxer
                 args.Append("#audio")
             End If
 
-            If ap.File.Contains("SBR") Then
+            If ap.File.Contains("[SBR]") Then
                 args.Append(":sbr")
             End If
 
@@ -949,7 +949,7 @@ Public Class MkvMuxer
                 args += " --language " & tid + 1 & ":" + ap.Language.Name
             End If
 
-            If ap.OutputFileType = "aac" AndAlso ap.File.Contains("SBR") Then
+            If ap.OutputFileType = "aac" AndAlso ap.File.Contains("[SBR]") Then
                 args += " --aac-is-sbr " & tid
             End If
 

@@ -138,6 +138,9 @@ Public Class Project
     Public SubtitleName As String = ""
     Public TakeOverVideoLanguage As Boolean = False
     Public TakeOverTitle As Boolean = False
+    Public TakeOverAudioDefault As Boolean = False
+    Public TakeOverAudioForced As Boolean = False
+    Public TakeOverAudioName As Boolean = True
     Public TargetFrames As Integer
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 1080

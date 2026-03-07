@@ -79,8 +79,16 @@ Public Class Audio
             ret += $"_[{stream.Language.Name}] ({stream.Language.EnglishName})"
         End If
 
+        If stream.Default Then
+            ret += " [Default]"
+        End If
+
+        If stream.Forced Then
+            ret += " [Forced]"
+        End If
+
         If stream.SBR Then
-            ret += " SBR"
+            ret += " [SBR]"
         End If
 
         If stream.Delay <> 0 Then

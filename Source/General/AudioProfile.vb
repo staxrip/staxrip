@@ -71,6 +71,8 @@ Public MustInherit Class AudioProfile
             If FileValue <> value Then
                 FileValue = value
                 Stream = Nothing
+                If p.TakeOverAudioDefault Then [Default] = value.Contains("[Default]")
+                If p.TakeOverAudioForced Then Forced = value.Contains("[Forced]")
                 OnFileChanged()
             End If
         End Set
@@ -92,12 +94,14 @@ Public MustInherit Class AudioProfile
                     End If
 
                     Language = Stream.Language
-                    Forced = Stream.Forced
-                    Me.Default = Stream.Default
                     Commentary = Stream.Commentary
 
-                    If StreamName = "" AndAlso Stream.Title <> "" Then
-                        StreamName = Stream.Title
+                    If p.TakeOverAudioDefault Then Me.Default = Stream.Default
+                    If p.TakeOverAudioForced Then Forced = Stream.Forced
+                    If p.TakeOverAudioName Then
+                        If StreamName = "" AndAlso Stream.Title <> "" Then
+                            StreamName = Stream.Title
+                        End If
                     End If
                 End If
 

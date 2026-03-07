@@ -360,6 +360,12 @@ Partial Public Class MainForm
             '   ----------------------------------------------------------------
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
+            n = ui.AddNum
+            n.Text = "Audio Tracks"
+            n.Config = {2, 20, 1}
+            n.Field = NameOf(p.AudioTracksAvailable)
+            'n.NumEdit.SaveAction = Sub(x) SetAudioTracks(CType(x, Integer))
+
             Dim prefAudio = ui.AddTextMenu
             prefAudio.Text = "Preferred Languages"
             prefAudio.Help = "List of audio tracks to demux."
@@ -373,7 +379,9 @@ Partial Public Class MainForm
             prefAudio.AddMenu("Choose All", "all")
             prefAudio.AddMenu("-", "")
 
-            For Each lng In Language.Languages
+            For i = 0 To Language.Languages.Count - 1
+                Dim lng = Language.Languages(i)
+
                 If lng.IsCommon Then
                     prefAudio.AddMenu(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
                         Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
@@ -419,11 +427,17 @@ Partial Public Class MainForm
             audioIntermediateWavBitDepth.Help = "In case you choose WAV as intermediate format for audio encoding, you can choose the bit depth. The higher the better, but also needs more disk space and probably time."
             audioIntermediateWavBitDepth.Field = NameOf(p.AudioIntermediateWaveBitDepth)
 
-            n = ui.AddNum
-            n.Text = "Audio Tracks"
-            n.Config = {2, 20, 1}
-            n.Field = NameOf(p.AudioTracksAvailable)
-            'n.NumEdit.SaveAction = Sub(x) SetAudioTracks(CType(x, Integer))
+            b = ui.AddBool
+            b.Text = "Take over Stream Name if profile is empty"
+            b.Field = NameOf(p.TakeOverAudioName)
+
+            b = ui.AddBool
+            b.Text = "Take over Default flag"
+            b.Field = NameOf(p.TakeOverAudioDefault)
+
+            b = ui.AddBool
+            b.Text = "Take over Forced flag"
+            b.Field = NameOf(p.TakeOverAudioForced)
 
             b = ui.AddBool
             b.Text = "On load use AviSynth script as audio source"

@@ -2017,7 +2017,7 @@ Partial Public Class MainForm
         Dim preferredAudios = p.PreferredAudio.ToLowerInvariant().SplitNoEmptyAndWhiteSpace(",", ";", " ")
         Dim selectedAudios = preferredAudios.Concat(setLanguages.Distinct().Except(preferredAudios)).ToList()
 
-        Dim audioTracks As New List(Of (FilePath As String, Language As Language, Title As String, Stream As AudioStream))
+        Dim audioTracks As New List(Of (FilePath As String, Language As Language, Stream As AudioStream))
 
         Dim addAudioTrack = Sub(groupIndex As Integer, pathIndex As Integer)
                                 If groupedAudioFiles.Count <= groupIndex Then Exit Sub
@@ -2027,10 +2027,8 @@ Partial Public Class MainForm
 
                                 Dim filePath = groupedAudioFiles(groupIndex)(pathIndex)
                                 Dim baseName = filePath.Base().UnescapeIllegalFileSysChars()
-                                Dim titleMatch = Regex.Match(baseName, "\{(.+)\}", RegexOptions.IgnoreCase)
-                                Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
 
-                                audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, title, Nothing))
+                                audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, Nothing))
                             End Sub
 
         Dim audioStreams = New MediaInfo(p.SourceFile)?.AudioStreams
@@ -2040,7 +2038,7 @@ Partial Public Class MainForm
                                  If p.DemuxAudio = DemuxMode.Dialog Then Exit Sub
                                  If s.Demuxers.Any(Function(x) x.Active AndAlso TypeOf x Is eac3toDemuxer AndAlso x.InputExtensions.Contains(p.SourceFile.Ext())) Then Exit Sub
 
-                                 audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))
+                                 audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index)))
                              End Sub
 
 
@@ -2105,7 +2103,7 @@ Partial Public Class MainForm
             End If
         Next
 
-        Dim addTrack = Sub(source As (FilePath As String, Language As Language, Title As String, Stream As AudioStream), dest As AudioTrack)
+        Dim addTrack = Sub(source As (FilePath As String, Language As Language, Stream As AudioStream), dest As AudioTrack)
                            If source.FilePath = "" Then Return
                            If dest Is Nothing Then Return
 
@@ -2172,10 +2170,14 @@ Partial Public Class MainForm
                         ap.Delay += g.ExtractDelay(ap.File)
                     End If
 
-                    If ap.StreamName = "" AndAlso ap.File.Contains("{") Then
-                        Dim title = ap.File.Right("{")
-                        ap.StreamName = title.Left("}").UnescapeIllegalFileSysChars
+                    If p.TakeOverAudioName Then
+                        If ap.StreamName = "" AndAlso ap.File.Contains("{") Then
+                            ap.StreamName = g.ExtractTrackNameFromFilename(ap.File)
+                        End If
                     End If
+
+                    If p.TakeOverAudioDefault Then ap.Default = ( ap.Stream IsNot Nothing AndAlso ap.Stream.Default) OrElse g.ExtractDefaultFlagFromFilename(ap.File)
+                    If p.TakeOverAudioForced Then ap.Forced = ( ap.Stream IsNot Nothing AndAlso ap.Stream.Forced) OrElse g.ExtractForcedFlagFromFilename(ap.File)
                 End If
 
                 ap.SetStreamOrLanguage()

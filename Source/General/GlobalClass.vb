@@ -986,7 +986,21 @@ Public Class GlobalClass
     End Function
 
     Function ExtractTrackNameFromFilename(filename As String) As String
-        Return If(filename.Base().Contains("{"), filename.Base().Right("{").LeftLast("}").UnescapeIllegalFileSysChars, Nothing)
+        Dim baseName = filename.Base().UnescapeIllegalFileSysChars()
+        Dim titleMatch = Regex.Match(baseName, "\{(.+)\}", RegexOptions.IgnoreCase)
+        Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
+
+        Return title
+    End Function
+
+    Function ExtractDefaultFlagFromFilename(filename As String) As Boolean
+        Dim baseName = filename.Base().UnescapeIllegalFileSysChars()
+        Return baseName.Contains("[Default]")
+    End Function
+
+    Function ExtractForcedFlagFromFilename(filename As String) As Boolean
+        Dim baseName = filename.Base().UnescapeIllegalFileSysChars()
+        Return baseName.Contains("[Forced]")
     End Function
 
     Function ExtractLanguageFromPath(path As String) As Language

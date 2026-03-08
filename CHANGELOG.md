@@ -14,6 +14,27 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.52.1 (2026-03-10)
+====================
+
+- General: Fix restoring of last used template within/after File Batch
+- Audio: Fix AC4 channel selection causing crash ([#1930](/../../issues/1930))
+- Audio: Improve audio track setting when "all" is used
+- UI: Fix Template Selection in rare cases
+- FFmpeg: Change FFV1 output extension to MKV
+- SvtAv1EncApp-HDR: Remove Essential parameters again
+    - Introduced in `v2.50.6`, but now unnecessary due to Tritium
+- SvtAv1EncApp-HDR: Add "--photon-noise" parameter
+- SvtAv1EncApp-HDR: Add "--photon-noise-chroma" parameter
+- Add tools
+    - SvtAv1EncApp v4.0.1-27+8-487dab04c-[Mod by Patman]-x64-clang22.1.0 [SVT-AV1-Tritium]
+- Update tools
+    - eac3to v3.60
+    - SvtAv1EncApp v4.0.1-118+74-cfcfbacc5-[Mod-by-Patman]-x64-clang22.1.0 [SVT-AV1]
+    - SvtAv1EncApp v4.0.1-15+59-534fdf4d5-[Mod by Patman]-x64-clang22.1.0 [SVT-AV1-HDR]
+    - vvencFFapp v1.14.0 r583-316087e
+
+
 v2.52.0 (2026-03-01)
 ====================
 

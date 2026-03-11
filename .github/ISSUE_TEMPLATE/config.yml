@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions, Discussions, Ideas
-    url: https://github.com/staxrip/staxrip/discussions/new
+    url: https://github.com/staxrip/staxrip/discussions/new/choose
     about: Please ask and answer questions here.
   - name: StaxRip Community Support on Discord
     url: https://discord.gg/uz8pVR79Bd

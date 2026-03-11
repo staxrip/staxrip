@@ -1,0 +1,49 @@
+name: 🚀 Request a tool or plugin update
+description: Suggest an update for an existing tool or plugin
+body:
+  - type: textarea
+    id: name
+    attributes:
+      label: Name of the tool or plugin
+      description: Name of the tool or plugin, preferrable the name showed on the App Manager
+    validations:
+      required: true
+  - type: input
+    id: oldversion
+    attributes:
+      label: Current version used in StaxRip
+      description: Current version used in StaxRip
+      placeholder: e.g. 1.09
+    validations:
+      required: true
+  - type: input
+    id: newversion
+    attributes:
+      label: Requested version
+      description: Requested version
+      placeholder: e.g. 1.11
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the update request here
+  - type: dropdown
+    id: frameserver
+    attributes:
+      label: Frame Server
+      multiple: true
+      options:
+        - AviSynth+
+        - Dual
+        - VapourSynth
+  - type: dropdown
+    id: tested
+    attributes:
+      label: Tested ?
+      description: Have you tested the requested version?
+      multiple: true
+      options:
+        - 'Yes'
+        - 'No'

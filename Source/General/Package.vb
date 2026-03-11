@@ -1133,8 +1133,9 @@ Public Class Package
     Shared Property NNEDI3CL As Package = Add(New PluginPackage With {
         .Name = "NNEDI3CL",
         .Filename = "nnedi3cl.dll",
-        .WebURL = "http://avisynth.nl/index.php/NNEDI3CL",
-        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-NNEDI3CL",
+        .WebURL = "https://github.com/Asd-g/AviSynthPlus-NNEDI3CL",
+        .HelpURL = "http://avisynth.nl/index.php/NNEDI3CL",
+        .DownloadURL = "https://github.com/Asd-g/AviSynthPlus-NNEDI3CL/releases",
         .Description = "nnedi3 is an intra-field only deinterlacer. It takes a frame, throws away one field, and then interpolates the missing pixels using only information from the remaining field. It is also good for enlarging images by powers of two.",
         .AvsFilterNames = {"nnedi3cl"}})
 

@@ -504,6 +504,15 @@ Public Class Package
         .Description = "SmoothAdjust is a video filter plugin to make YUV adjustments.",
         .AvsFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
 
+    Shared Property EEDI3CL As Package = Add(New PluginPackage With {
+        .Name = "EEDI3CL",
+        .Filename = "eedi3cl.dll",
+        .HelpURL = "http://avisynth.nl/index.php/EEDI3",
+        .WebURL = "https://github.com/Asd-g/AviSynthPlus-EEDI3CL",
+        .DownloadURL = "https://github.com/Asd-g/AviSynthPlus-EEDI3CL/releases",
+        .Description = "EEDI3 OpenCL filter for AviSynth+.",
+        .AvsFilterNames = {"EEDI3CL"}})
+
     Shared Property EEDI3 As Package = Add(New PluginPackage With {
         .Name = "EEDI3",
         .Filename = "eedi3.dll",

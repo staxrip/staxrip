@@ -98,6 +98,7 @@ Public Class SvtAv1EssentialEnc
 
     Overrides ReadOnly Property OutputExt As String
         Get
+            If Params.WebM.Value = 1 Then Return "webm"
             Return "ivf"
         End Get
     End Property
@@ -523,6 +524,14 @@ Public Class SvtAv1EssentialEncParams
         .DefaultValue = 2,
         .Value = 3}
 
+    Property WebM As New OptionParam With {
+        .Switch = "--webm",
+        .Text = "WebM",
+        .Expanded = True,
+        .Options = {"Off (default)", "On"},
+        .Values = {"0", "1"},
+        .Init = 0}
+
     Property SpeedHigh As New OptionParam With {
         .HelpSwitch = "--speed",
         .Text = "Speed",
@@ -667,7 +676,23 @@ Public Class SvtAv1EssentialEncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM", "3: Image Quality", "4: MS-SSIM/SSIMULACRA2"},
+        .Init = 1}
+
+    Property AdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Blocksize Behavior (default)", "1: Adaptive Blocksize Behavior"},
+        .Init = 0}
+
+    Property MaxTxSize As New OptionParam With {
+        .Switch = "--max-tx-size",
+        .Text = "Max TX Size",
+        .Expanded = True,
+        .Options = {"32", "64 (default)"},
+        .Values = {"32", "64"},
         .Init = 1}
 
     Property LowMemory As New OptionParam With {
@@ -676,6 +701,14 @@ Public Class SvtAv1EssentialEncParams
         .Expanded = True,
         .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
+        .Init = 0}
+
+    Property NoiseNormStrength As New OptionParam With {
+        .Switch = "--noise-norm-strength",
+        .Text = "Noise Norm Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0 (default)", "1", "2", "3", "4"},
         .Init = 0}
 
     '   --------------------------------------------------------
@@ -723,7 +756,7 @@ Public Class SvtAv1EssentialEncParams
                                  QuantizationParameterHigh.Value = CInt(x)
                                  QuantizationParameterLow.Value = CInt(x)
                              End Sub,
-       .Config = {1, 63, 1.0, 0},
+       .Config = {1, 70, 0.25, 0},
        .Init = 35}
 
     Property ConstantRateFactorLow As New NumParam With {
@@ -735,7 +768,7 @@ Public Class SvtAv1EssentialEncParams
                                  QuantizationParameterHigh.Value = CInt(x)
                                  QuantizationParameterLow.Value = CInt(x)
                              End Sub,
-       .Config = {1, 63, 1.0, 0},
+       .Config = {1, 70, 0.25, 0},
        .Init = 30}
 
     Property Quality As New OptionParam With {
@@ -750,7 +783,7 @@ Public Class SvtAv1EssentialEncParams
         .HelpSwitch = "--tbr",
         .Text = "Target Bitrate",
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
-        .Config = {100, 100000, 100},
+        .Config = {1, 100000, 100},
         .Init = 2000}
 
     Property MaximumBitrate As New NumParam With {
@@ -764,15 +797,15 @@ Public Class SvtAv1EssentialEncParams
         .Switch = "--max-qp",
         .Text = "Maximum Quantizer",
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
-        .Config = {1, 63, 1},
+        .Config = {0, 63, 1},
         .Init = 63}
 
     Property MinQp As New NumParam With {
         .Switch = "--min-qp",
         .Text = "Minimum Quantizer",
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
-        .Config = {1, 62, 1},
-        .Init = 1}
+        .Config = {0, 63, 1},
+        .Init = 0}
 
     Property EnableVarianceBoost As New OptionParam With {
         .Switch = "--enable-variance-boost",
@@ -822,6 +855,68 @@ Public Class SvtAv1EssentialEncParams
         .Options = {"0: Off", "1: On (default)"},
         .Init = 1}
 
+    Property AcBias As New NumParam With {
+        .Switch = "--ac-bias",
+        .Text = "AC Bias in Rate Distortion",
+        .Config = {0, 8, 0.01, 2},
+        .Init = 0.25}
+
+    Property SharpTx As New OptionParam With {
+        .Switch = "--sharp-tx",
+        .Text = "Sharp Transform Optimizations",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .Init = 0}
+
+    Property TxBias As New OptionParam With {
+        .Switch = "--tx-bias",
+        .Text = "Transform size/type bias mode",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: Full", "2: Partial (Transform Size Only)", "3: Partial (Interpolation Filter Only)"},
+        .Init = 0}
+
+    Property ComplexHvs As New OptionParam With {
+        .Switch = "--complex-hvs",
+        .Text = "Complexity HVS Model",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Default Behavior (default)", "1: Highest Complexity HVS Model"},
+        .Init = 0}
+
+    Property NoiseAdaptiveFiltering As New OptionParam With {
+        .Switch = "--noise-adaptive-filtering",
+        .Text = "Noise Adaptive Filtering",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: CDEF and Restoration Noise-Adaptive Filtering", "2: Default Tune Behavior (default)", "3: Noise-Adaptive CDEF Only", "4: Noise-Adaptive Restoration Only"},
+        .Init = 2}
+
+    Property AltCDEF As New OptionParam With {
+        .Switch = "--enable-alt-cdef",
+        .Text = "Enable Alternative CDEF Biases",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1", "2", "3"},
+        .Init = 0}
+
+    Property AltDLF As New OptionParam With {
+        .Switch = "--enable-alt-dlf",
+        .Text = "Enable Alternative DLF Biases",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1", "2", "3"},
+        .Init = 0}
+
+    Property DistortionBiasPreset As New OptionParam With {
+        .Switch = "--distortion-bias-preset",
+        .Text = "Distortion Bias Preset",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: Mild distortion bias for slightly higher fidelity", "2: Medium distortion bias for greater fidelity", "3: Strong distortion bias for maximum fidelity", "4: Mimics SVT-AV1-HDR's tune grain for absolute grain retention"},
+        .Init = 0}
+
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
@@ -848,7 +943,7 @@ Public Class SvtAv1EssentialEncParams
         .Text = "Min quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Value,
-        .Init = 0}
+        .Init = 2}
 
     Property MaxChromaQmLevel As New NumParam With {
         .Switch = "--chroma-qm-max",
@@ -862,7 +957,7 @@ Public Class SvtAv1EssentialEncParams
         .Text = "Min chroma quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQm.Value,
-        .Init = 0}
+        .Init = 4}
 
     Property TemporalFilteringStrength As New OptionParam With {
         .Switch = "--tf-strength",
@@ -918,24 +1013,32 @@ Public Class SvtAv1EssentialEncParams
     '   --------------------------------------------------------
 
     Property KeyInt As New OptionParam With {
-       .Switch = "--keyint",
-       .Text = "Keyint / GOP Size",
-       .Expanded = True,
-       .Options = {"-1: ~5 seconds (default)", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
-       .Values = {"-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-       .VisibleFunc = Function() Not (ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible),
-       .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
-       .Init = 0}
+        .Switch = "--keyint",
+        .Text = "Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-2: ~5 seconds (default)", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
+        .VisibleFunc = Function() Not (ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible),
+        .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
+        .Init = 0}
 
     Property KeyIntCrf As New OptionParam With {
-       .Switch = "--keyint",
-       .Text = "Keyint / GOP Size",
-       .Expanded = True,
-        .Options = {"-1: ~5 seconds (default)", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Switch = "--keyint",
+        .Text = "Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-2: ~5 seconds (default)", "-1: ""infinite""", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "-1", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
+        .VisibleFunc = Function() ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible,
+        .ValueChangedAction = Sub(x) KeyInt.Value = x,
+        .Init = 0}
+
+    Property MinKeyInt As New OptionParam With {
+        .Switch = "--min-keyint",
+        .Text = "Min Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-1: Multiple of the mini-gop length (Automatic) (default)", "0: No Minimum", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-1", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-       .VisibleFunc = Function() ConstantRateFactorHigh.Visible OrElse ConstantRateFactorLow.Visible,
-       .ValueChangedAction = Sub(x) KeyInt.Value = x,
-       .Init = 0}
+        .Init = 0}
 
     Property IntraRefreshRate As New OptionParam With {
         .Switch = "--irefresh-type",
@@ -1044,7 +1147,7 @@ Public Class SvtAv1EssentialEncParams
         .Text = "ALT-REF Frames",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off", "1: On (default)", "2: Aadaptive"},
+        .Options = {"0: Off", "1: On (default)", "2: Adaptive", "2: Full"},
         .Init = 1}
 
     Property EnableOverlays As New BoolParam With {
@@ -1079,6 +1182,20 @@ Public Class SvtAv1EssentialEncParams
         .Switch = "--fgs-table",
         .Text = "FGS Table",
         .BrowseFile = True}
+
+    Property PhotonNoise As New NumParam With {
+        .Switch = "--photon-noise",
+        .Text = "Photon Noise",
+        .Config = {0, 100000, 1},
+        .Init = 0}
+
+    Property PhotonNoiseChroma As New OptionParam With {
+        .Switch = "--photon-noise-chroma",
+        .Text = "Photon Noise Chroma",
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .Values = {"0", "1"},
+        .Init = 0}
 
     Property SuperresMode As New OptionParam With {
         .Switch = "--superres-mode",
@@ -1321,6 +1438,7 @@ Public Class SvtAv1EssentialEncParams
 
                 Add("Input/Output",
                     Decoder, PipingToolAVS, PipingToolVS,
+                    WebM,
                     Progress,
                     FramesToBeEncoded, FramesToBeSkipped,
                     EncoderColorFormat,
@@ -1328,22 +1446,25 @@ Public Class SvtAv1EssentialEncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    SpeedLow, SpeedHigh, Preset, Profile, Level, Tune, LowMemory, FastDecode
+                    SpeedLow, SpeedHigh, Preset, Profile, Level, Tune, AdaptiveFilmGrain, MaxTxSize, LowMemory, FastDecode, NoiseNormStrength
                 )
                 Add("Rate Control",
                     RateControlMode, Quality, ConstantRateFactorHigh, ConstantRateFactorLow, QuantizationParameterHigh, QuantizationParameterLow, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     TemporalFilteringStrength, LuminanceQpBias, Sharpness,
                     PassesVBR, PassesCBR,
-                    AqMode, QpScaleCompressStrength, AutoTiling, RecodeLoop,
-                    EnableQm, QmMin, QmMax, MinChromaQmLevel, MaxChromaQmLevel
+                    AqMode, QpScaleCompressStrength, AutoTiling, AcBias
+                )
+                Add("Rate Control 2",
+                    SharpTx, TxBias, ComplexHvs, NoiseAdaptiveFiltering, AltCDEF, AltDLF, DistortionBiasPreset,
+                    RecodeLoop, EnableQm, QmMin, QmMax, MinChromaQmLevel, MaxChromaQmLevel
                 )
                 Add("GOP size/type",
-                    KeyInt, KeyIntCrf, IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
+                    KeyInt, KeyIntCrf, MinKeyInt, IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
                 )
                 Add("AV1 Specific 1",
                     TileRow, TileCol, LoopFilterEnable,
                     CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode,
-                    FilmGrain, FilmGrainDenoise, FGSTable
+                    FilmGrain, FilmGrainDenoise, FGSTable, PhotonNoise, PhotonNoiseChroma
                 )
                 Add("AV1 Specific 2",
                     SuperresMode, SuperresDenom, SuperresKfDenom, SuperresQthres, SuperresKfQthres,

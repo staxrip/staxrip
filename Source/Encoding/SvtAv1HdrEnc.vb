@@ -1072,18 +1072,32 @@ Public Class SvtAv1HdrEncParams
         .Text = "FGS Table",
         .BrowseFile = True}
 
-    Property PhotonNoise As New NumParam With {
-        .Switch = "--photon-noise",
-        .Text = "Photon Noise",
-        .Config = {0, 100000, 1},
+    Property Noise As New NumParam With {
+        .Switch = "--noise",
+        .Text = "Noise",
+        .Config = {0, 200, 1},
         .Init = 0}
 
-    Property PhotonNoiseChroma As New OptionParam With {
-        .Switch = "--photon-noise-chroma",
-        .Text = "Photon Noise Chroma",
+    Property NoiseChroma As New NumParam With {
+        .Switch = "--noise-chroma",
+        .Text = "Noise Chroma",
+        .Config = {-1, 200, 1},
+        .Init = -1}
+
+    Property NoiseChromaFromLuma As New OptionParam With {
+        .Switch = "--noise-chroma-from-luma",
+        .Text = "Noise Chroma from Luma",
         .Expanded = True,
         .Options = {"0: Off (default)", "1: On"},
         .Values = {"0", "1"},
+        .Init = 0}
+
+    Property NoiseSize As New OptionParam With {
+        .Switch = "--noise-size",
+        .Text = "Noise Size",
+        .Expanded = True,
+        .Options = {"-1: Auto (default)", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .Init = 0}
 
     Property SuperresMode As New OptionParam With {
@@ -1468,7 +1482,7 @@ Public Class SvtAv1HdrEncParams
                 )
                 Add("HDR Specific 2",
                     MinChromaQmLevel, MaxChromaQmLevel, AcBias, TxBias, SharpTx, HbdMds, NoiseAdaptiveFiltering, ComplexHvs,
-                    PhotonNoise, PhotonNoiseChroma
+                    Noise, NoiseChroma, NoiseChromaFromLuma, NoiseSize
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

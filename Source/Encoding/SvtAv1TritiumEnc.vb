@@ -806,14 +806,6 @@ Public Class SvtAv1TritiumEncParams
         .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency (default)"},
         .Init = 2}
 
-    Property AutoTiling As New OptionParam With {
-        .Switch = "--auto-tiling",
-        .Text = "Auto Tiling",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0: Off", "1: On (default)"},
-        .Init = 1}
-
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
@@ -931,6 +923,14 @@ Public Class SvtAv1TritiumEncParams
        .ValueChangedAction = Sub(x) KeyInt.Value = x,
        .Init = 0}
 
+    Property MinKeyInt As New OptionParam With {
+        .Switch = "--min-keyint",
+        .Text = "Min Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-1: Multiple of the mini-gop length (Automatic) (default)", "0: No Minimum", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-1", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
+        .Init = 0}
+
     Property IntraRefreshRate As New OptionParam With {
         .Switch = "--irefresh-type",
         .Text = "Intra Refresh Type",
@@ -987,6 +987,14 @@ Public Class SvtAv1TritiumEncParams
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
+
+    Property AutoTiling As New OptionParam With {
+        .Switch = "--auto-tiling",
+        .Text = "Auto Tiling",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: On (default)"},
+        .Init = 1}
 
     Property TileRow As New NumParam With {
         .Switch = "--tile-rows",
@@ -1080,18 +1088,32 @@ Public Class SvtAv1TritiumEncParams
         .Text = "FGS Table",
         .BrowseFile = True}
 
-    Property PhotonNoise As New NumParam With {
-        .Switch = "--photon-noise",
-        .Text = "Photon Noise",
-        .Config = {0, 100000, 1},
+    Property Noise As New NumParam With {
+        .Switch = "--noise",
+        .Text = "Noise",
+        .Config = {0, 200, 1},
         .Init = 0}
 
-    Property PhotonNoiseChroma As New OptionParam With {
-        .Switch = "--photon-noise-chroma",
-        .Text = "Photon Noise Chroma",
+    Property NoiseChroma As New NumParam With {
+        .Switch = "--noise-chroma",
+        .Text = "Noise Chroma",
+        .Config = {-1, 200, 1},
+        .Init = -1}
+
+    Property NoiseChromaFromLuma As New OptionParam With {
+        .Switch = "--noise-chroma-from-luma",
+        .Text = "Noise Chroma from Luma",
         .Expanded = True,
         .Options = {"0: Off (default)", "1: On"},
         .Values = {"0", "1"},
+        .Init = 0}
+
+    Property NoiseSize As New OptionParam With {
+        .Switch = "--noise-size",
+        .Text = "Noise Size",
+        .Expanded = True,
+        .Options = {"-1: Auto (default)", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .Init = 0}
 
     Property SuperresMode As New OptionParam With {
@@ -1456,7 +1478,7 @@ Public Class SvtAv1TritiumEncParams
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",
-                    KeyInt, KeyIntCrf, IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
+                    KeyInt, KeyIntCrf, MinKeyInt, IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
                 )
                 Add("AV1 Specific 1",
                     TileRow, TileCol, LoopFilterEnable,
@@ -1476,7 +1498,7 @@ Public Class SvtAv1TritiumEncParams
                 )
                 Add("Tritium Specific 2",
                     MinChromaQmLevel, MaxChromaQmLevel, AcBias, TxBias, SharpTx, HbdMds, NoiseAdaptiveFiltering, ComplexHvs,
-                    PhotonNoise, PhotonNoiseChroma
+                    Noise, NoiseChroma, NoiseChromaFromLuma, NoiseSize
                 )
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL

@@ -525,12 +525,13 @@ Public Class SvtAv1EssentialEncParams
         .Value = 3}
 
     Property WebM As New OptionParam With {
-        .Switch = "--webm",
+        .HelpSwitch = "--webm",
         .Text = "WebM",
         .Expanded = True,
-        .Options = {"Off (default)", "On"},
+        .AlwaysOn = True,
+        .Options = {"Off", "On (default)"},
         .Values = {"0", "1"},
-        .Init = 0}
+        .Init = 1}
 
     Property SpeedHigh As New OptionParam With {
         .HelpSwitch = "--speed",
@@ -1648,6 +1649,10 @@ Public Class SvtAv1EssentialEncParams
         'If includePaths AndAlso (MultiPassOptDistortion.Value OrElse MultiPassOptAnalysis.Value) Then
         '    sb.Append(" --analysis-reuse-file " + (targetPath.DirAndBase + chunkName + ".analysis").Escape)
         'End If
+
+        If Not IsCustom(pass, WebM.HelpSwitch) Then
+            sb.Append($" {WebM.HelpSwitch} {WebM.Value}")
+        End If
 
         If Not IsCustom(pass, "--rc") Then
             sb.Append($" --rc {RateControlMode.Value}")

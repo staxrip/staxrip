@@ -245,15 +245,16 @@ Public Class SvtAv1EncAppEssentialControl
             Select Case selectedIndex
                 Case 0 - offset
                     Dim qualityParam = Params.Quality
-                    Dim quantParam = Params.QuantizationParameterLow
+                    Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
                     Dim isCrf = Params.ConstantRateFactorHigh.Visible OrElse Params.ConstantRateFactorLow.Visible
                     For x = 1 To qualityParam.Options.Length - 1
                         Dim temp = x
                         add("Quality | " + qualityParam.Options(temp), Sub() SetQuality(selectedIndex, temp), qualityParam.Value > 0 AndAlso qualityParam.Value = temp, "")
                     Next
-                    For Each def In QualityDefinitions
-                        Dim p = If(isCrf, "CRF | ", "QP | ") & def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
-                        add(p, Sub() SetQuant(selectedIndex, def.Value), qualityParam.Value = 0 AndAlso quantParam.Value = def.Value, def.Tooltip)
+                    For x = 0 To QualityDefinitions.Count - 1
+                        Dim temp = QualityDefinitions(x)
+                        Dim p = If(isCrf, "CRF | ", "QP | ") & temp.Value & If(Not String.IsNullOrWhiteSpace(temp.Text), $": {temp.Text}", "")
+                        add(p, Sub() SetQuant(selectedIndex, temp.Value), qualityParam.Value = 0 AndAlso Math.Abs(quantParam.Value - temp.Value) < 0.1, temp.Tooltip)
                     Next
                 Case 1 - offset
                     Dim speedParam = If(Params.SpeedHigh.Visible, Params.SpeedHigh, Params.SpeedLow)
@@ -318,8 +319,10 @@ Public Class SvtAv1EncAppEssentialControl
 
     Sub SetQuant(index As Integer, value As Double)
         Params.Quality.Value = 0
-        Params.QuantizationParameterLow.Value = value
-        Params.QuantizationParameterLow.ValueChangedAction.Invoke(value)
+
+        Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
+        quantParam.Value = value
+        'quantParam.ValueChangedAction.Invoke(value)
 
         lv.Items(index).SubItems(1).Text = GetQualityCaption(value)
         lv.Items(index).Selected = False
@@ -416,7 +419,7 @@ Public Class SvtAv1EncAppEssentialControl
             If qualityParam.Value > 0 Then
                 lv.Items.Add(New ListViewItem({"Quality", qualityParam.OptionText}))
             Else
-                Dim quantParam = Params.QuantizationParameterLow
+                Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
                 lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(quantParam.Value)}))
             End If
         End If

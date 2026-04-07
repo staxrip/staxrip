@@ -14,6 +14,18 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.52.3 (2026-04-07)
+====================
+
+- SvtAv1EncApp-Essential: Improve Editing Control on main window
+- SvtAv1EncApp-Essential: Always include "--webm" parameter
+    - Makes it easier in case other builds are used
+- Update tools
+    - MKVToolNix v98.0
+    - SvtAv1EncApp v4.0.1-1+14-e3b55b316-[Mod by Patman]-x64-clang22.1.2 [SVT-AV1-Essential]
+    - x265 v4.1+242+48-75b47de94-[Mod-by-Patman]-x64-avx2-clang22.1.2
+
+
 v2.52.2 (2026-04-06)
 ====================
 

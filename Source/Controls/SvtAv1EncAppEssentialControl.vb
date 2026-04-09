@@ -321,8 +321,12 @@ Public Class SvtAv1EncAppEssentialControl
         Params.Quality.Value = 0
 
         Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
-        quantParam.Value = value
-        'quantParam.ValueChangedAction.Invoke(value)
+        quantParam.Value = Math.Min(value, quantParam.Config(1))
+        quantParam.ValueChangedAction.Invoke(Math.Min(value, quantParam.Config(1)))
+
+        Dim crfParam = If(Params.ConstantRateFactorLow.Visible, Params.ConstantRateFactorLow, Params.ConstantRateFactorHigh)
+        crfParam.Value = Math.Min(value, crfParam.Config(1))
+        crfParam.ValueChangedAction.Invoke(Math.Min(value, crfParam.Config(1)))
 
         lv.Items(index).SubItems(1).Text = GetQualityCaption(value)
         lv.Items(index).Selected = False
@@ -419,8 +423,11 @@ Public Class SvtAv1EncAppEssentialControl
             If qualityParam.Value > 0 Then
                 lv.Items.Add(New ListViewItem({"Quality", qualityParam.OptionText}))
             Else
+                Dim crfParam = If(Params.ConstantRateFactorLow.Visible, Params.ConstantRateFactorLow, Params.ConstantRateFactorHigh)
                 Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
-                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(quantParam.Value)}))
+                Dim paramValue = If(crfParam.Visible, crfParam.Value, quantParam.Value)
+
+                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(paramValue)}))
             End If
         End If
         Dim speedParam = If(Params.SpeedHigh.Visible, Params.SpeedHigh, Params.SpeedLow)

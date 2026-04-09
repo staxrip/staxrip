@@ -730,8 +730,6 @@ Public Class SvtAv1EssentialEncParams
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0 AndAlso Quality.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
         .ValueChangedAction = Sub(x)
                                   QuantizationParameterLow.Value = CInt(x)
-                                  ConstantRateFactorHigh.Value = CInt(x)
-                                  ConstantRateFactorLow.Value = CInt(x)
                               End Sub,
         .Config = {1, 63, 1.0, 0},
         .Init = 35}
@@ -742,8 +740,6 @@ Public Class SvtAv1EssentialEncParams
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0 AndAlso Quality.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
         .ValueChangedAction = Sub(x)
                                   QuantizationParameterHigh.Value = CInt(x)
-                                  ConstantRateFactorHigh.Value = CInt(x)
-                                  ConstantRateFactorLow.Value = CInt(x)
                               End Sub,
         .Config = {1, 63, 1.0, 0},
         .Init = 30}
@@ -753,11 +749,9 @@ Public Class SvtAv1EssentialEncParams
        .Text = "Constant Rate Factor",
        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0 AndAlso p.Script IsNot Nothing AndAlso p.Script.Info.Height > 1080,
        .ValueChangedAction = Sub(x)
-                                 ConstantRateFactorLow.Value = CInt(x)
-                                 QuantizationParameterHigh.Value = CInt(x)
-                                 QuantizationParameterLow.Value = CInt(x)
+                                 ConstantRateFactorLow.Value = x
                              End Sub,
-       .Config = {1, 70, 0.25, 0},
+       .Config = {1, 70, 0.25, 2},
        .Init = 35}
 
     Property ConstantRateFactorLow As New NumParam With {
@@ -765,11 +759,9 @@ Public Class SvtAv1EssentialEncParams
        .Text = "Constant Rate Factor",
        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0 AndAlso Quality.Value = 0 AndAlso (p.Script Is Nothing OrElse p.Script.Info.Height <= 1080),
        .ValueChangedAction = Sub(x)
-                                 ConstantRateFactorHigh.Value = CInt(x)
-                                 QuantizationParameterHigh.Value = CInt(x)
-                                 QuantizationParameterLow.Value = CInt(x)
+                                 ConstantRateFactorHigh.Value = x
                              End Sub,
-       .Config = {1, 70, 0.25, 0},
+       .Config = {1, 70, 0.25, 2},
        .Init = 30}
 
     Property Quality As New OptionParam With {

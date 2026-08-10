@@ -1,6 +1,18 @@
 
 #include "VapourSynthServer.h"
 
+#include <limits>
+
+namespace
+{
+    template <typename T>
+    bool FitsFrameServerInt(T value)
+    {
+        return value >= static_cast<T>((std::numeric_limits<int>::min)()) &&
+            value <= static_cast<T>((std::numeric_limits<int>::max)());
+    }
+}
+
 void logMessageHandler(int msgType, const char* msg, void* userData)
 {
     if (msgType > mtWarning) {
@@ -109,8 +121,12 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         m_Info.Width = m_vsInfo->width;
         m_Info.Height = m_vsInfo->height;
         m_Info.FrameCount = m_vsInfo->numFrames;
-        m_Info.FrameRateNum = m_vsInfo->fpsNum;
-        m_Info.FrameRateDen = m_vsInfo->fpsDen;
+
+        if (!FitsFrameServerInt(m_vsInfo->fpsNum) || !FitsFrameServerInt(m_vsInfo->fpsDen))
+            throw std::runtime_error("VapourSynth frame rate exceeds the FrameServer integer range");
+
+        m_Info.FrameRateNum = static_cast<int>(m_vsInfo->fpsNum);
+        m_Info.FrameRateDen = static_cast<int>(m_vsInfo->fpsDen);
 
         const VSVideoFormat format = m_vsInfo->format;
         int id = m_vsAPI->queryVideoFormatID(format.colorFamily, format.sampleType, format.bitsPerSample, format.subSamplingW, format.subSamplingH, m_vsCore);
@@ -190,7 +206,18 @@ HRESULT __stdcall VapourSynthServer::GetFrame(int position, void** data, int& pi
         return E_FAIL;
     }
     
-    pitch = m_vsAPI->getStride(frame, 0);
+    const ptrdiff_t frameStride = m_vsAPI->getStride(frame, 0);
+
+    if (!FitsFrameServerInt(frameStride))
+    {
+        m_Error = L"VapourSynth frame stride exceeds the FrameServer integer range";
+        *data = nullptr;
+        pitch = 0;
+        m_vsAPI->freeFrame(frame);
+        return E_FAIL;
+    }
+
+    pitch = static_cast<int>(frameStride);
 
     if (m_vsFrame)
         m_vsAPI->freeFrame(m_vsFrame);

@@ -76,6 +76,7 @@
     <OutDir>..\bin\</OutDir>
     <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
@@ -89,6 +90,7 @@
     <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <OutDir>..\bin\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

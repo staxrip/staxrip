@@ -1,6 +1,48 @@
 
 #include "VapourSynthServer.h"
 
+#include <mutex>
+
+namespace
+{
+    using GetVSScriptAPI = const VSSCRIPTAPI* (__stdcall*)(int version);
+
+    struct VSScriptLibrary
+    {
+        GetVSScriptAPI getAPI = nullptr;
+        DWORD loadError = ERROR_SUCCESS;
+        bool libraryLoaded = false;
+    };
+
+    VSScriptLibrary LoadVSScriptLibrary()
+    {
+        static std::mutex mutex;
+        // Keep the embedded Python runtime loaded so later server instances can initialize.
+        static HMODULE module = nullptr;
+        static GetVSScriptAPI getAPI = nullptr;
+        std::lock_guard<std::mutex> lock(mutex);
+
+        if (module && getAPI)
+            return { getAPI, ERROR_SUCCESS, true };
+
+        HMODULE candidate = LoadLibrary(L"VSScript.dll");
+        if (!candidate)
+            return { nullptr, GetLastError(), false };
+
+        bool x64 = sizeof(void*) == 8;
+        auto candidateAPI = reinterpret_cast<GetVSScriptAPI>(GetProcAddress(candidate, x64 ? "getVSScriptAPI" : "_getVSScriptAPI@4"));
+        if (!candidateAPI)
+        {
+            FreeLibrary(candidate);
+            return { nullptr, ERROR_SUCCESS, true };
+        }
+
+        module = candidate;
+        getAPI = candidateAPI;
+        return { getAPI, ERROR_SUCCESS, true };
+    }
+}
+
 void logMessageHandler(int msgType, const char* msg, void* userData)
 {
     if (msgType > mtWarning) {
@@ -48,29 +90,18 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 {
     try
     {
-        static bool wasResolved = false;
+        VSScriptLibrary library = LoadVSScriptLibrary();
 
-        if (!wasResolved)
+        if (!library.libraryLoaded)
         {
-            m_vssDLL = LoadLibrary(L"VSScript.dll");
-
-            if (!m_vssDLL)
-            {
-                std::string msg = GetWinErrorMessage(GetLastError());
-                throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
-            }
-
-            bool x64 = sizeof(void*) == 8;
-
-            vss_getVSScriptAPI = reinterpret_cast<decltype(vss_getVSScriptAPI)>(GetProcAddress(m_vssDLL, x64 ? "getVSScriptAPI" : "_getVSScriptAPI@4"));
-
-            if (!vss_getVSScriptAPI)
-                throw std::exception("Failed to load getVSScriptAPI function. Upgrade Vapoursynth to R55 or newer!");
+            std::string msg = GetWinErrorMessage(library.loadError);
+            throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
         }
 
-        wasResolved = true;
+        if (!library.getAPI)
+            throw std::exception("Failed to load getVSScriptAPI function. Upgrade Vapoursynth to R55 or newer!");
 
-        m_vsScriptAPI = vss_getVSScriptAPI(VSSCRIPT_API_VERSION);
+        m_vsScriptAPI = library.getAPI(VSSCRIPT_API_VERSION);
 
         if (!m_vsScriptAPI)
             throw std::exception("Failed to initialize VapourSynth");
@@ -251,11 +282,6 @@ void VapourSynthServer::Free()
         m_vsScript = NULL;
     }
 
-    if (m_vssDLL)
-    {
-        FreeLibrary(m_vssDLL);
-        m_vssDLL = nullptr;
-    }
 }
 
 

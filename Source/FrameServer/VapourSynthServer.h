@@ -14,9 +14,6 @@
 #include <atomic>
 #include <array>
 
-const VSSCRIPTAPI* (__stdcall* vss_getVSScriptAPI) (int version);
-
-
 class VapourSynthServer : IFrameServer
 {
 
@@ -26,7 +23,6 @@ private:
     std::wstring        m_Error;
     ServerInfo          m_Info = {};
 
-    HMODULE             m_vssDLL = nullptr;
     const VSSCRIPTAPI*  m_vsScriptAPI = nullptr;
     const VSAPI*        m_vsAPI = nullptr;
     VSCore*             m_vsCore = nullptr;

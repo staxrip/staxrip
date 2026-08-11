@@ -484,7 +484,7 @@ Public Class x264Params
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
-        .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"}}
+        .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency", "TouHou"}}
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
@@ -1002,6 +1002,12 @@ Public Class x264Params
                 setVal(Mbtree, False)
                 setVal(RcLookahead, 0)
                 setVal(ForceCFR, True)
+            Case 9 'touhou
+                setVal(AqStrength, 1.3)
+                setVal(Deblock, 0)
+                setVal(DeblockA, -1)
+                setVal(DeblockB, -1)
+                setVal(PsyTrellis, 0.2)
         End Select
 
         Select Case Profile.Value

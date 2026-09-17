@@ -845,6 +845,7 @@ Public Class eac3toForm
                         {"DTS Express", "dts"},
                         {"DTS Master Audio", "dtsma"},
                         {"DTS-HD Master Audio", "dtsma"},
+                        {"DTS-HD Master Audio X", "dtsma"},
                         {"DTS-HD High Resolution", "dtshr"},
                         {"DTS Hi-Res", "dtshr"},
                         {"RAW/PCM", "flac"},

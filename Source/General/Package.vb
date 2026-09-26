@@ -304,7 +304,7 @@ Public Class Package
 
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
-        .Filename = "vapoursynth.dll",
+        .Filename = "libvapoursynth.dll",
         .Description = "Video processing Python scripting library.",
         .WebURL = "https://www.vapoursynth.com",
         .HelpURL = "https://www.vapoursynth.com/doc",
@@ -3194,7 +3194,7 @@ Public Class Package
             End If
         End If
 
-        Return GetPathFromLocation(IO.Path.Combine("FrameServer", "VapourSynth", "lib", "site-packages")).Dir
+        Return GetPathFromLocation(IO.Path.Combine("FrameServer", "VapourSynth", "Lib", "site-packages", "vapoursynth")).Dir
     End Function
 
     Function GetVapourSynthPipeHintDir() As String
@@ -3206,7 +3206,7 @@ Public Class Package
             End If
         End If
 
-        Return GetPathFromLocation(IO.Path.Combine("FrameServer", "VapourSynth")).Dir
+        Return GetPathFromLocation(IO.Path.Combine("FrameServer", "VapourSynth", "Lib", "site-packages", "vapoursynth")).Dir
     End Function
 
     Shared Function GetPythonHintDir() As String

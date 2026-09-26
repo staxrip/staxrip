@@ -1,8 +1,7 @@
-
+﻿
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
-
 
 #include "Common.h"
 #include "FrameServer.h"
@@ -34,7 +33,7 @@ private:
     VSNode*             m_vsNode = nullptr;
     const VSFrame*      m_vsFrame = nullptr;
     const VSVideoInfo*  m_vsInfo = nullptr;
-    char                m_vsErrorMessage[1024];
+    char                m_vsErrorMessage[1024] = "";
 
     void Free();
 

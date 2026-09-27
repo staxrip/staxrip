@@ -12,6 +12,7 @@ Public Class Package
     Property Description As String
     Property DownloadURL As String
     Property Exclude As String()
+    <Obsolete("StaxRip supports x64 only. Use Filename instead.")>
     Property Filename32 As String
     Property Filter As String
     Property Find As Boolean = True
@@ -79,7 +80,6 @@ Public Class Package
     Shared Property Haali As Package = Add(New Package With {
         .Name = "Haali Splitter",
         .Filename = "splitter.x64.ax",
-        .Filename32 = "splitter.ax",
         .Description = "Haali Splitter is used by eac3to to write MKV files.",
         .Required = False,
         .IsIncluded = False,
@@ -203,7 +203,6 @@ Public Class Package
     Shared Property qaac As Package = Add(New Package With {
         .Name = "qaac",
         .Filename = "qaac64.exe",
-        .Filename32 = "qaac.exe",
         .Location = IO.Path.Combine("Audio", "qaac"),
         .WebURL = "https://github.com/nu774/qaac",
         .DownloadURL = "https://github.com/nu774/qaac/releases",
@@ -422,7 +421,6 @@ Public Class Package
         .Name = "AVSMeter",
         .Location = IO.Path.Combine("Support", "AVSMeter"),
         .Filename = "AVSMeter64.exe",
-        .Filename32 = "AVSMeter.exe",
         .Description = "Console app that displays AviSynth script clip info.",
         .HelpFilename = IO.Path.Combine("doc", "AVSMeter.html"),
         .WebURL = "https://forum.doom9.org/showthread.php?t=174797",
@@ -458,7 +456,6 @@ Public Class Package
     Shared Property MPC As Package = Add(New Package With {
         .Name = "MPC",
         .Filename = "mpc-be64.exe",
-        .Filename32 = "mpc-be.exe",
         .Filter = "|mpc-hc64.exe;mpc-be64.exe|All Files|*.*",
         .IsIncluded = False,
         .VersionAllowAny = True,
@@ -579,7 +576,6 @@ Public Class Package
     Shared Property avs2pipemod As Package = Add(New Package With {
         .Name = "avs2pipemod",
         .Filename = "avs2pipemod64.exe",
-        .Filename32 = "avs2pipemod.exe",
         .Location = IO.Path.Combine("Support", "avs2pipemod"),
         .WebURL = "https://github.com/chikuzen/avs2pipemod",
         .DownloadURL = "https://github.com/chikuzen/avs2pipemod/releases",
@@ -795,7 +791,6 @@ Public Class Package
     Shared Property NVEncC As Package = Add(New Package With {
         .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
-        .Filename32 = "NVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "NVEncC"),
         .HelpSwitch = "-h",
         .WebURL = "https://github.com/rigaya/NVEnc",
@@ -806,7 +801,6 @@ Public Class Package
     Shared Property QSVEncC As Package = Add(New Package With {
         .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
-        .Filename32 = "QSVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "QSVEncC"),
         .Description = "Intel hardware video encoder.",
         .WebURL = "https://github.com/rigaya/QSVEnc",
@@ -817,7 +811,6 @@ Public Class Package
     Shared Property VCEEncC As Package = Add(New Package With {
         .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
-        .Filename32 = "VCEEncC.exe",
         .Location = IO.Path.Combine("Encoders", "VCEEncC"),
         .Description = "AMD hardware video encoder.",
         .HelpSwitch = "-h",
@@ -2774,7 +2767,7 @@ Public Class Package
 
     Property Filename As String
         Get
-            Return If(Not Environment.Is64BitProcess AndAlso Filename32 <> "", Filename32, FilenameValue)
+            Return FilenameValue
         End Get
         Set(value As String)
             FilenameValue = value

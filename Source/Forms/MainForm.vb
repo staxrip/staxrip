@@ -1791,10 +1791,6 @@ Partial Public Class MainForm
 
             Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
 
-            If Not Environment.Is64BitProcess Then
-                Text += " (32 bit)"
-            End If
-
             PreviewScript = Nothing
             SkipAssistant = True
 

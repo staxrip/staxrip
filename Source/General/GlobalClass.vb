@@ -859,7 +859,7 @@ Public Class GlobalClass
     End Function
 
     Function VerifyRequirements() As Boolean
-        If s.VerifyToolStatus AndAlso Environment.Is64BitProcess Then
+        If s.VerifyToolStatus Then
             SyncLock Package.ConfLock
                 For Each pack In Package.Items.Values
                     If Not pack.VerifyOK Then
@@ -2218,7 +2218,7 @@ Public Class GlobalClass
     End Sub
 
     Function IsDevelopmentPC() As Boolean
-        Return New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin") OrElse New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin-x86")
+        Return New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin")
     End Function
 
     Sub RunTask(action As Action)

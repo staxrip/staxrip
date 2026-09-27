@@ -284,9 +284,16 @@ clipname.set_output()" + BR
             End If
         End If
 
+        ' The test below is a cache check that skips the rewrite when nothing has changed
+        ' since the last synchronization. Key it on the script BEFORE macro expansion:
+        ' %current_time%, %current_time24% and %random% expand to a new value on every call,
+        ' and a cache keyed on a value that changes on every read can never hit. That let
+        ' concurrent chunk-encode workers run this body simultaneously. The expanded text is
+        ' still what gets written; only the key is unexpanded.
+        Dim cacheKey = code
         code = Macro.Expand(code)
 
-        If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
+        If Me.Error <> "" OrElse cacheKey <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
             If Path.Dir.DirExists Then
                 If Engine = ScriptEngine.VapourSynth Then
                     ModifyScript(code, Engine).WriteFileUTF8(Path)
@@ -312,7 +319,7 @@ clipname.set_output()" + BR
                     Me.Error = server.Error
                 End Using
 
-                LastCode = code
+                LastCode = cacheKey
                 LastPath = Path
             End If
         End If

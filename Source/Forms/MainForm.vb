@@ -6075,7 +6075,7 @@ Partial Public Class MainForm
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.SetFirstRunOnCurrentVersion()
         StaxRipUpdate.ShowUpdateQuestion()
-        StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
+        StaxRipUpdate.CheckForUpdateAsync(False)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
         'Text = $"{Size.Width}x{Size.Height}"
     End Sub

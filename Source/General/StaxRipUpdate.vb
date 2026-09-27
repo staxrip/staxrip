@@ -38,7 +38,7 @@ Public Class StaxRipUpdate
         End If
     End Sub
 
-    Shared Async Sub CheckForUpdateAsync(Optional force As Boolean = False, Optional x64 As Boolean = True)
+    Shared Async Sub CheckForUpdateAsync(Optional force As Boolean = False)
         If g.IsSupporterRelease Then Exit Sub
         If Not s.CheckForUpdates AndAlso Not force Then Exit Sub
 

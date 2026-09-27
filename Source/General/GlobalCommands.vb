@@ -14,7 +14,7 @@ Imports StaxRip.UI
 Public Class GlobalCommands
     <Command("Checks if an update is available.")>
     Sub CheckForUpdate()
-        StaxRipUpdate.CheckForUpdateAsync(True, Environment.Is64BitProcess)
+        StaxRipUpdate.CheckForUpdateAsync(True)
     End Sub
 
     <Command("Shows the log file with the built-in log file viewer.")>

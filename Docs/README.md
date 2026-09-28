@@ -106,7 +106,7 @@
 
 ## [Support](Support/README.md)
 
-## [Contribution](Contribution/README.md) :x:
+## [Contribution](Contribution/README.md)
 
 -----------------------------
 

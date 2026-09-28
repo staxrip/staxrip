@@ -4,8 +4,8 @@ body:
   - type: textarea
     id: whathappened
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
+      label: Observed behavior
+      description: Describe what happened, including the first affected timestamp or processing stage when relevant.
     validations:
       required: true
   - type: textarea
@@ -20,6 +20,24 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Affected area
+      options:
+        - Source opening or demuxing
+        - Audio processing or encoding
+        - Video processing or encoding
+        - AviSynth+
+        - VapourSynth
+        - Muxing or output
+        - GUI, jobs, projects, or settings
+        - Included tools or updates
+        - Other or unknown
+    validations:
+      required: true
   - type: input
     id: version
     attributes:
@@ -32,24 +50,74 @@ body:
     id: os
     attributes:
       label: OS
-      multiple: true
+      multiple: false
       options:
         - Windows 11
         - Windows 10
         - Windows 8(.1)
         - Windows 7
+        - Windows Server or other/unknown
+    validations:
+      required: true
   - type: dropdown
     id: frameserver
     attributes:
       label: Frame Server
-      multiple: true
+      description: Select the path that was active when the problem occurred.
+      multiple: false
       options:
         - AviSynth+
         - VapourSynth
+        - Both (tested separately)
+        - Not used or audio-only
+        - Unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: Reproduction frequency
+      options:
+        - Every time
+        - Intermittent
+        - Once
+        - Unable to reproduce again
+    validations:
+      required: true
+  - type: input
+    id: lastworking
+    attributes:
+      label: Last known working StaxRip version
+      description: Leave blank if the problem has always occurred or you do not know.
+      placeholder: e.g. 2.52.3 or unknown
+  - type: dropdown
+    id: cleantemplate
+    attributes:
+      label: Reproduces with a clean built-in template
+      description: Test this only when doing so will not risk the source or an existing output.
+      options:
+        - "Yes"
+        - "No"
+        - Not tested
+    validations:
+      required: true
+  - type: textarea
+    id: supportreport
+    attributes:
+      label: StaxRip support report
+      description: In StaxRip, open Help > Support Report Preview, review the report, and paste it here. Leave blank if your version does not provide this command.
   - type: textarea
     id: moreinfo
     attributes:
       label: Additional information
       description: |
-        Add any other context about the problem here.
-        If applicable, add screenshots to help explain your problem and/or provide a log file. The log file is located in the temp folder and the temp folder is located in the same directory as the source file. The log file ends with _staxrip.log.
+        Add screenshots or a minimal redistributable sample when they are necessary to reproduce the problem.
+        If your StaxRip version does not provide a support report and a maintainer needs the job log, open Project > Log File, right-click the log, and select Save Obfuscated As.
+        Review every saved file before attaching it. Obfuscation can leave unrelated paths, scripts, command lines, media details, tool output, and system information.
+  - type: checkboxes
+    id: privacyreview
+    attributes:
+      label: Privacy review
+      options:
+        - label: I reviewed the issue text and every attachment for private paths, names, media details, scripts, credentials, and other sensitive content.
+          required: true

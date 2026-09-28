@@ -51,6 +51,7 @@ Public Class LogForm
                                                  End If
                                              End Using
                                          End Sub, Keys.Control Or Keys.Alt Or Keys.S).SetImage(Symbol.Save)
+        cms.Add("Preview Support Report...", Sub() g.DefaultCommands.ShowSupportReport(), Keys.Control Or Keys.Shift Or Keys.C).SetImage(Symbol.Copy)
         cms.Add("Open in Text Editor", Sub() g.ShellExecute(g.GetTextEditorPath, p.Log.GetPath.Escape), Keys.Control Or Keys.T).SetImage(Symbol.Edit)
         cms.Add("Show in File Explorer", Sub() g.SelectFileWithExplorer(p.Log.GetPath), Keys.Control Or Keys.E).SetImage(Symbol.FileExplorer)
         cms.Add("Show History", Sub() g.ShellExecute(Path.Combine(Folder.Settings, "Log Files")), Keys.Control Or Keys.H).SetImage(Symbol.ClockLegacy)

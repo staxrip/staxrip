@@ -28,6 +28,13 @@ Public Class GlobalCommands
         End If
     End Sub
 
+    <Command("Builds an editable support report from an allowlist of current project details.")>
+    Sub ShowSupportReport()
+        Using form As New SupportReportForm()
+            form.ShowDialog()
+        End Using
+    End Sub
+
     <Command("Allows to use StaxRip's demuxing GUIs independently.")>
     Sub ShowDemuxTool()
         Using form As New SimpleSettingsForm("Demux")

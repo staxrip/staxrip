@@ -226,6 +226,9 @@
     <Compile Include="Forms\LogForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\SupportReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\CodeForm.Designer.vb">
       <DependentUpon>CodeForm.vb</DependentUpon>
     </Compile>
@@ -250,6 +253,7 @@
     <Compile Include="Video\FrameServer.vb" />
     <Compile Include="General\JobManager.vb" />
     <Compile Include="General\LogBuilder.vb" />
+    <Compile Include="General\SupportReportBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Macro.vb" />

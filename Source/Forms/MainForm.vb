@@ -4539,6 +4539,7 @@ Partial Public Class MainForm
         ret.Add("Help|Changelog", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Bookmarks, {"https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md"})
         ret.Add("Help|Support", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {"https://github.com/staxrip/staxrip?tab=readme-ov-file#contribution--support"})
         ret.Add("Help|-")
+        ret.Add("Help|Support Report Preview...", NameOf(g.DefaultCommands.ShowSupportReport), Symbol.Copy)
         ret.Add("Help|Report an issue", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/staxrip/staxrip/issues/new/choose"})
         ret.Add("Help|-")
         ret.Add("Help|Discord Server", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.People, {"https://discord.gg/uz8pVR79Bd"})

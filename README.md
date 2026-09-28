@@ -56,6 +56,7 @@ Any contribution is highly appreciated!
 - You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/CHANGELOG.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
     - Supporters please use the [Changelog for Supporters](https://github.com/staxrip/staxrip/blob/master/CHANGELOG-SUPPORTER.md) instead.
 - If the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
+- Before opening an issue, use `Help > Support Report Preview...` when that command is available. Review the report before pasting it. See the [Log File Viewer documentation](Docs/Usage/User-Interface/Log-File-Viewer.md) for its contents and privacy limits.
 
 ### Community
 - Feel free to join in the [StaxRip Community on Discord](https://discord.gg/uz8pVR79Bd) , where you can chat and share knowledge with us and other StaxRip users. 

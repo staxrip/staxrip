@@ -47,7 +47,7 @@
     - [Jobs](Usage/User-Interface/Jobs.md) :x:
     - [Menu Editor](Usage/User-Interface/Menu-Editor.md) :x:
     - [Events](Usage/User-Interface/Events.md) :x:
-    - [Log File Viewer](Usage/User-Interface/Log-File-Viewer.md) :x:
+    - [Log File Viewer](Usage/User-Interface/Log-File-Viewer.md)
     - [Apps Manager](Usage/User-Interface/Apps-Manager.md) :x:
     - [Project Options](Usage/User-Interface/Project-Options.md) :x:
     - [Settings](Usage/User-Interface/Settings.md) :x:
@@ -105,6 +105,7 @@
     - [Audio Encoders](Tools/Supported-Encoders/Audio.md) :x:
 
 ## [Support](Support/README.md)
+- [Bug Reports](Support/Bug-Reports.md)
 
 ## [Contribution](Contribution/README.md) :x:
 

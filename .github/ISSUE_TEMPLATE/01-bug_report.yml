@@ -52,4 +52,5 @@ body:
       label: Additional information
       description: |
         Add any other context about the problem here.
-        If applicable, add screenshots to help explain your problem and/or provide a log file. The log file is located in the temp folder and the temp folder is located in the same directory as the source file. The log file ends with _staxrip.log.
+        If applicable, add screenshots or a log file. To export a safer log, open Project > Log File, right-click the log, and select Save Obfuscated As.
+        Review the saved file before attaching it. Obfuscation changes the current source path and name, but other paths, scripts, command lines, and system details may remain.
